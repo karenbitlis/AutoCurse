@@ -1,0 +1,2 @@
+# AutoCurse
+hate courseworks
