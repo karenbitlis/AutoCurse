@@ -4,11 +4,9 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Cписок литературы</title>
-        <!-- Стабильные UMD-сборки библиотек -->
         <script src="https://unpkg.com/docx@8.5.0/build/index.umd.js"></script>
         <script src="https://unpkg.com/file-saver@2.0.5/dist/FileSaver.min.js"></script>
         <link rel="stylesheet" type="text/css" href="styles/style4.css">
-
     </head>
     <body>
         <div class="container">
@@ -18,7 +16,7 @@
                 <div id="sourcesContainer" class="form-container" style="margin-bottom: 0; gap: 10px;"></div>
                 <button type="button" class="btn-add" onclick="addSourceRow()">+ Добавить источник</button>
             </div>
-            <button class="btn-submit" onclick="generateDocx()">Сгенерировать файл Word</button>
+            <button class="btn-submit" onclick="generateDocx()">Скачать список литературы</button>
         </div>
         <script src="scripts/literature.js"></script>
     </body>
