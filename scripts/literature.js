@@ -1,3 +1,5 @@
+const litChildren = []
+
 const LitBut = document.getElementById('litera').shadowRoot.getElementById('LitBut')
 LitBut.addEventListener("click", () => {
     generateLitera()
@@ -9,8 +11,7 @@ const defaultSources = [
     "Металлические конструкции: учебник для студ. высш. учеб. заведений / [Ю. И. Кудишин, Е.И. Беленя, В.С. Игнатьева и др.] под ред. Ю.И. Кудишина. – 11-е издание., стер. – М. : Издательский центр «Академия», 2008. – 688 с.",
     "К.Ф. Шагивалеев, М.М. Айгумов. Конструирование и расчет балочной площадки промышленного здания: Учебное пособие для студентов специальности 290300 «Промышленное и гражданское строительство» Саратов 2011",
     "СП 16.13330.2022 «Стальные конструкции»/Госстрой России. – М.:ЦИТП Госстрой России, 2022 –174 с.",
-    "СП 20.13330.2022 «Нагрузки и воздействия»/Госстрой России. – М.:ЦИТП Госстрой России, 2022 –102 с."
-];
+    "СП 20.13330.2022 «Нагрузки и воздействия»/Госстрой России. – М.:ЦИТП Госстрой России, 2022 –102 с."];
 
 let container = document.getElementById('litera').shadowRoot.getElementById('sourcesContainer');
 
@@ -24,8 +25,7 @@ function createSourceRow(value = "") {
         <textarea class="source-text" id="litInput${index}">${value}</textarea>
         <button type="button" class="btn-delete" onclick="removeSourceRow(this)">X</button>
     `;
-    container.appendChild(div);
-}
+    container.appendChild(div);}
 
 defaultSources.forEach(src => createSourceRow(src));
 
@@ -34,12 +34,7 @@ btn_delete.forEach(btn => {
     btn.addEventListener("click", () => {
         console.log(btn)
         removeSourceRow(btn)
-    });
-});
-
-
-
-
+    });});
 
 function addSourceRow() {
     createSourceRow("");
@@ -50,7 +45,6 @@ const addSource = document.getElementById('litera').shadowRoot.getElementById('a
 addSource.addEventListener("click", () => {
     addSourceRow()
 });
-
 
 function removeSourceRow(button) {
     button.parentElement.remove();
@@ -64,23 +58,11 @@ function renumberSources() {
     });
 }
 
-function generateLitera() {
-    const docxLib = window.docx || (window.umd && window.umd.docx);
-    const saveAsLib = window.saveAs;
 
-    if (!docxLib) {
-        alert("Ошибка: Библиотека docx не загрузилась.");
-        return;
-    }
-
-    // Извлекаем AlignmentType из библиотеки для правильного формата Word xml
-    const { Document, Packer, Paragraph, TextRun, AlignmentType } = docxLib;
-
+function createLitera() {
     const textareas = container.querySelectorAll('.source-text');
-    const docChildren = [];
-
     // 1. ЗАГОЛОВОК
-    docChildren.push(new Paragraph({
+    litChildren.push(new Paragraph({
         alignment: AlignmentType.CENTER, // Безопасное выравнивание по центру
         spacing: { before: 0, after: 240 }, 
         children: [
@@ -98,7 +80,7 @@ function generateLitera() {
 
         const fullLineText = `${idx + 1}. ${textContent}`;
 
-        docChildren.push(new Paragraph({
+        litChildren.push(new Paragraph({
             alignment: AlignmentType.JUSTIFIED, // Официальный тип из библиотеки!
             spacing: { before: 0, after: 0 }, 
             indentation: {
@@ -113,7 +95,18 @@ function generateLitera() {
             ]
         }));
     });
-
+    litChildren.push(new Paragraph({
+        children: [
+            new PageBreak(), 
+        ]
+    }));
+}
+function generateLitera() {
+    createLitera()
+    if (!docxLib) {
+        alert("Ошибка: Библиотека docx не загрузилась.");
+        return;
+    }
     const doc = new Document({
         styles: {
             default: {
@@ -142,10 +135,9 @@ function generateLitera() {
                     }
                 }
             },
-            children: docChildren
+            children: litChildren
         }]
     });
-
     Packer.toBlob(doc).then(blob => {
         if (saveAsLib) {
             saveAsLib(blob, "Bibliography.docx");

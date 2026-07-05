@@ -1,26 +1,17 @@
+const introChildren = []
+
 const IntroBut = document.getElementById('intro').shadowRoot.getElementById('IntroBut')
 IntroBut.addEventListener("click", () => {
     generateIntro()
 });
-function generateIntro() {
-    const docxLib = window.docx || (window.umd && window.umd.docx);
-    const saveAsLib = window.saveAs;
-    if (!docxLib) {
-        alert("Ошибка: Библиотека docx не загрузилась.");
-        return;
-    }
-    // Убрали LineRule из деструктуризации, чтобы не было ошибки undefined
-    const { Document, Packer, Paragraph, TextRun, AlignmentType,  PageBreak} = docxLib;
 
+function createIntro() {
     const intro = document.getElementById('intro')
-
     const rawText = intro.shadowRoot.getElementById('introductionText').value;
     const textParagraphs = rawText.split(/\r?\n/).map(p => p.trim()).filter(p => p.length > 0);
 
-    const docChildren = [];
-
     // 1. ЗАГОЛОВОК "Введение" (По центру, Жирный)
-    docChildren.push(new Paragraph({
+    introChildren.push(new Paragraph({
         alignment: AlignmentType.CENTER,
         spacing: { before: 0, after: 360 }, 
         children: [
@@ -30,12 +21,11 @@ function generateIntro() {
             })
         ]
     }));
-
     // 2. ОСНОВНОЙ ТЕКСТ
     textParagraphs.forEach(textLine => {
         const isListItem = textLine.startsWith("СП ");
 
-        docChildren.push(new Paragraph({
+        introChildren.push(new Paragraph({
             alignment: AlignmentType.JUSTIFIED,
             spacing: {
                 before: 0,
@@ -51,11 +41,20 @@ function generateIntro() {
             ]
         }));
     });
-    docChildren.push(new Paragraph({
-            children: [
-                new PageBreak(), 
-            ]
-        }));
+    
+    introChildren.push(new Paragraph({
+        children: [
+            new PageBreak(), 
+        ]
+    }));
+}
+
+function generateIntro() {
+    createIntro()
+    if (!docxLib) {
+        alert("Ошибка: Библиотека docx не загрузилась.");
+        return;
+    }
     // Создаем документ с безопасными настройками интервалов
     const doc = new Document({
         styles: {
@@ -85,7 +84,7 @@ function generateIntro() {
                     }
                 }
             },
-            children: docChildren
+            children: introChildren
         }]
     });
     // Скачивание файла
