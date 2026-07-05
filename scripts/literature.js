@@ -1,3 +1,8 @@
+const LitBut = document.getElementById('litera').shadowRoot.getElementById('LitBut')
+LitBut.addEventListener("click", () => {
+    generateLitera()
+});
+
 const CONSTANT_TITLE = "Список используемой литературы:";
 
 const defaultSources = [
@@ -7,15 +12,16 @@ const defaultSources = [
     "СП 20.13330.2022 «Нагрузки и воздействия»/Госстрой России. – М.:ЦИТП Госстрой России, 2022 –102 с."
 ];
 
-const container = document.getElementById('sourcesContainer');
+let container = document.getElementById('litera').shadowRoot.getElementById('sourcesContainer');
 
 function createSourceRow(value = "") {
     const index = container.children.length + 1;
     const div = document.createElement('div');
+    document.getElementById('litera').shadowRoot.append(div)
     div.className = 'source-item';
     div.innerHTML = `
         <span class="source-number">${index}.</span>
-        <textarea class="source-text">${value}</textarea>
+        <textarea class="source-text" id="litInput${index}">${value}</textarea>
         <button type="button" class="btn-delete" onclick="removeSourceRow(this)">X</button>
     `;
     container.appendChild(div);
@@ -23,10 +29,28 @@ function createSourceRow(value = "") {
 
 defaultSources.forEach(src => createSourceRow(src));
 
+const btn_delete = document.getElementById('litera').shadowRoot.querySelectorAll('.btn-delete')
+btn_delete.forEach(btn => {
+    btn.addEventListener("click", () => {
+        console.log(btn)
+        removeSourceRow(btn)
+    });
+});
+
+
+
+
+
 function addSourceRow() {
     createSourceRow("");
     renumberSources();
 }
+
+const addSource = document.getElementById('litera').shadowRoot.getElementById('addSourceBut')
+addSource.addEventListener("click", () => {
+    addSourceRow()
+});
+
 
 function removeSourceRow(button) {
     button.parentElement.remove();
@@ -40,7 +64,7 @@ function renumberSources() {
     });
 }
 
-function generateDocx() {
+function generateLitera() {
     const docxLib = window.docx || (window.umd && window.umd.docx);
     const saveAsLib = window.saveAs;
 
@@ -51,6 +75,7 @@ function generateDocx() {
 
     // Извлекаем AlignmentType из библиотеки для правильного формата Word xml
     const { Document, Packer, Paragraph, TextRun, AlignmentType } = docxLib;
+
     const textareas = container.querySelectorAll('.source-text');
     const docChildren = [];
 

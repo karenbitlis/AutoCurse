@@ -28,9 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // ИСПРАВЛЕНО: Показываем кнопку создания файла только на последнем слайде
         if (currentIndex === pages.length - 1) {
             collectBtn.style.display = "block";
-        } else {
-            collectBtn.style.display = "none";
-        }
+        } 
     }
 
     nextBtn.addEventListener("click", () => {
@@ -43,5 +41,4 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Инициализация при старте
     updateSlider();
-
 })

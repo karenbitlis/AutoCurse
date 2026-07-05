@@ -1,28 +1,43 @@
 <!DOCTYPE html>
 <html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Конструктор Курсовых Работ</title>
-    <script src="https://unpkg.com/docx@8.5.0/build/index.umd.js"></script>
-    <script src="https://unpkg.com/file-saver@2.0.5/dist/FileSaver.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="styles/main.css">
-</head>
-<body>
-    <div class="progress-container">
-        <div class="progress-bar" id="progressBar"></div>
-    </div>
-    <div class="slider-container">
-        <div class="page active" id="page1"><iframe src="title_page.html" id="frame1"></iframe></div>
-        <div class="page" id="page3"><iframe src="intro.html" id="frame2"></iframe></div>
-        <div class="page" id="page2"><iframe src="init_data.html" id="frame3"></iframe></div>
-        <div class="page" id="page4"><iframe src="literature.html" id="frame4"></iframe></div>
-    </div>
-    <div class="controls-wrapper">
-        <button class="control-btn arrow-btn" id="prevBtn" title="Назад">🠘</button> 
-        <!-- <button class="control-btn generate-btn" id="collectDataBtn"></button> -->
-        <button class="control-btn arrow-btn" id="nextBtn" title="Вперед">🠚</button>
-    </div>
-    <script src="scripts/main.js"></script>
-</body>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Конструктор Курсовых Работ</title>
+        <script src="https://unpkg.com/docx@8.5.0/build/index.umd.js"></script>
+        <script src="https://unpkg.com/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="styles/main.css">
+        <link rel="stylesheet" type="text/css" href="styles/style1.css">
+    </head>
+    <body>
+        <script src="scripts/pages.js"></script>
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+        <div class="slider-container">
+            <div class="page active" id="page1">
+                <title-page id="tit"></title-page>
+            </div>
+            <div class="page" id="page2">
+                <intro-moment id="intro"></intro-moment>
+            </div>
+            <div class="page" id="page3">
+                <init-data id="init"></init-data>
+            </div>
+            <div class="page" id="page4">
+                <literature-list id="litera"></literature-list>
+            </div>
+        </div>
+        <br>
+        <div class="controls-wrapper">
+            <button class="control-btn arrow-btn" id="prevBtn" title="Назад">🠘</button> 
+            <!-- <button class="control-btn generate-btn" id="collectDataBtn"></button> -->
+            <button class="control-btn arrow-btn" id="nextBtn" title="Вперед">🠚</button>
+        </div>
+        <script src="scripts/title_page.js"></script>
+        <script src="scripts/init_data.js"></script>    
+        <script src="scripts/introduction.js"></script>
+        <script src="scripts/literature.js"></script>
+        <script src="scripts/main.js"></script>
+    </body>
 </html>

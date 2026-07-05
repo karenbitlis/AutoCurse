@@ -1,4 +1,8 @@
-function generateDocx() {
+const IntroBut = document.getElementById('intro').shadowRoot.getElementById('IntroBut')
+IntroBut.addEventListener("click", () => {
+    generateIntro()
+});
+function generateIntro() {
     const docxLib = window.docx || (window.umd && window.umd.docx);
     const saveAsLib = window.saveAs;
     if (!docxLib) {
@@ -8,7 +12,9 @@ function generateDocx() {
     // Убрали LineRule из деструктуризации, чтобы не было ошибки undefined
     const { Document, Packer, Paragraph, TextRun, AlignmentType,  PageBreak} = docxLib;
 
-    const rawText = document.getElementById('introductionText').value;
+    const intro = document.getElementById('intro')
+
+    const rawText = intro.shadowRoot.getElementById('introductionText').value;
     const textParagraphs = rawText.split(/\r?\n/).map(p => p.trim()).filter(p => p.length > 0);
 
     const docChildren = [];
@@ -96,5 +102,4 @@ function generateDocx() {
         console.error(err);
         alert("Ошибка сборки документа.");
     });
-    console.log(AlignmentType);
 }

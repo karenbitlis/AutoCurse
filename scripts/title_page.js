@@ -1,4 +1,8 @@
-function generateDocx() {
+const TitlePageBut = document.getElementById('tit').shadowRoot.getElementById('TitlePageBut')
+TitlePageBut.addEventListener("click", () => {
+    generateTitle()
+});
+function generateTitle() {
     if (typeof window.docx === 'undefined') {
         alert("Библиотека docx еще не загрузилась. Пожалуйста, подождите.");
         return;
@@ -7,23 +11,25 @@ function generateDocx() {
     const docxLib = window.docx;
     const { Document, Packer, Paragraph, TextRun, AlignmentType, PageBreak } = docxLib;
 
+    const tit = document.getElementById('tit')
+
     const data = {
-        university: document.getElementById('university').value,
-        institute: document.getElementById('institute').value,
-        department: document.getElementById('department').value,
-        direction: document.getElementById('direction').value,
-        profile: document.getElementById('profile').value,
-        workType: document.getElementById('workType').value,
-        discipline: document.getElementById('discipline').value,
-        topic: document.getElementById('topic').value,
-        studentInst: document.getElementById('studentInst').value,
-        group: document.getElementById('group').value,
-        educationForm: document.getElementById('educationForm').value,
-        gradebook: document.getElementById('gradebook').value,
-        authorName: document.getElementById('authorName').value,
-        reviewerDep: document.getElementById('reviewerDep').value,
-        reviewerName: document.getElementById('reviewerName').value,
-        city: document.getElementById('city').value+', '+document.getElementById('year').value
+        university: tit.shadowRoot.getElementById('university').value,
+        institute: tit.shadowRoot.getElementById('institute').value,
+        department: tit.shadowRoot.getElementById('department').value,
+        direction: tit.shadowRoot.getElementById('direction').value,
+        profile: tit.shadowRoot.getElementById('profile').value,
+        workType: tit.shadowRoot.getElementById('workType').value,
+        discipline: tit.shadowRoot.getElementById('discipline').value,
+        topic: tit.shadowRoot.getElementById('topic').value,
+        studentInst: tit.shadowRoot.getElementById('studentInst').value,
+        group: tit.shadowRoot.getElementById('group').value,
+        educationForm: tit.shadowRoot.getElementById('educationForm').value,
+        gradebook: tit.shadowRoot.getElementById('gradebook').value,
+        authorName: tit.shadowRoot.getElementById('authorName').value,
+        reviewerDep: tit.shadowRoot.getElementById('reviewerDep').value,
+        reviewerName: tit.shadowRoot.getElementById('reviewerName').value,
+        city: tit.shadowRoot.getElementById('city').value+', '+tit.shadowRoot.getElementById('year').value
         
     };
 

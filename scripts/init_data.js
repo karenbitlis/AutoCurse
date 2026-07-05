@@ -1,4 +1,8 @@
-function generateDocx() {
+const InitBut = document.getElementById('init').shadowRoot.getElementById('InitBut')
+InitBut.addEventListener("click", () => {
+    generateInit()
+});
+function generateInit() {
     const docxLib = window.docx || (window.umd && window.umd.docx);
     const saveAsLib = window.saveAs;
 
@@ -9,20 +13,22 @@ function generateDocx() {
 
     const { Document, Packer, Paragraph, TextRun, AlignmentType, Table, TableRow, TableCell, WidthType } = docxLib;
 
-    // Сбор данных из полей формы
-    const dataIn = {
-        taskNum: document.getElementById('taskNum').value,
-        paramL: document.getElementById('paramL').value,
-        param_l: document.getElementById('param_l').value,
-        paramH: document.getElementById('paramH').value,
-        payload: document.getElementById('payload').value,
-        concrete: document.getElementById('concrete').value,
-        columns: document.getElementById('columns').value,
-        joints: document.getElementById('joints').value,
-        floorType: document.getElementById('floorType').value,
-        note: document.getElementById('note').value
-    };
+    const init = document.getElementById('init')
 
+
+    // Сбор данных из полей формы
+    let dataIn = {
+        taskNum: init.shadowRoot.getElementById('taskNum').value,
+        paramL: init.shadowRoot.getElementById('paramL').value,
+        param_l: init.shadowRoot.getElementById('param_l').value,
+        paramH: init.shadowRoot.getElementById('paramH').value,
+        payload: init.shadowRoot.getElementById('payload').value,
+        concrete: init.shadowRoot.getElementById('concrete').value,
+        columns: init.shadowRoot.getElementById('columns').value,
+        joints: init.shadowRoot.getElementById('joints').value,
+        floorType: init.shadowRoot.getElementById('floorType').value,
+        note: init.shadowRoot.getElementById('note').value
+    };
     const doc = new Document({
         sections: [{
             properties: {
