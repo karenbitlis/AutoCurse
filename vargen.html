@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Генератор вариантов</title>
+        <script src="https://unpkg.com/docx@8.5.0/build/index.umd.js"></script>
+        <script src="https://unpkg.com/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+
+		<link rel="stylesheet" type="text/css" href="styles/style2.css">
+		<style>
+			#canvas {
+				border: 5px solid #3498db;
+				border-radius: 8px;
+			}
+			#withCanvas {
+				max-width: 550px;
+				padding-bottom: 10px;
+			}
+			label {
+    			margin-bottom: 4px;
+    			font-weight: 600;
+    			color: #4a5568;
+    			font-size: 15px;
+    		    font-family: Arial;
+			}
+			#varLoad {
+				background-color: green;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container" id="withCanvas">
+			<h2>Создание вариантов балочной клетки</h2>
+			<div class="form-container">
+				
+				<div class="form-row-triple">
+					<div class="form-group">
+						<h3>1-й вариант</h3>
+					</div>
+					<div class="form-group">
+    					<label>a, м:</label>
+    					<input type="text" id="variant1A">
+    				</div>
+    				<div class="form-group">
+    					<label>b, м:</label>
+						<input type="text" id="variant1B">    					
+    				</div>
+				</div>
+				
+				<div class="form-row-triple">
+					<div class="form-group">
+						<h3>2-й вариант</h3>
+					</div>
+					<div class="form-group">
+    					<label>a, м:</label>
+    					<input type="text" id="variant2A">
+    				</div>
+    				<div class="form-group">
+    					<label>b, м:</label>
+						<input type="text" id="variant2B">    					
+    				</div>
+				</div>
+				
+				<div class="form-row-triple">
+					<div class="form-group">
+						<h3>3-й вариант</h3>
+					</div>
+					<div class="form-group">
+    					<label>a, м:</label>
+    					<input type="text" id="variant3A">
+    				</div>
+    				<div class="form-group">
+    					<label>b, м:</label>
+						<input type="text" id="variant3B">    					
+    				</div>
+				</div>
+			</div>
+			<div class="form-row">
+				<div class="form-group">
+    				<button id="varGen">Создать варианты</button>
+    			</div>
+    			<div class="form-group">
+    				<button id="varDel">Очистить варианты</button>			
+    			</div>		
+			</div><br>			
+			<div class="form-row-triple">
+					<div class="form-group">
+    					<button id="varZoom1">Зум В1</button>			
+    				</div>
+				<div class="form-group">
+    				<div class="form-group">
+    					<button id="varZoom2">Зум В2</button>			
+    				</div>
+    			</div>
+    			<div class="form-group">
+    				<div class="form-group">
+    					<button id="varZoom3">Зум В3</button>			
+    				</div>    					
+    			</div>
+			</div><br>
+			<div class="form-container" id="canvas-container">
+				<canvas id="canvas"></canvas>
+			</div>
+			<div class="form-row">
+				<div class="form-group" id="loader">
+    				<button id="varLoad1">Скачать скрин</button>
+    			</div>
+    			<div class="form-group">
+    				<button id="varLoad">Скачать все варианты</button>
+    			</div>
+			</div>
+		</div>
+		<script src="scripts/vargen.js"></script>
+	</body>
+</html>

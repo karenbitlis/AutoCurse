@@ -4,7 +4,8 @@ body {
     margin: 0;
     padding: 20px;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
+    padding: 20px 0;
     justify-content: center;
     min-height: 100vh;
     box-sizing: border-box;
