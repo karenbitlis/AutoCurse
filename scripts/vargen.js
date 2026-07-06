@@ -1,5 +1,9 @@
+let vargenChildren = []
+const vargen = document.getElementById('vargen')
+
 let A = 5
 let B = 10
+
 let kratnoA = []
 let kratnoB = []
 
@@ -8,18 +12,56 @@ let b = 100*B
 let aVar
 let bVar
 let dist
-let vargenChildren = []
+
 
 const eps = 1e-7
-const allButtons = document.querySelectorAll('button, input[type="submit"], input[type="button"], input[type="reset"]');
+const allButtons = vargen.shadowRoot.querySelectorAll('button, input[type="submit"], input[type="button"], input[type="reset"]');
 
 let zoom = 0
 let scale = 10
 let move = 0
 let pos = 0
 
-const docxLib = window.docx;
-const { Document, Packer, Paragraph, ImageRun, TextRun, AlignmentType, Table, TableRow, TableCell, WidthType, PageBreak, textParagraphs } = docxLib;
+
+const canvas = vargen.shadowRoot.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+const ctnr = vargen.shadowRoot.getElementById("canvas-container");
+
+const cssWidth = ctnr.offsetWidth-8;
+const cssHeight = 340;
+const dpi = 10;
+
+canvas.width = cssWidth * dpi;
+canvas.height = cssHeight * dpi;
+
+canvas.style.width = cssWidth + "px";
+canvas.style.height = cssHeight + "px";
+
+ctx.scale(dpi, dpi);
+
+let but = vargen.shadowRoot.getElementById('varGen')
+let clear = vargen.shadowRoot.getElementById('varDel')
+let load1 = vargen.shadowRoot.getElementById('varLoad1')
+let load = vargen.shadowRoot.getElementById('varLoad')
+let zoomo1 = vargen.shadowRoot.getElementById('varZoom1')
+let zoomo2 = vargen.shadowRoot.getElementById('varZoom2')
+let zoomo3 = vargen.shadowRoot.getElementById('varZoom3')
+let dataIn = {
+    taskNum: init.shadowRoot.getElementById('taskNum').value,
+    paramL: init.shadowRoot.getElementById('paramL').value,
+    param_l: init.shadowRoot.getElementById('param_l').value,
+    paramH: init.shadowRoot.getElementById('paramH').value,
+    payload: init.shadowRoot.getElementById('payload').value,
+    concrete: init.shadowRoot.getElementById('concrete').value,
+    columns: init.shadowRoot.getElementById('columns').value,
+    joints: init.shadowRoot.getElementById('joints').value,
+    floorType: init.shadowRoot.getElementById('floorType').value,
+    note: init.shadowRoot.getElementById('note').value
+};
+generateVariant()
+printVar()
+drawVar()
 
 function dataURLtoUint8Array(dataurl) {
   const arr = dataurl.split(',');
@@ -33,8 +75,23 @@ function dataURLtoUint8Array(dataurl) {
   }
   return { data: u8arr, mime };
 }
-
 function generateVariant() {
+	kratnoA = []
+	kratnoB = []
+	dataIn = {
+        taskNum: init.shadowRoot.getElementById('taskNum').value,
+        paramL: init.shadowRoot.getElementById('paramL').value,
+        param_l: init.shadowRoot.getElementById('param_l').value,
+        paramH: init.shadowRoot.getElementById('paramH').value,
+        payload: init.shadowRoot.getElementById('payload').value,
+        concrete: init.shadowRoot.getElementById('concrete').value,
+        columns: init.shadowRoot.getElementById('columns').value,
+        joints: init.shadowRoot.getElementById('joints').value,
+        floorType: init.shadowRoot.getElementById('floorType').value,
+        note: init.shadowRoot.getElementById('note').value
+    };
+    A = dataIn.param_l
+    B = dataIn.paramL
 	for (var i = 1; i < a; i++) {
 		if (A % (i/100) == 0 || Math.abs((i/100) - (A % (i/100))) <= eps) {
 			if (i/100 >= 0.6 && i/100 <= 1.6) {
@@ -50,35 +107,6 @@ function generateVariant() {
 		}
 	}
 }
-
-const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d");
-
-const ctnr = document.getElementById("canvas-container");
-
-const cssWidth = ctnr.offsetWidth-8;
-const cssHeight = 300;
-const dpi = 10;
-
-canvas.width = cssWidth * dpi;
-canvas.height = cssHeight * dpi;
-
-canvas.style.width = cssWidth + "px";
-canvas.style.height = cssHeight + "px";
-
-ctx.scale(dpi, dpi);
-
-let but = document.getElementById('varGen')
-let clear = document.getElementById('varDel')
-let load1 = document.getElementById('varLoad1')
-let load = document.getElementById('varLoad')
-let zoomo1 = document.getElementById('varZoom1')
-let zoomo2 = document.getElementById('varZoom2')
-let zoomo3 = document.getElementById('varZoom3')
-
-// printVar()
-drawVar()
-
 function printVar() {
 	generateVariant()
 
@@ -101,12 +129,12 @@ function printVar() {
 		variant3B = kratnoB[Math.floor(Math.random() * kratnoB.length)]
 	}
 	
-	document.getElementById('variant1A').value = variant1A
-	document.getElementById('variant1B').value = variant1B
-	document.getElementById('variant2A').value = variant2A
-	document.getElementById('variant2B').value = variant2B
-	document.getElementById('variant3A').value = variant3A
-	document.getElementById('variant3B').value = variant3B
+	vargen.shadowRoot.getElementById('variant1A').value = variant1A
+	vargen.shadowRoot.getElementById('variant1B').value = variant1B
+	vargen.shadowRoot.getElementById('variant2A').value = variant2A
+	vargen.shadowRoot.getElementById('variant2B').value = variant2B
+	vargen.shadowRoot.getElementById('variant3A').value = variant3A
+	vargen.shadowRoot.getElementById('variant3B').value = variant3B
 
 	variant1A = parseFloat(variant1A) 
 	variant1B = parseFloat(variant1B)
@@ -133,24 +161,23 @@ function delVar() {
 	variant2B = ''
 	variant3A = ''
 	variant3B = ''
-	document.getElementById('variant1A').value = variant1A
-	document.getElementById('variant1B').value = variant1B
-	document.getElementById('variant2A').value = variant2A
-	document.getElementById('variant2B').value = variant2B
-	document.getElementById('variant3A').value = variant3A
-	document.getElementById('variant3B').value = variant3B
+	vargen.shadowRoot.getElementById('variant1A').value = variant1A
+	vargen.shadowRoot.getElementById('variant1B').value = variant1B
+	vargen.shadowRoot.getElementById('variant2A').value = variant2A
+	vargen.shadowRoot.getElementById('variant2B').value = variant2B
+	vargen.shadowRoot.getElementById('variant3A').value = variant3A
+	vargen.shadowRoot.getElementById('variant3B').value = variant3B
 	drawVar()
 }
 function drawEveryVar(num) {
 	ctx.shadowColor = 'transparent';
 	ctx.strokeStyle = 'black';
-	variant1A = parseFloat(document.getElementById('variant1A').value) 
-	variant1B = parseFloat(document.getElementById('variant1B').value)
-	variant2A = parseFloat(document.getElementById('variant2A').value)
-	variant2B = parseFloat(document.getElementById('variant2B').value)
-	variant3A = parseFloat(document.getElementById('variant3A').value)
-	variant3B = parseFloat(document.getElementById('variant3B').value)
-
+	variant1A = parseFloat(vargen.shadowRoot.getElementById('variant1A').value) 
+	variant1B = parseFloat(vargen.shadowRoot.getElementById('variant1B').value)
+	variant2A = parseFloat(vargen.shadowRoot.getElementById('variant2A').value)
+	variant2B = parseFloat(vargen.shadowRoot.getElementById('variant2B').value)
+	variant3A = parseFloat(vargen.shadowRoot.getElementById('variant3A').value)
+	variant3B = parseFloat(vargen.shadowRoot.getElementById('variant3B').value)
 	
 	if (num == 1) {
 		aVar = variant1A
@@ -305,6 +332,20 @@ function drawVar() {
 	ctx.fillStyle = "white"
 	ctx.fillRect(0, 0, canvas.width, canvas.height)
 	ctx.fillStyle = "black"
+	dataIn = {
+        taskNum: init.shadowRoot.getElementById('taskNum').value,
+        paramL: init.shadowRoot.getElementById('paramL').value,
+        param_l: init.shadowRoot.getElementById('param_l').value,
+        paramH: init.shadowRoot.getElementById('paramH').value,
+        payload: init.shadowRoot.getElementById('payload').value,
+        concrete: init.shadowRoot.getElementById('concrete').value,
+        columns: init.shadowRoot.getElementById('columns').value,
+        joints: init.shadowRoot.getElementById('joints').value,
+        floorType: init.shadowRoot.getElementById('floorType').value,
+        note: init.shadowRoot.getElementById('note').value
+    };
+    A = dataIn.param_l
+    B = dataIn.paramL
 	drawEveryVar(1)
 	drawEveryVar(2)
 	drawEveryVar(3)
@@ -421,17 +462,13 @@ function smalling() {
 	}
 	requestAnimationFrame(smalling)
 }
-
 but.addEventListener("click", () => { printVar() })
-
 clear.addEventListener("click", () => {
 	delVar()
 })
-
 load1.addEventListener("click", () => {
 	exportCanvas()
 })
-
 zoomo1.addEventListener("click", () => {
 	allButtons.forEach(button => {
     	button.disabled = true;});
@@ -462,7 +499,6 @@ zoomo1.addEventListener("click", () => {
 		zooming1()
 	}	
 })
-
 zoomo2.addEventListener("click", () => {
 	allButtons.forEach(button => {
     	button.disabled = true;});
@@ -492,7 +528,6 @@ zoomo2.addEventListener("click", () => {
 		zooming2()
 	}
 })
-
 zoomo3.addEventListener("click", () => {
 	allButtons.forEach(button => {
     	button.disabled = true;});
@@ -523,19 +558,17 @@ zoomo3.addEventListener("click", () => {
 		zooming3()
 	}
 })
-
 function exportCanvas() {
 	const a = document.createElement("a");
 	a.href = canvas.toDataURL("image/jpg");
 	a.download = "canvas.jpg";
 	a.click();
 }
-
 document.addEventListener('input', (event) => {
+	delVar()
 	smalling()
 	drawVar()
 });
-
 let dataUrl = canvas.toDataURL("image/png");
 let { data } = dataURLtoUint8Array(dataUrl);
 let snapshots = []
@@ -565,9 +598,7 @@ function pushScreen(nom) {
 		})
 	)
 }
-
 function createVargen() {
-	// `При проектировании балочной клетки задача сводится к тому, чтобы путем технико-экономического сравнения различных вариантов найти наиболее экономичную конструкцию балочной клетки по расходу материала на 1 м2 площади перекрытия. Учитывая, что наибольший расход стали в балочных клетках идет на стальной настил, толщина которого зависит от расстояния между балками настила, следует стремиться к такому расположению балок настила, а также вспомогательных балок, чтобы суммарный расход стали этих конструкций на 1 м2 площади перекрытия был наименьшим. С этой целью следует составить два-три варианта расположения вспомогательных балок и балок настила. После статического конструктивного расчетов настила и балок для всех вариантов производят их сравнение по расходу стали на квадратный метр площади перекрытия балочной клетки и количеству монтажных единиц.`
 	snapshots = []
 	vargenChildren = []
 	vargenChildren.push(
@@ -641,7 +672,6 @@ function createVargen() {
 
 	smalling()
 }
-
 function exportCanvasToDocx() {
 	createVargen()
 	const doc = new Document({
@@ -680,10 +710,9 @@ function exportCanvasToDocx() {
 		],
 	});
 	Packer.toBlob(doc).then((blob) => {
-		saveAs(blob, "canvas-screenshot.docx");
+		saveAs(blob, "Var_Gen.docx");
 	});
 }
-
 load.addEventListener("click", () => {
 	exportCanvasToDocx()
 })

@@ -6,6 +6,9 @@ InitBut.addEventListener("click", () => {
     generateInit()
 });
 
+let after_intro1 = `Основная задача при проектировании балочной клетки состоит в том, чтобы путем технико-экономического сравнения различных вариантов найти наиболее экономичную конструкцию балочной клетки по расходу материала на 1 квадратный метр площади перекрытия. Учитывая, что наибольший расход стали в балочных клетках идет на стальной настил, толщина которого зависит от расстояния между балками настила, следует стремиться к такому расположению балок настила, а также вспомогательных балок, чтобы суммарный расход стали этих конструкций на 1 квадратный метр перекрытия был наименьшим.`
+let after_intro2 =`С этой целью в работе составлены три варианта расположения вспомогательных балок и балок настила. После статического конструктивного расчетов настила и балок для всех вариантов производится их сравнение по расходу стали на 1 квадратный метр площади перекрытия балочной клетки и количеству монтажных единиц.`
+
 function createInit() {
     const init = document.getElementById('init')
     const dataIn = {
@@ -20,7 +23,7 @@ function createInit() {
         floorType: init.shadowRoot.getElementById('floorType').value,
         note: init.shadowRoot.getElementById('note').value
     };
-
+    let grid_sizes = 'В данной курсовой работе проектируется балочная клетка с размерами в плане' + dataIn.paramL + '×' + dataIn.param_l + 'м.'
     
     if (typeof window.docx === 'undefined') {
         alert("Ошибка: Библиотека docx не загрузилась. Проверьте интернет-подключение.");
@@ -94,11 +97,64 @@ function createInit() {
             ]
         })
     )
-    initChildren.push(new Paragraph({
-        children: [
-            new PageBreak(), 
-        ]
-    }));
+    initChildren.push(
+        new Paragraph({}),
+        new Paragraph({
+            spacing: {
+                before: 0,
+                after: 120
+            },
+            indent: {
+                firstLine: 709, // Красная строка 1,25 см
+            },
+            alignment: AlignmentType.JUSTIFIED,
+            children: [
+                new TextRun({ 
+                    text: grid_sizes,
+                    size: 28, 
+                    font: "Times New Roman",
+                    
+                }) 
+            ]
+        }),
+        new Paragraph({
+            spacing: {
+                before: 0,
+                after: 120
+            },
+            indent: {
+                firstLine: 709, // Красная строка 1,25 см
+            },
+            alignment: AlignmentType.JUSTIFIED,
+            children: [
+                new TextRun({ 
+                    text: after_intro1,
+                    size: 28, 
+                    font: "Times New Roman",
+                    
+                }) 
+            ]
+        }),
+        new Paragraph({
+            spacing: {
+                before: 0,
+                after: 120
+            },
+            indent: {
+                firstLine: 709, // Красная строка 1,25 см
+            },
+            alignment: AlignmentType.JUSTIFIED,
+            children: [
+                new TextRun({ 
+                    text: after_intro2,
+                    size: 28, 
+                    font: "Times New Roman",
+                    
+                }),
+                new PageBreak()
+            ]
+        })
+    );
 }
 
 function generateInit() {

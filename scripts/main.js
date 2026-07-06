@@ -8,6 +8,8 @@ document.addEventListener("DOMContentLoaded", () => {
     let currentIndex = 0;
 
     function updateSlider() {
+        printVar()
+        drawVar()
         // Переключаем активные классы для слоев-страниц
         pages.forEach((page, index) => {
             if (index === currentIndex) {
@@ -51,11 +53,13 @@ function generateDocx() {
     createIntro()
     createInit()
     createLitera()
+    createVargen()
 
     const documento = []
     documento.push(...titChildren)
     documento.push(...introChildren)
     documento.push(...initChildren)
+    documento.push(...vargenChildren)
     documento.push(...litChildren)
     
     if (!docxLib) {

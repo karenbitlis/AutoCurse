@@ -1,5 +1,5 @@
 const docxLib = window.docx;
-const { Document, Packer, Paragraph, TextRun, AlignmentType, Table, TableRow, TableCell, WidthType, PageBreak, textParagraphs } = docxLib;
+const { Document, Packer, ImageRun, Paragraph, TextRun, AlignmentType, Table, TableRow, TableCell, WidthType, PageBreak, textParagraphs } = docxLib;
 const titChildren = [];
 
 const TitlePageBut = document.getElementById('tit').shadowRoot.getElementById('TitlePageBut')

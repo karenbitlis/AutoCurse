@@ -4,8 +4,8 @@
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<title>Генератор вариантов</title>
-        <script src="https://unpkg.com/docx@8.5.0/build/index.umd.js"></script>
-        <script src="https://unpkg.com/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+		<script src="https://unpkg.com/docx@8.5.0/build/index.umd.js"></script>
+		<script src="https://unpkg.com/file-saver@2.0.5/dist/FileSaver.min.js"></script>
 
 		<link rel="stylesheet" type="text/css" href="styles/style2.css">
 		<style>
@@ -18,11 +18,11 @@
 				padding-bottom: 10px;
 			}
 			label {
-    			margin-bottom: 4px;
-    			font-weight: 600;
-    			color: #4a5568;
-    			font-size: 15px;
-    		    font-family: Arial;
+				margin-bottom: 4px;
+				font-weight: 600;
+				color: #4a5568;
+				font-size: 15px;
+				font-family: Arial;
 			}
 			#varLoad {
 				background-color: green;
@@ -39,13 +39,13 @@
 						<h3>1-й вариант</h3>
 					</div>
 					<div class="form-group">
-    					<label>a, м:</label>
-    					<input type="text" id="variant1A">
-    				</div>
-    				<div class="form-group">
-    					<label>b, м:</label>
+						<label>a, м:</label>
+						<input type="text" id="variant1A">
+					</div>
+					<div class="form-group">
+						<label>b, м:</label>
 						<input type="text" id="variant1B">    					
-    				</div>
+					</div>
 				</div>
 				
 				<div class="form-row-triple">
@@ -53,13 +53,13 @@
 						<h3>2-й вариант</h3>
 					</div>
 					<div class="form-group">
-    					<label>a, м:</label>
-    					<input type="text" id="variant2A">
-    				</div>
-    				<div class="form-group">
-    					<label>b, м:</label>
+						<label>a, м:</label>
+						<input type="text" id="variant2A">
+					</div>
+					<div class="form-group">
+						<label>b, м:</label>
 						<input type="text" id="variant2B">    					
-    				</div>
+					</div>
 				</div>
 				
 				<div class="form-row-triple">
@@ -67,48 +67,48 @@
 						<h3>3-й вариант</h3>
 					</div>
 					<div class="form-group">
-    					<label>a, м:</label>
-    					<input type="text" id="variant3A">
-    				</div>
-    				<div class="form-group">
-    					<label>b, м:</label>
+						<label>a, м:</label>
+						<input type="text" id="variant3A">
+					</div>
+					<div class="form-group">
+						<label>b, м:</label>
 						<input type="text" id="variant3B">    					
-    				</div>
+					</div>
 				</div>
 			</div>
 			<div class="form-row">
 				<div class="form-group">
-    				<button id="varGen">Создать варианты</button>
-    			</div>
-    			<div class="form-group">
-    				<button id="varDel">Очистить варианты</button>			
-    			</div>		
+					<button id="varGen">Создать варианты</button>
+				</div>
+				<div class="form-group">
+					<button id="varDel">Очистить варианты</button>			
+				</div>		
 			</div><br>			
 			<div class="form-row-triple">
 					<div class="form-group">
-    					<button id="varZoom1">Зум В1</button>			
-    				</div>
+						<button id="varZoom1">Зум В1</button>			
+					</div>
 				<div class="form-group">
-    				<div class="form-group">
-    					<button id="varZoom2">Зум В2</button>			
-    				</div>
-    			</div>
-    			<div class="form-group">
-    				<div class="form-group">
-    					<button id="varZoom3">Зум В3</button>			
-    				</div>    					
-    			</div>
+					<div class="form-group">
+						<button id="varZoom2">Зум В2</button>			
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="form-group">
+						<button id="varZoom3">Зум В3</button>			
+					</div>    					
+				</div>
 			</div><br>
 			<div class="form-container" id="canvas-container">
 				<canvas id="canvas"></canvas>
 			</div>
 			<div class="form-row">
 				<div class="form-group" id="loader">
-    				<button id="varLoad1">Скачать скрин</button>
-    			</div>
-    			<div class="form-group">
-    				<button id="varLoad">Скачать все варианты</button>
-    			</div>
+					<button id="varLoad1">Скачать скрин</button>
+				</div>
+				<div class="form-group">
+					<button id="varLoad">Скачать все варианты</button>
+				</div>
 			</div>
 		</div>
 		<script src="scripts/vargen.js"></script>
