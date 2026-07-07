@@ -565,7 +565,7 @@ function exportCanvas() {
 	a.click();
 }
 document.addEventListener('input', (event) => {
-	delVar()
+	// delVar()
 	smalling()
 	drawVar()
 });

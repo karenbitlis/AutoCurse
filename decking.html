@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Расчет настила</title>
+		<script src="https://unpkg.com/docx@8.5.0/build/index.umd.js"></script>
+        <script src="https://unpkg.com/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+        <script src="scripts/operators.js"></script>
+		<link rel="stylesheet" type="text/css" href="styles/style2.css">
+		<style>
+			#picDeck {
+				width: 100%;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<h2>Толщина настила</h2>
+			<div class="form-row">
+				<img src="img/deck.jpg" id="picDeck">
+				<h1 id="deck_thickness"></h1>
+			</div><br>
+			<button id="decking">Скачать расчет</button>
+		</div>
+		<script src="scripts/decking.js"></script>
+	</body>
+</html>
