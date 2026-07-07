@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<script src="https://unpkg.com/docx@8.5.0/build/index.umd.js"></script>
+		<script src="https://unpkg.com/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+		<link rel="stylesheet" type="text/css" href="styles/style2.css">
+		<title>Выбор пола</title>
+		<style>
+			.picPick {
+				width: 80%;
+				margin-left: 10%;
+			}
+			.radio-card {
+			    display: flex;
+			    align-items: center;
+			    gap: 8px;
+			    padding: 8px 12px;
+			    border: 1px solid #cbd5e1;
+			    border-radius: 4px;
+			    cursor: pointer;
+			    background-color: #f8fafc;
+			    font-size: 13px;
+			    color: #334155;
+			    transition: background-color 0.2s, border-color 0.2s;
+			}
+			
+			.radio-card:hover {
+			    border-color: #3498db;
+			    background-color: #f0f7fc;
+			}
+			
+			.radio-card input[type="radio"] {
+			    width: auto; /* Сбрасывает width: 100% из основного стиля для input */
+			    margin: 0;
+			    accent-color: #3498db; /* Красит саму точку в синий цвет */
+			    cursor: pointer;
+			}
+			#floorExplanation {
+				font-size: 12pt;
+				text-align: center;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<h2>Выбор типа пола</h2>
+			<form class="form-container">
+				<h3>Тип пола</h3>
+				<div class="form-group">
+					<label id="floorExplanation"></label>
+					<div class="form-r">
+						<label class="radio-card">
+							<input type="radio" name="delivery_method" value="courier" id="floorChoice1" checked>
+							<img src="img/floor1.jpg" class="picPick">
+						</label>
+						<label class="radio-card" id="radio-card1">
+							<input type="radio" name="delivery_method" value="pickup" id="floorChoice2">
+							<img src="img/floor2.jpg" class="picPick">
+						</label>
+					</div>
+				</div>
+			</form>
+			<button id="generate-btn">Скачать сбор нагрузок на настил</button>
+		</div>
+		<script src="scripts/floor.js"></script>
+	</body>
+</html>
+

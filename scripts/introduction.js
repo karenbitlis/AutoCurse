@@ -11,16 +11,18 @@ function createIntro() {
     const textParagraphs = rawText.split(/\r?\n/).map(p => p.trim()).filter(p => p.length > 0);
 
     // 1. ЗАГОЛОВОК "Введение" (По центру, Жирный)
-    introChildren.push(new Paragraph({
-        alignment: AlignmentType.CENTER,
-        spacing: { before: 0, after: 360 }, 
-        children: [
-            new TextRun({
-                text: "Введение",
-                bold: true
-            })
-        ]
-    }));
+    introChildren.push(
+        new Paragraph({
+            alignment: AlignmentType.CENTER,
+            spacing: { before: 0, after: 360 }, 
+            children: [
+                new TextRun({
+                    text: "Введение",
+                    bold: true
+                }),
+            ],
+        }),
+    );
     // 2. ОСНОВНОЙ ТЕКСТ
     textParagraphs.forEach(textLine => {
         const isListItem = textLine.startsWith("СП ");

@@ -275,7 +275,7 @@ class Introduction extends HTMLElement {
                 }
             </style>
             <div class="container">
-            <h2>Редактирование текста Введения</h2>
+            <h2>Редактирование текста введения</h2>
             
             <div class="form-container">
                 <div class="form-group">
