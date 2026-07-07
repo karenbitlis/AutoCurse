@@ -52,14 +52,17 @@ function generateDocx() {
     createTit()
     createIntro()
     createInit()
-    createLitera()
     createVargen()
+    createFloor()
+    createLitera()
+    
 
     const documento = []
     documento.push(...titChildren)
     documento.push(...introChildren)
     documento.push(...initChildren)
     documento.push(...vargenChildren)
+    documento.push(...floorChildren)
     documento.push(...litChildren)
     
     if (!docxLib) {

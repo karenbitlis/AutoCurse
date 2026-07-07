@@ -82,12 +82,13 @@ function createLitera() {
 
         litChildren.push(new Paragraph({
             alignment: AlignmentType.JUSTIFIED, // Официальный тип из библиотеки!
-            spacing: { before: 0, after: 0 }, 
-            indentation: {
-                firstLine: 709, // Красная строка 1.25 см
-                left: 0,
-                hanging: 0
-            },
+            spacing: { 
+                before: 0,
+                after: 0,
+                firstLine: 709,
+                line: 360,
+                lineRule: LineRuleType.AUTO,
+            }, 
             children: [
                 new TextRun({
                     text: fullLineText

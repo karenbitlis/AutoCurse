@@ -1,8 +1,18 @@
-const docxLib = window.docx;
-const { Document, Packer, ImageRun, XmlComponent, Paragraph, ommlXmlText, BorderStyle, TextRun, AlignmentType, Table, TableRow, TableCell, WidthType, PageBreak, textParagraphs } = docxLib;
+let floorChildren = []
+
+const floor = document.getElementById('floor')
+
+const aboutLoads = 'Для определения опорных реакций, изгибающих моментов и проверки несущей способности конструктивных элементов настила выполняется сбор постоянных и временных нагрузок. Постоянная нагрузка формируется из собственного веса конструктивных слоев.'
+const aboutCoef = 'Полезная временная нагрузка принимается исходя из назначения помещения и условий его эксплуатации. Переход от нормативных показателей к расчетным осуществляется путем введения соответствующих коэффициентов надежности по нагрузке. Значения данных коэффициентов назначаются в соответствии со сводом правил СП 20.13330.2016 «Нагрузки и воздействия». Они учитывают возможные неблагоприятные отклонения реальных нагрузок от их нормативных величин, вызванные изменчивостью плотности, толщины слоев в условиях стройплощадки или отклонения в режиме эксплуатации. В результате их применения нормативные нагрузки преобразуются в расчетные, обеспечивая требуемый нормами запас прочности и эксплуатационной надежности всей конструкции.'
+floor.shadowRoot.getElementById("generate-btn").addEventListener("click", () => {
+	generateFloor()
+})
+
+
 let usefullLoad = 30
-let floorType = 1
+let floorType = init.shadowRoot.getElementById('floorType').value
 let floorTable
+
 // Общий стиль для границ таблицы (тонкая черная рамка)
 const tableBorders = {
     top: { style: BorderStyle.SINGLE, size: 4, color: "000000" },
@@ -27,7 +37,6 @@ function createCell(textContent, alignment = AlignmentType.CENTER, columnSpan = 
 }
 
 const oMath = new XmlComponent("m:oMath");
-
 oMath.root.push(createMathSub("q", "n"));
 oMath.root.push(createMathRun(", "));
 const numerator = createMathRun("кН");
@@ -35,13 +44,18 @@ const denominator = createMathSup("м", "2");
 const fraction = createMathFraction(numerator, denominator);
 oMath.root.push(fraction);
 
+const oMatho = new XmlComponent("m:oMath");
+oMatho.root.push(createMathRun("q"));
+oMatho.root.push(createMathRun(", "));
+const numer = createMathRun("кН");
+const denomin = createMathSup("м", "2");
+const frac = createMathFraction(numerator, denominator);
+oMatho.root.push(fraction);
+
 const gammaF = new XmlComponent("m:oMath")
 gammaF.root.push(createMathSub("γ", "f"));
 
-
-
-document.getElementById('floorExplanation').innerText = 'Ранее вы выбрали тип ' + floorType
-
+floor.shadowRoot.getElementById('floorExplanation').innerText = 'Ранее вы выбрали тип ' + floorType
 
 function createMathRun(text) {
     const r = new XmlComponent("m:r");
@@ -88,29 +102,29 @@ function createMathFraction(numComponent, denComponent) {
     f.root.push(den);
     return f;
 }
-
 function updateFloorChoice() {
-	document.getElementById('floorExplanation').innerText = 'Вы выбрали тип ' + floorType
+	floor.shadowRoot.getElementById('floorExplanation').innerText = 'Вы выбрали тип ' + floorType
+	init.shadowRoot.getElementById('floorType').value = floorType
 }
 
-const labels = document.querySelectorAll(".radio-card");
+const labels = floor.shadowRoot.querySelectorAll(".radio-card");
 labels.forEach(label => {
     label.addEventListener("click", () => {
-        if (document.getElementById("floorChoice1").checked) {
+        if (floor.shadowRoot.getElementById("floorChoice1").checked) {
             floorType = 1;
             updateFloorChoice()
-        } else if (document.getElementById("floorChoice2").checked) {
+        } else if (floor.shadowRoot.getElementById("floorChoice2").checked) {
             floorType = 2;
             updateFloorChoice()
         }
     });
 });
 
-
 function getTheFloor() {
-	if (document.getElementById('floorChoice1').checked) {
+	if (floor.shadowRoot.getElementById('floorChoice1').checked) {
 	    floorTable = new Table({
 			borders: tableBorders,
+			alignment: AlignmentType.JUSTIFIED,
 			width: {
 			    size: 100,
 			    type: WidthType.PERCENTAGE, // Растягиваем таблицу на всю ширину страницы
@@ -121,28 +135,48 @@ function getTheFloor() {
 			    // --- ШАПКА ТАБЛИЦЫ ---
 			    new TableRow({
 			        tableHeader: true,
+			        spacing: {
+               			before: 0,
+               			after: 120,
+               			line: 240,
+               			lineRule: LineRuleType.AUTO,
+            		},
 			        children: [
 			            createCell("№ п.п"),
 			            createCell("Вид нагрузки", AlignmentType.LEFT),
 			            createCell([
 			                new TextRun({
-			                    children: [oMath]
+			                    children: [oMath],
+			                    spacing: {
+									before: 0,
+									after: 120
+            					},
 			                })
 			            ]),
 			            createCell([
 			                new TextRun({
-			                    children: [gammaF]
+			                    children: [gammaF],
+			                    spacing: {
+									before: 0,
+									after: 120
+            					},
 			                }),
 			            ]),
 			            createCell([
 			                new TextRun ({
-			                    children: [oMath]
+			                    children: [oMatho]
 			                })
 			            ]),
 			        ],
 			    }),
 			    // --- СТРОКА 1 ---
 			    new TableRow({
+			    	spacing: {
+               			before: 0,
+               			after: 120,
+               			line: 240,
+               			lineRule: LineRuleType.AUTO,
+            		},
 			        children: [
 			            createCell("1"),
 			            createCell("Металлоцементный раствор 30мм", AlignmentType.LEFT),
@@ -154,6 +188,12 @@ function getTheFloor() {
 
 			    // --- СТРОКА 2 ---
 			    new TableRow({
+			    	spacing: {
+               			before: 0,
+               			after: 120,
+               			line: 240,
+               			lineRule: LineRuleType.AUTO,
+            		},
 			        children: [
 			            createCell("2"),
 			            createCell("Гидроизоляция два слоя рубероида на мастике", AlignmentType.LEFT),
@@ -165,6 +205,12 @@ function getTheFloor() {
 
 			    // --- СТРОКА 3 ---
 			    new TableRow({
+			    	spacing: {
+               			before: 0,
+               			after: 120,
+               			line: 240,
+               			lineRule: LineRuleType.AUTO,
+            		},
 			        children: [
 			            createCell("3"),
 			            createCell("Теплоизоляция-шлакобетон 40мм", AlignmentType.LEFT),
@@ -176,6 +222,12 @@ function getTheFloor() {
 
 			    // --- СТРОКА 4 ---
 			    new TableRow({
+			    	spacing: {
+               			before: 0,
+               			after: 120,
+               			line: 240,
+               			lineRule: LineRuleType.AUTO,
+            		},
 	        	    children: [
 	        	        createCell("4"),
 	        	        createCell("Полезная нагрузка", AlignmentType.LEFT),
@@ -187,6 +239,12 @@ function getTheFloor() {
 		
 	        	// --- СТРОКА ИТОГО ---
 	        	new TableRow({
+	        		spacing: {
+               			before: 0,
+               			after: 120,
+               			line: 240,
+               			lineRule: LineRuleType.AUTO,
+            		},
 	        	    children: [
 	        	        // Объединяем первую и вторую колонки под текст "Итого:"
 	        	        createCell("Итого:", AlignmentType.LEFT, 2), 
@@ -197,9 +255,14 @@ function getTheFloor() {
 	        	}),
 	    	],
 		});
-	} else if (document.getElementById('floorChoice2').checked) {
+	} else if (floor.shadowRoot.getElementById('floorChoice2').checked) {
 		floorTable = new Table({
 			borders: tableBorders,
+			alignment: AlignmentType.JUSTIFIED,
+            spacing: {
+                before: 0,
+                after: 120
+            },
 			width: {
 			    size: 100,
 			    type: WidthType.PERCENTAGE, // Растягиваем таблицу на всю ширину страницы
@@ -210,6 +273,12 @@ function getTheFloor() {
 			    // --- ШАПКА ТАБЛИЦЫ ---
 			    new TableRow({
 			        tableHeader: true,
+			        spacing: {
+               			before: 0,
+               			after: 120,
+               			line: 240,
+               			lineRule: LineRuleType.AUTO,
+            		},
 			        children: [
 			            createCell("№ п.п"),
 			            createCell("Вид нагрузки", AlignmentType.LEFT),
@@ -225,7 +294,7 @@ function getTheFloor() {
 			            ]),
 			            createCell([
 			                new TextRun ({
-			                    children: [oMath]
+			                    children: [oMatho]
 			                })
 			            ]),
 			        ],
@@ -233,6 +302,12 @@ function getTheFloor() {
 
 			    // --- СТРОКА 1 ---
 			    new TableRow({
+			    	spacing: {
+               			before: 0,
+               			after: 120,
+               			line: 240,
+               			lineRule: LineRuleType.AUTO,
+            		},
 			        children: [
 			            createCell("1"),
 			            createCell("Кислотоупорные керам. плитки 15мм", AlignmentType.LEFT),
@@ -244,6 +319,12 @@ function getTheFloor() {
 
 			    // --- СТРОКА 2 ---
 			    new TableRow({
+			    	spacing: {
+               			before: 0,
+               			after: 120,
+               			line: 240,
+               			lineRule: LineRuleType.AUTO,
+            		},
 			        children: [
 			            createCell("2"),
 			            createCell("Битумная мастика 8мм", AlignmentType.LEFT),
@@ -255,6 +336,12 @@ function getTheFloor() {
 
 			    // --- СТРОКА 3 ---
 			    new TableRow({
+			    	spacing: {
+               			before: 0,
+               			after: 120,
+               			line: 240,
+               			lineRule: LineRuleType.AUTO,
+            		},
 			        children: [
 			            createCell("3"),
 			            createCell("Гидроизоляция два слоя рубероида на мастике", AlignmentType.LEFT),
@@ -266,6 +353,12 @@ function getTheFloor() {
 
 			    // --- СТРОКА 4 ---
 			    new TableRow({
+			    	spacing: {
+               			before: 0,
+               			after: 120,
+               			line: 240,
+               			lineRule: LineRuleType.AUTO,
+            		},
 	        	    children: [
 	        	        createCell("4"),
 	        	        createCell("Полезная нагрузка", AlignmentType.LEFT),
@@ -277,6 +370,12 @@ function getTheFloor() {
 		
 	        	// --- СТРОКА ИТОГО ---
 	        	new TableRow({
+	        		spacing: {
+               			before: 0,
+               			after: 120,
+               			line: 240,
+               			lineRule: LineRuleType.AUTO,
+            		},
 	        	    children: [
 	        	        // Объединяем первую и вторую колонки под текст "Итого:"
 	        	        createCell("Итого:", AlignmentType.LEFT, 2), 
@@ -289,53 +388,126 @@ function getTheFloor() {
 		});
 	}
 }
-document.getElementById("generate-btn").addEventListener("click", () => {
+nextBtn.addEventListener("click", () => {
+    floor.shadowRoot.getElementById('floorExplanation').innerText = 'Ранее вы выбрали тип ' + floorType
+});
+prevBtn.addEventListener("click", () => {
+    floor.shadowRoot.getElementById('floorExplanation').innerText = 'Ранее вы выбрали тип ' + floorType
+});
+
+function generateFloor() {
 	getTheFloor()
+	createFloor()
     const doc = new Document({
         styles: {
             paragraphStyles: [
-                    {
-                        id: "customItalicStyle",
-                        name: "Custom Italic Style",
-                        basedOn: "Normal",
-                        next: "Normal",
-                        run: {
-                            font: "Times New Roman",
-                            size: 28, // Увеличено до 14pt (28 полупунктов)
-                            italics: true
-                        }
-                    },
-                    {
-                        id: "Normal",
-                        name: "Normal",
-                        run: {
-                            font: "Times New Roman",
-                            size: 28 // Базовый шрифт документа теперь тоже 14pt
-                        }
+                {
+                    id: "customItalicStyle",
+                    name: "Custom Italic Style",
+                    basedOn: "Normal",
+                    next: "Normal",
+                    run: {
+                        font: "Times New Roman",
+                        size: 28, // Увеличено до 14pt (28 полупунктов)
+                        italics: true
                     }
+                },
+                {
+                    id: "Normal",
+                    name: "Normal",
+                    run: {
+                        font: "Times New Roman",
+                        size: 28 // Базовый шрифт документа теперь тоже 14pt
+                    }
+                }
             ]
         },
         sections: [{
-            children: [
-                new Paragraph({
-                	alignment: AlignmentType.CENTER,
-                	children: [
-                		new TextRun({
-                			text: "Сбор нагрузок для настила",
-                			bold: true,
-            			}),
-                	]
-                }),
-                new Paragraph({ text: "" }), // пустая строка перед таблицей
-                floorTable,
-            ],
+            children: floorChildren,
         }],
     });
-
     Packer.toBlob(doc).then(blob => {
         saveAs(blob, "Floor.docx");
     }).catch(err => {
         console.error(err);
         alert("Произошла ошибка, детали в консоли.");
     });
-})
+}
+
+function createFloor() {
+	getTheFloor()
+	floorChildren = []
+	floorChildren.push(
+		new Paragraph({
+        	alignment: AlignmentType.CENTER,
+        	spacing: {
+                before: 0,
+                after: 120,
+                line: 360,
+                lineRule: LineRuleType.AUTO,
+            },
+        	children: [
+        		new TextRun({
+        			text: "Сбор нагрузок для настила",
+        			bold: true,
+        		}),
+        	]
+        }),
+        floorTable,
+	)
+	floorChildren.push(
+		new Paragraph({
+            spacing: {
+                before: 0,
+                after: 120,
+                line: 360,
+                lineRule: LineRuleType.AUTO,
+            },
+            indent: {
+                firstLine: 709, // Красная строка 1,25 см
+            },
+            alignment: AlignmentType.JUSTIFIED,
+        })
+	);
+	floorChildren.push(
+		new Paragraph({
+            spacing: {
+                before: 0,
+                after: 120,
+                line: 360,
+                lineRule: LineRuleType.AUTO,
+            },
+            indent: {
+                firstLine: 709, // Красная строка 1,25 см
+            },
+            alignment: AlignmentType.JUSTIFIED,
+            children: [
+                new TextRun({ 
+                    text: aboutLoads,
+                    size: 28, 
+                    font: "Times New Roman",
+                })
+            ]
+        }),
+        new Paragraph({
+            spacing: {
+                before: 0,
+                after: 120,
+                line: 360,
+                lineRule: LineRuleType.AUTO,
+            },
+            indent: {
+                firstLine: 709, // Красная строка 1,25 см
+            },
+            alignment: AlignmentType.JUSTIFIED,
+            children: [
+                new TextRun({ 
+                    text: aboutCoef,
+                    size: 28, 
+                    font: "Times New Roman",
+                }),
+                new PageBreak()
+            ]
+        })
+	);
+}

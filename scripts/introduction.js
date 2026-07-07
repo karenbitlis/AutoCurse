@@ -31,7 +31,9 @@ function createIntro() {
             alignment: AlignmentType.JUSTIFIED,
             spacing: {
                 before: 0,
-                after: 120
+                after: 120,
+                line: 360,
+                lineRule: LineRuleType.AUTO,
             },
             indent: {
                 firstLine: 709, // Красная строка 1,25 см

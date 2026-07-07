@@ -85,7 +85,7 @@ body {
 .arrow-btn:disabled { background-color: #cccccc; cursor: not-allowed; transform: none; opacity: 0.6; }
 .generate-btn { padding: 0 32px; background-color: #4CAF50; color: white; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 4px 10px rgba(76, 175, 80, 0.25); display: none; }
 .generate-btn:hover { background-color: #43a047; transform: scale(1.02); }
-title-page , intro-moment , init-data , literature-list , var-gen {
+title-page , intro-moment , init-data , literature-list , var-gen , floor-type {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: #f0f2f5;
     margin: 0;
