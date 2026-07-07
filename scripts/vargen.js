@@ -64,16 +64,16 @@ printVar()
 drawVar()
 
 function dataURLtoUint8Array(dataurl) {
-  const arr = dataurl.split(',');
-  const mime = arr[0].match(/:(.*?);/)[1];
-  const bstr = atob(arr[1]);
-  let n = bstr.length;
-  const u8arr = new Uint8Array(n);
-  
-  while (n--) {
-    u8arr[n] = bstr.charCodeAt(n);
-  }
-  return { data: u8arr, mime };
+	const arr = dataurl.split(',');
+	const mime = arr[0].match(/:(.*?);/)[1];
+	const bstr = atob(arr[1]);
+	let n = bstr.length;
+	const u8arr = new Uint8Array(n);
+	
+	while (n--) {
+	  u8arr[n] = bstr.charCodeAt(n);
+	}
+	return { data: u8arr, mime };
 }
 function generateVariant() {
 	kratnoA = []
@@ -663,9 +663,18 @@ function createVargen() {
 	pushScreen(3)
 	vargenChildren.push(
 		new Paragraph({
-            alignment: AlignmentType.JUSTIFIED,
-            spacing: { after: 60 },
-            children: [new PageBreak()]
+            alignment: AlignmentType.CENTER,
+			spacing: {
+				line: 360, // Полуторный интервал для ВСЕГО документа
+				before: 0,
+				after: 0,
+			},
+            children: [
+            	new TextRun({
+            		text: 'Рис.1 - Варианты компоновки средней ячейки'
+            	}),
+            	new PageBreak()
+            ]
         }),
 	)
 	move = 0
