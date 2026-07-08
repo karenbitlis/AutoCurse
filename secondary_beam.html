@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Расчет второстепенной балки</title>
+		<script src="https://unpkg.com/docx@8.5.0/build/index.umd.js"></script>
+		<script src="https://unpkg.com/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+        <script src="scripts/operators.js"></script>
+		<link rel="stylesheet" type="text/css" href="styles/style2.css">
+		<style>
+			#picDeck {
+				width: 100%;
+			}
+			#canvas {
+				border: 5px solid #3498db;
+				border-radius: 8px;
+			}
+			#withCanvas {
+				max-width: 550px;
+				padding-bottom: 10px;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<h2>Второстепенная балка</h2>
+			<div class="form-row">
+				<img src="img/secondary_beam.jpg" id="picDeck">
+				<div>
+					<h1 id="roof_beam"></h1>
+				</div>
+			</div>
+			<div class="form-container" id="canvas-container">
+				<canvas id="canvas"></canvas>
+			</div>
+			<button id="second_beam">Скачать расчет</button>
+		</div>
+		<script src="scripts/roof_beam_database.js"></script>
+		<script src="scripts/secondary_beam.js"></script>
+	</body>
+</html>

@@ -316,3 +316,13 @@ function selectBeamByWx(requiredWx) {
     }
     return roof_beamo;
 }
+
+function selectBeamByNumber(requiredNumber) {
+    const roof_beam_num = roof_beams.find(b => b.number == requiredNumber);
+    if (!roof_beam_num) {
+      throw new Error(
+        `Двутавр №${requiredNumber} не найден по ГОСТ 8239-89`
+      );
+    }
+    return roof_beam_num;
+}
