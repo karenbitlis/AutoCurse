@@ -843,3 +843,5 @@ function drawEveryVar(num) {
 		ctx.restore();
 	}
 }
+
+document.getElementById('roof_beam').innerText = 'Расчетная нагрузка на балку настила составляет ' + String(mainest*varus1A).replace('.',',') + ' кН/м.'  
