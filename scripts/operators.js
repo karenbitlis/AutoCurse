@@ -79,7 +79,23 @@ function mFrac(num, den) {
 
     return obj;
 }
+// ---------- КВАДРАТНЫЙ КОРЕНЬ ----------
 
+function mSqrt(content) {
+    const obj = new XmlComponent("m:rad");
+    const radPr = new XmlComponent("m:radPr");
+    const degHide = new XmlComponent("m:degHide");
+    degHide.root.push({
+        _attr: {
+            "m:val": "1"
+        }
+    });
+    radPr.root.push(degHide);
+    const e = new XmlComponent("m:e");
+    e.root.push(...mGroup(content));
+    obj.root.push(radPr, e);
+    return obj;
+}
 
 // ---------- СКОБКИ ----------
 
@@ -96,6 +112,29 @@ function mParen(...content) {
     return obj;
 }
 
+// ---------- ЧЕРТА ----------
+function mBar(content) {
+
+    const obj = new XmlComponent("m:bar");
+
+    const barPr = new XmlComponent("m:barPr");
+
+    const pos = new XmlComponent("m:pos");
+    pos.root.push({
+        _attr: {
+            "m:val": "top"
+        }
+    });
+
+    barPr.root.push(pos);
+
+    const e = new XmlComponent("m:e");
+    e.root.push(...mGroup(content));
+
+    obj.root.push(barPr, e);
+
+    return obj;
+}
 
 // ---------- ФОРМУЛА ----------
 

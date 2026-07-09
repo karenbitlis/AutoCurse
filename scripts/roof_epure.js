@@ -10,7 +10,7 @@ let varus1A = 1
 let varus1B = 2
 let scale = 75
 
-let q_normal = 70 //32.429
+let q_normal = 32.429
 let q_real = 34.383
 
 let q_normal_linear = q_normal*varus1A
@@ -41,7 +41,7 @@ canvas.style.height = cssHeight + "px";
 ctx.scale(dpi, dpi);
 
 let centerX = canvas.width / (2*dpi);
-let centerY = canvas.height / (2*dpi);
+let centerY = canvas.height / (2*dpi)+300;
 
 let Mscale = 50
 
@@ -72,7 +72,10 @@ function dataURLtoUint8Array(dataurl) {
 drawRoofBeamEpure()
 
 function drawRoofBeamEpure() {
-//beam
+	ctx.fillStyle = "white"
+    ctx.fillRect(0, 0, canvas.width, canvas.height)
+
+// beam
 	ctx.beginPath()
 		ctx.lineWidth = 4
 		ctx.moveTo(centerX, centerY)
@@ -155,7 +158,7 @@ function drawRoofBeamEpure() {
 		ctx.lineTo(centerX+(varus1B/2)*scale, centerY/7+1*scale)
 		ctx.closePath()
 		ctx.stroke()
-//size_arrows
+// size_arrows
 	ctx.beginPath()
 		ctx.lineWidth = 2
 		ctx.moveTo(centerX-varus1B/2*scale, centerY/7+1*scale)
@@ -182,13 +185,36 @@ function drawRoofBeamEpure() {
 		ctx.stroke()
 		ctx.closePath()
 		ctx.stroke()
+// load_arrows
+	ctx.beginPath()
+		ctx.lineWidth = 2
+		ctx.moveTo(centerX-varus1B/2*scale, centerY/7-0.4*scale)
+		ctx.lineTo(centerX+(varus1B/2)*scale, centerY/7-0.4*scale)
+		for (let cvb = 0; cvb <= 7; cvb++) {
+			ctx.moveTo(centerX-varus1B/2*scale + cvb*varus1B/7*scale, centerY/7-0.4*scale)
+			ctx.lineTo(centerX-varus1B/2*scale + cvb*varus1B/7*scale, centerY/7)
+			ctx.moveTo(centerX-varus1B/2*scale + cvb*varus1B/7*scale, centerY/7)
+			ctx.lineTo(centerX-varus1B/2*scale + cvb*varus1B/7*scale-0.08*scale, centerY/7-0.08*scale)
+			ctx.moveTo(centerX-varus1B/2*scale + cvb*varus1B/7*scale, centerY/7)
+			ctx.lineTo(centerX-varus1B/2*scale + cvb*varus1B/7*scale+0.08*scale, centerY/7-0.08*scale)
+		}
+		
+		ctx.font = 'bold 22px GOST A';
+		ctx.fillStyle = 'black';
+		ctx.textAlign = 'center';
+		ctx.fillText('q', centerX, centerY/7 - 0.5*scale)
+
+		ctx.closePath()
+		ctx.stroke()
+
+
 // circles
 	ctx.beginPath()
-		ctx.arc(centerX-varus1B/2*scale+0.15*scale, centerY/7+0.3*scale, 0.1*scale, 0, 2 * Math.PI, false);
+		ctx.arc(centerX-varus1B/2*scale+0.15*scale, centerY/7+0.3*scale, 0.1*scale, 0, 2 * Math.PI, false)
 		ctx.fillStyle = "white"
 		ctx.fill()
 		ctx.lineWidth = 4
-		ctx.strokeStyle = 'black';
+		ctx.strokeStyle = 'black'
 		ctx.stroke()
 	ctx.beginPath()
 		ctx.arc(centerX-varus1B/2*scale-0.15*scale, centerY/7+0.3*scale, 0.1*scale, 0, 2 * Math.PI, false);
@@ -300,8 +326,8 @@ function drawRoofBeamEpure() {
     ctx.textAlign = 'center';
     ctx.fillText('Q', centerX-varus1B/2*scale-0.2*scale, centerY/7+4*scale)
 
-	ctx.lineTo(centerX-varus1B/2*scale, centerY/7+4*scale-biQ/100*scale)
-	ctx.lineTo(centerX+varus1B/2*scale, centerY/7+4*scale+biQ/100*scale)
+	ctx.lineTo(centerX-varus1B/2*scale, centerY/7+4*scale-biQ/150*scale)
+	ctx.lineTo(centerX+varus1B/2*scale, centerY/7+4*scale+biQ/150*scale)
 	ctx.lineTo(centerX+varus1B/2*scale, centerY/7+4*scale)
 	ctx.closePath()
 	ctx.stroke()
@@ -310,8 +336,8 @@ function drawRoofBeamEpure() {
 	const rightX = centerX + (varus1B / 2) * scale;
 	
 	const baseY = (centerY/7) + (4 * scale);
-	const topLeftY = baseY - (biQ / 100) * scale;
-	const bottomRightY = baseY + (biQ / 100) * scale;
+	const topLeftY = baseY - (biQ / 150) * scale;
+	const bottomRightY = baseY + (biQ / 150) * scale;
 
 	const minX = leftX;
 	const maxX = rightX;
@@ -359,24 +385,24 @@ function drawRoofBeamEpure() {
     ctx.beginPath()
     ctx.font = 'bold 18px GOST A';
     ctx.fillStyle = 'black';
-    ctx.fillText(String('+'+Math.ceil(biQ*1000)/1000).replace('.',',')+'кН', centerX-varus1B/2*scale + 0.5*scale, centerY/7+4*scale-(biQ/100)*scale - 0.1*scale)
+    ctx.fillText(String('+'+Math.ceil(biQ*1000)/1000).replace('.',',')+'кН', centerX-varus1B/2*scale + 0.5*scale, centerY/7+4*scale-(biQ/150)*scale - 0.1*scale)
     ctx.closePath()
     ctx.stroke()
 
     ctx.beginPath()
     ctx.font = 'bold 18px GOST A';
     ctx.fillStyle = 'black';
-    ctx.fillText(String('-'+Math.ceil(biQ*1000)/1000).replace('.',',')+'кН', centerX+varus1B/2*scale - 0.5*scale, centerY/7+4*scale+(biQ/100)*scale + 0.3*scale)
+    ctx.fillText(String('-'+Math.ceil(biQ*1000)/1000).replace('.',',')+'кН', centerX+varus1B/2*scale - 0.5*scale, centerY/7+4*scale+(biQ/150)*scale + 0.3*scale)
     ctx.closePath()
     ctx.stroke()
 
     ctx.beginPath()
-    ctx.arc(centerX+varus1B/2*scale, centerY/7+4*scale+(biQ/100)*scale, 0.02*scale, 0, 2 * Math.PI, false);
+    ctx.arc(centerX+varus1B/2*scale, centerY/7+4*scale+(biQ/150)*scale, 0.02*scale, 0, 2 * Math.PI, false);
         ctx.lineWidth = 4
         ctx.strokeStyle = 'black';
         ctx.stroke()
     ctx.beginPath()
-    ctx.arc(centerX-varus1B/2*scale, centerY/7+4*scale-(biQ/100)*scale, 0.02*scale, 0, 2 * Math.PI, false);
+    ctx.arc(centerX-varus1B/2*scale, centerY/7+4*scale-(biQ/150)*scale, 0.02*scale, 0, 2 * Math.PI, false);
         ctx.lineWidth = 4
         ctx.strokeStyle = 'black';
         ctx.stroke()
@@ -466,7 +492,6 @@ let roof_tau_check = mFormula(
     mGroup(mSub('R', 's'), mMul(), mSub('γ', 'c')),
     mText(' (где '), mSub('R', 's'), mEq(), '0,58', mMul(), mSub('R', 'y'), mText(')')
 );
-
 let tau_max_roof = (biQ*roof_beamchey.Sx)/(roof_beamchey.Ix*roof_beamchey.t/10)
 let roof_tau_check_calc = mFormula(
     mSub('τ', 'max'), mEq(),
@@ -1038,3 +1063,13 @@ function generateRoofEpure() {
     });
     roofBeamChildren = []
 }
+function exportRoof() {
+	const a = document.createElement("a");
+	a.href = canvas.toDataURL("image/jpg");
+	a.download = "roof_beam_epure.jpg";
+	a.click();
+}
+const epureOnly = document.getElementById('epure_only')
+epureOnly.addEventListener("click", () => {
+	exportRoof()
+})

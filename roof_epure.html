@@ -6,6 +6,7 @@
 	<title>Эпюры</title>
 	<script src="https://unpkg.com/docx@8.5.0/build/index.umd.js"></script>
 	<script src="https://unpkg.com/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+	<script src="scripts/roof_beam_database.js"></script>
 	<link rel="stylesheet" type="text/css" href="styles/style2.css">
 	<style>
 		#canvas {
@@ -25,10 +26,14 @@
 			<div class="form-container" id="canvas-container">
 				<canvas id="canvas"></canvas>
 			</div>
-			<button id="epuring">Скачать эпюры</button>
+			<div class="form-row">
+				<button id="epure_only">Скачать эпюры</button>
+				<button id="epuring">Скачать расчеты</button>
+			</div>
 		</div>
 		<script src="scripts/operators.js"></script>
-		<script src="scripts/roof_beam_database.js"></script>
+		
+
 		<script src="scripts/roof_epure.js"></script>
 	</body>
 </html>
