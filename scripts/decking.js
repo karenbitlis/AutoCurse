@@ -1,93 +1,93 @@
-const docxLib = window.docx;
-const { Document, Packer, ImageRun, XmlComponent, LineRuleType, Paragraph, ommlXmlText, BorderStyle, TextRun, AlignmentType, Table, TableRow, TableCell, WidthType, PageBreak, textParagraphs } = docxLib;
-const deckChildren = [];
+let dkChildren = [];
 
-let countDeckButton = document.getElementById('decking')
-let deckDataBase = [6, 7, 8, 9, 10, 11, 12, 14, 16, 18, 20, 22, 24, 25, 26, 28, 30, 32]
+const decker = document.getElementById('deck-roof1')
 
+const dkCountButton = decker.shadowRoot.getElementById('decking');
+const dkDataBase = [6, 7, 8, 9, 10, 11, 12, 14, 16, 18, 20, 22, 24, 25, 26, 28, 30, 32];
+const dkQNormis = 31.33;
 
-// 6.0 7.0 8.0 (стандарт для повышенных нагрузок)9.010.0 (для тяжелых условий)11.012.013.014.015.016.017.018.020.022.025.0
+const dkN0 = 150;
+const dkE = 2.06 * (10 ** 4);
+const dkMu = 0.3;
+const dkE1 = dkE / (1 - (dkMu) ** 2);
+let localAVar, localBVar, localDist;
+let decking_varo = decker.shadowRoot.getElementById('decking_varo')
+let var1A = parseFloat(vargen.shadowRoot.getElementById('variant1A').value);
+let var1B = parseFloat(vargen.shadowRoot.getElementById('variant1B').value);
+let var2A = parseFloat(vargen.shadowRoot.getElementById('variant2A').value);
+let var2B = parseFloat(vargen.shadowRoot.getElementById('variant2B').value);
+let var3A = parseFloat(vargen.shadowRoot.getElementById('variant3A').value);
+let var3B = parseFloat(vargen.shadowRoot.getElementById('variant3B').value);
 
+dkCountButton.addEventListener("click", () => {
+    generateDeck();
+});
 
-const vart1A = 1
-const q_normis = 31.33
-
-const n0 = 150
-const E = 2.06*(10**4)
-const mu = 0.3
-const E1 = E/(1 - (mu)**2)
-
-// const deckFormula = new XmlComponent("m:oMath");
-
-countDeckButton.addEventListener("click", () => {
-	generateDeck()
-})
-
-function findNearestCeil(arr, target) {
-    // 1. Защита: проверяем, что передан массив и он не пустой
+function dkFindNearestCeil(arr, target) {
     if (!Array.isArray(arr) || arr.length === 0) {
         console.warn("Передан невалидный массив:", arr);
         return null;
     }
-
-    // 2. Сортируем массив по возрастанию
     const sorted = [...arr].sort((a, b) => a - b);
-
-    // 3. Ищем ПЕРВЫЙ элемент, который больше или равен расчитанному значению
     const result = sorted.find(val => val >= target);
-
-    // 4. Если значение больше всех элементов в базе, возвращаем самый большой доступный элемент
     return result !== undefined ? result : sorted[sorted.length - 1];
 }
+let numvaro = 1
+if (numvaro == 1) {
+    localAVar = var1A;
+    localBVar = var1B;
+} else if (numvaro == 2) {
+    localAVar = var2A;
+    localBVar = var2B;
+} else if (numvaro == 3) {
+    localAVar = var3A;
+    localBVar = var3B;
+}
 
-const qn = mSub("q", "н");
-const n0gib = mSub("n", "0");
-const n04 = mSup(n0gib, "4");
+const dkQn = mSub("q", "н");
+const dkN0gib = mSub("n", "0");
+const dkN04 = mSup(dkN0gib, "4");
 
-const qnF = mFormula(
-	mSub("q", "н")
-) 
-const formula = mFormula(
+const dkQnF = mFormula(
+    mSub("q", "н")
+); 
 
+const dkFormula = mFormula(
     mFrac(
         mSub("l", "н"),
         mSub("t", "н")
     ),
-
     mEq(),
-
     mFrac(
-        mGroup("4", n0gib),
+        mGroup("4", dkN0gib),
         "15"
     ),
-
     mParen(
         "1",
         mPlus(),
         mFrac(
             mSub("72E", "1"),
-            mGroup(n04, qn)
+            mGroup(dkN04, dkQn)
         )
-    ));
+    )
+);
 
-const n150 = mFormula(
-
+const dkN150 = mFormula(
     mSub("n", "0"),
-
     mEq(),
     mSquareParen(
-		mFrac(
-			"1",
-			"f",
-		),
-	),
-	mEq(),
-	"150",
+        mFrac(
+            "1",
+            "f",
+        ),
+    ),
+    mEq(),
+    "150",
 );
-const edef = mFormula(
+
+const dkEdef = mFormula(
     mSub("E", "1"),
     mEq(),
-
     mFrac(
         "E",
         mParen(
@@ -96,9 +96,7 @@ const edef = mFormula(
             mSup("ν", "2")
         )
     ),
-
     mEq(),
-
     mFrac(
         [
             "2,06",
@@ -111,419 +109,386 @@ const edef = mFormula(
             mSup("0,3", "2")
         )
     ),
-
     " ",
     mFrac(
         "кН",
         mSup("см", "2")
     )
-)
-const eexp = mFormula(
-	mParen(
-		"E",
-    	mEq(),
-	
-    	[
-    	    "2,06",
-    	    mMul(),
-    	    mSup("10", "4"),
-    	    " "
-    	],
-	
-    	mFrac(
-    	    "кН",
-    	    mSup("см", "2")
-    	)
-	)
-)
-const Eba = mFormula(
-	'E'
-)
-const puas = mFormula(
-	'ν'
-)
-const puasso = mFormula(
-	'ν',
-	mEq(),
-	'0,3'
-)
-const l_nast = mFormula(
-	mSub('l','н'),
-	mEq(),
+);
 
-	String(vart1A).replaceAll(".", ",")+'м'
-)
-let deckForm = mFormula(
-    mSub("t", "н"),
-    mEq(),
-
-    mFrac(
-        mSub("l", "н"),
-
-        mGroup(
-            mFrac(
-                mGroup("4", mSub("n", "0")),
-                "15"
-            ),
-
-            mParen(
-                "1",
-                mPlus(),
-                mFrac(
-                    mGroup(
-                        "72",
-                        mSub("E", "1")
-                    ),
-                    mGroup(
-                        mSup(
-                            mSub("n", "0"),
-                            "4"
-                        ),
-                        mSub("q", "н")
-                    )
-                )
-            )
-        )
-    ),
-
-    mEq(),
-
-    mFrac(
-        String(vart1A*100),
-
-        mGroup(
-            mFrac(
-                mGroup("4", "·", "150"),
-                "15"
-            ),
-
-            mParen(
-                "1",
-                mPlus(),
-
-                mFrac(
-                    mGroup(
-                        "72",
-                        mParen(
-                            mFrac(
-                                mGroup(
-                                    "2,06",
-                                    mMul(),
-                                    mSup("10", "4")
-                                ),
-                                mGroup(
-                                    "1",
-                                    mMinus(),
-                                    mSup("0,3", "2")
-                                )
-                            )
-                        )
-                    ),
-
-                    mGroup(
-                        mSup("150", "4"),
-                        "·",
-                        String(q_normis).replaceAll(".", ","),
-                        "·",
-                        mSup("10", "-4")
-                    )
-                )
-            )
+const dkEexp = mFormula(
+    mParen(
+        "E",
+        mEq(),
+        [
+            "2,06",
+            mMul(),
+            mSup("10", "4"),
+            " "
+        ],
+        mFrac(
+            "кН",
+            mSup("см", "2")
         )
     )
-)
+);
 
-let tEN = (vart1A*100) / (((4 * 150) / 15) * (1 + (72 * (2.06 * 10**4 / (1 - 0.3**2))) / (150**4 * q_normis * 10**-4)));
-let deck_thickness = String(findNearestCeil(deckDataBase, tEN*10)).replaceAll(".", ",")
-let deckResult = mFormula(
-	mSub("t", "н"),
-    mEq(),
-    String(tEN).replaceAll(".", ","),
-    " см",
-    " ⇒ ",
-    mSub("t", "н"),
-    mEq(),
-    deck_thickness,
-    " мм"
-)
+const dkEba = mFormula('E');
+const dkPuas = mFormula('ν');
+const dkPuasso = mFormula('ν', mEq(), '0,3');
+let dkLNast
+let dkDeckForm
+let dkTEN
+let dkDeckThickness
+let dkDeckResult
+calcThikness()
+function calcThikness() {
+    var1A = parseFloat(vargen.shadowRoot.getElementById('variant1A').value);
+    var1B = parseFloat(vargen.shadowRoot.getElementById('variant1B').value);
+    var2A = parseFloat(vargen.shadowRoot.getElementById('variant2A').value);
+    var2B = parseFloat(vargen.shadowRoot.getElementById('variant2B').value);
+    var3A = parseFloat(vargen.shadowRoot.getElementById('variant3A').value);
+    var3B = parseFloat(vargen.shadowRoot.getElementById('variant3B').value);
 
-document.getElementById('deck_thickness').innerText = deck_thickness + 'мм'
+    if (numvaro == 1) {
+        localAVar = var1A;
+        localBVar = var1B;
+    } else if (numvaro == 2) {
+        localAVar = var2A;
+        localBVar = var2B;
+    } else if (numvaro == 3) {
+        localAVar = var3A;
+        localBVar = var3B;
+    }
+    dkLNast = mFormula(
+        mSub('l', 'н'),
+        mEq(),
+        String(localAVar).replaceAll(".", ",") + 'м'
+    );
+    dkDeckForm = mFormula(
+        mSub("t", "н"),
+        mEq(),
+        mFrac(
+            mSub("l", "н"),
+            mGroup(
+                mFrac(
+                    mGroup("4", mSub("n", "0")),
+                    "15"
+                ),
+                mParen(
+                    "1",
+                    mPlus(),
+                    mFrac(
+                        mGroup(
+                            "72",
+                            mSub("E", "1")
+                        ),
+                        mGroup(
+                            mSup(
+                                mSub("n", "0"),
+                                "4"
+                            ),
+                            mSub("q", "н")
+                        )
+                    )
+                )
+            )
+        ),
+        mEq(),
+        mFrac(
+            String(localAVar * 100),
+            mGroup(
+                mFrac(
+                    mGroup("4", "·", "150"),
+                    "15"
+                ),
+                mParen(
+                    "1",
+                    mPlus(),
+                    mFrac(
+                        mGroup(
+                            "72",
+                            mParen(
+                                mFrac(
+                                    mGroup(
+                                        "2,06",
+                                        mMul(),
+                                        mSup("10", "4")
+                                    ),
+                                    mGroup(
+                                        "1",
+                                        mMinus(),
+                                        mSup("0,3", "2")
+                                    )
+                                )
+                            )
+                        ),
+                        mGroup(
+                            mSup("150", "4"),
+                            "·",
+                            String(dkQNormis).replaceAll(".", ","),
+                            "·",
+                            mSup("10", "-4")
+                        )
+                    )
+                )
+            )
+        )
+    );
+    dkTEN = (localAVar * 100) / (((4 * 150) / 15) * (1 + (72 * (2.06 * 10 ** 4 / (1 - 0.3 ** 2))) / (150 ** 4 * dkQNormis * 10 ** -4)));
+    dkDeckThickness = String(dkFindNearestCeil(dkDataBase, dkTEN * 10)).replaceAll(".", ",");
+    dkDeckResult = mFormula(
+        mSub("t", "н"),
+        mEq(),
+        String(dkTEN).replaceAll(".", ","),
+        " см",
+        " ⇒ ",
+        mSub("t", "н"),
+        mEq(),
+        dkDeckThickness,
+        " мм"
+    );
+    decker.shadowRoot.getElementById('deck_thickness').innerText = dkDeckThickness + 'мм';
+}
 
-const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d");
 
-const ctnr = document.getElementById("canvas-container");
+decker.shadowRoot.getElementById('deck_thickness').innerText = dkDeckThickness + 'мм';
 
-const cssWidth = ctnr.offsetWidth-8;
-const cssHeight = 340;
-const dpi = 10;
+const dkCanvas = decker.shadowRoot.getElementById("canvas");
+const dkCtx = dkCanvas.getContext("2d");
+const dkCtnr = decker.shadowRoot.getElementById("canvas-container");
 
-canvas.width = cssWidth * dpi;
-canvas.height = cssHeight * dpi;
+const dkCssWidth = dkCtnr.offsetWidth - 8;
+const dkCssHeight = 340;
+const dkDpi = 10;
 
-canvas.style.width = cssWidth + "px";
-canvas.style.height = cssHeight + "px";
+dkCanvas.width = dkCssWidth * dkDpi;
+dkCanvas.height = dkCssHeight * dkDpi;
 
-ctx.scale(dpi, dpi);
+dkCanvas.style.width = dkCssWidth + "px";
+dkCanvas.style.height = dkCssHeight + "px";
 
-let zoom = 1
-let A = 5
-let B = 10
-let scale = 35
-const move = 3*B*scale/2
+dkCtx.scale(dkDpi, dkDpi);
 
-function dataURLtoUint8Array(dataurl) {
+let dkZoom = 1;
+let dkA = 5;
+
+let dkB = 10;
+
+let dkScale = 35;
+const dkMove = 3 * 10 * dkScale / 2;
+
+let dkSnapshotDataUrl, dkSnapshotBinary;
+
+function dkDataURLtoUint8Array(dataurl) {
     const arr = dataurl.split(',');
     const mime = arr[0].match(/:(.*?);/)[1];
     const bstr = atob(arr[1]);
     let n = bstr.length;
     const u8arr = new Uint8Array(n);
-    
     while (n--) {
-      u8arr[n] = bstr.charCodeAt(n);
+        u8arr[n] = bstr.charCodeAt(n);
     }
     return { data: u8arr, mime };
 }
 
 function createDeck() {
-	deckChildren.push(
-		new Paragraph({
+    dkChildren = []
+    calcThikness()
+    dkChildren.push(
+        new Paragraph({
             alignment: AlignmentType.CENTER,
             spacing: { after: 60 },
-            children: 
-            	[
-            		new TextRun({
-            			text: "1.1 Вариант 1",
-            			bold: true,
-            			size: 28,
-            			font: "Times New Roman" 
-            		}), 
-            	]
-        }),
-        new Paragraph({}),
-		new Paragraph({
-            alignment: AlignmentType.CENTER,
-            spacing: { 
-            	after: 60
-            },
-            children: 
-            	[
-            		new TextRun({
-        				text: "1.1.1 Расчёт стального настила",
-        				bold: true,
-        				size: 28,
-        				font: "Times New Roman" 
-        			}), 
-            	]
+            children: [
+                new TextRun({
+                    text: "1."+numvaro+" Вариант " +numvaro,
+                    bold: true,
+                    size: 28,
+                    font: "Times New Roman" 
+                }), 
+            ]
         }),
     )
-    pushDeck()
-    deckChildren.push(
+    dkChildren.push(
+        new Paragraph({}),
+        new Paragraph({
+            alignment: AlignmentType.CENTER,
+            spacing: { after: 60 },
+            children: [
+                new TextRun({
+                    text: "1."+numvaro+".1 Расчёт стального настила",
+                    bold: true,
+                    size: 28,
+                    font: "Times New Roman" 
+                }), 
+            ]
+        }),
+    );
+    dkPushDeck();
+    if (numvaro == 1) {
+        dkChildren.push(
+            new Paragraph({
+                alignment: AlignmentType.CENTER,
+                children: [
+                    new TextRun({
+                        text: "Рис.2 - Грузовая площадь настила (В1)", font: "Times New Roman", size: 28 
+                    }),
+                ]
+            }),
+        )
+    } else if (numvaro == 2) {
+        dkChildren.push(
+            new Paragraph({
+                alignment: AlignmentType.CENTER,
+                children: [
+                    new TextRun({
+                        text: "Рис.8 - Грузовая площадь настила (В2)", font: "Times New Roman", size: 28 
+                    }),
+                ]
+            }),
+        )
+    } else if (numvaro == 3) {
+        dkChildren.push(
+            new Paragraph({
+                alignment: AlignmentType.CENTER,
+                children: [
+                    new TextRun({
+                        text: "Рис.14 - Грузовая площадь настила (В3)", font: "Times New Roman", size: 28 
+                    }),
+                ]
+            }),
+        )
+    }
+    
+    dkChildren.push(
+        new Paragraph({}),
+        new Paragraph({
+            alignment: AlignmentType.JUSTIFIED,
+            spacing: { before: 0, after: 120, line: 360, lineRule: LineRuleType.AUTO },
+            indent: { firstLine: 709 },
+            children: [
+                new TextRun({
+                    text: "Для настила принимается сталь класса С245.",
+                    size: 28,
+                    font: "Times New Roman" 
+                }), 
+            ]
+        }),
+        new Paragraph({
+            alignment: AlignmentType.JUSTIFIED,
+            spacing: { before: 0, after: 120, line: 360, lineRule: LineRuleType.AUTO },
+            indent: { firstLine: 709 },
+            children: [
+                new TextRun({
+                    text: "Чтобы определить толщину настила вычисляется отношение пролёта настила к его толщине по формуле:",
+                    size: 28,
+                    font: "Times New Roman" 
+                }), 
+            ]
+        }),
+        new Paragraph({
+            alignment: AlignmentType.CENTER,
+            children: [dkFormula]
+        }),
+        new Paragraph({
+            alignment: AlignmentType.JUSTIFIED,
+            spacing: { before: 0, after: 120, line: 360, lineRule: LineRuleType.AUTO },
+            indent: { firstLine: 709 },
+            children: [
+                new TextRun({
+                    text: "где",
+                    size: 28,
+                    font: "Times New Roman" 
+                }), 
+            ]
+        }),
+        new Paragraph({
+            alignment: AlignmentType.JUSTIFIED,
+            spacing: { before: 0, after: 120, line: 360, lineRule: LineRuleType.AUTO },
+            children: [
+                new TextRun({ children: [dkQnF] }),
+                new TextRun(" — нормативная нагрузка на настил,")
+            ]
+        }),
+        new Paragraph({
+            alignment: AlignmentType.LEFT,
+            spacing: { before: 0, after: 120, line: 360, lineRule: LineRuleType.AUTO },
+            children: [
+                new TextRun({ children: [dkN150] }),
+                new TextRun(",")
+            ]
+        }),
+        new Paragraph({
+            alignment: AlignmentType.JUSTIFIED,
+            spacing: { before: 0, after: 120, line: 360, lineRule: LineRuleType.AUTO },
+            children: [
+                new TextRun({ children: [dkEdef] }),
+                new TextRun(",")
+            ]
+        }),
+        new Paragraph({
+            alignment: AlignmentType.JUSTIFIED,
+            spacing: { before: 0, after: 120, line: 360, lineRule: LineRuleType.AUTO },
+            children: [
+                new TextRun({ children: [dkEba] }),
+                new TextRun(" — модуль упругости стали "),
+                new TextRun({ children: [dkEexp] }),
+                new TextRun(","),
+            ]
+        }),
+        new Paragraph({
+            alignment: AlignmentType.JUSTIFIED,
+            spacing: { before: 0, after: 120, line: 360, lineRule: LineRuleType.AUTO },
+            children: [
+                new TextRun({ children: [dkPuas] }),
+                new TextRun(" — коэффициент Пуассона (для стали "),
+                new TextRun({ children: [dkPuasso] }),
+                new TextRun("),"),
+            ]
+        }),
+        new Paragraph({
+            alignment: AlignmentType.JUSTIFIED,
+            spacing: { before: 0, after: 120, line: 360, lineRule: LineRuleType.AUTO },
+            children: [
+                new TextRun({ children: [dkLNast] }),
+                new TextRun(" — пролёт настила."),
+            ]
+        }),
+        new Paragraph({
+            alignment: AlignmentType.JUSTIFIED,
+            spacing: { before: 0, after: 120, line: 360, lineRule: LineRuleType.AUTO },
+            children: [
+                new TextRun({ children: [dkDeckForm] }),
+            ]
+        }),
+        new Paragraph({
+            alignment: AlignmentType.JUSTIFIED,
+            spacing: { before: 0, after: 120, line: 360, lineRule: LineRuleType.AUTO },
+            children: [
+                new TextRun({ children: [dkDeckResult] }),
+                new PageBreak()
+            ]
+        }),
+    );
+}
+function dkPushDeck() {
+    dkSnapshotDataUrl = dkCanvas.toDataURL("image/png");
+    dkSnapshotBinary = dkDataURLtoUint8Array(dkSnapshotDataUrl).data;
+    dkChildren.push(
         new Paragraph({
             alignment: AlignmentType.CENTER,
             children: [
-                new TextRun({
-                    text: "Рис.2 - Грузовая площадь настила", font: "Times New Roman", size: 28 
+                new ImageRun({
+                    data: dkSnapshotBinary,
+                    transformation: { width: 370, height: 222 },
+                    size: 28,
                 }),
-            ]
-        }),
-        new Paragraph({}),
-		new Paragraph({
-            alignment: AlignmentType.JUSTIFIED,
-            spacing: {
-                before: 0,
-                after: 120,
-                line: 360,
-                lineRule: LineRuleType.AUTO,
-            },
-            indent: {
-                firstLine: 709, // Красная строка 1,25 см
-            },
-            children: 
-            	[
-            		new TextRun({
-        				text: "Для настила принимается сталь класса С245.",
-        				size: 28,
-        				font: "Times New Roman" 
-        			}), 
-            	]
-        }),
-		new Paragraph({
-            alignment: AlignmentType.JUSTIFIED,
-            spacing: {
-                before: 0,
-                after: 120,
-                line: 360,
-                lineRule: LineRuleType.AUTO,
-            },
-            indent: {
-                firstLine: 709, // Красная строка 1,25 см
-            },
-            children: 
-            	[
-            		new TextRun({
-        				text: "Чтобы определить толщину настила вычисляется отношение пролёта настила к его толщине по формуле:",
-        				size: 28,
-        				font: "Times New Roman" 
-        			}), 
-            	]
-        }),
-        new Paragraph({
-    		alignment: AlignmentType.CENTER, // Для формул обычно используют выравнивание по центру
-    		children: [formula]
-		}),
-		new Paragraph({
-            alignment: AlignmentType.JUSTIFIED,
-            spacing: {
-                before: 0,
-                after: 120,
-                line: 360,
-                lineRule: LineRuleType.AUTO,
-            },
-            indent: {
-                firstLine: 709, // Красная строка 1,25 см
-            },
-            children: 
-            	[
-            		new TextRun({
-        				text: "где",
-        				size: 28,
-        				font: "Times New Roman" 
-        			}), 
-            	]
-        }),
-		new Paragraph({
-			alignment: AlignmentType.JUSTIFIED,
-			spacing: {
-                before: 0,
-                after: 120,
-                line: 360,
-                lineRule: LineRuleType.AUTO,
-            },
-    		children: [
-        		new TextRun({
-        		    children: [qnF]
-        		}),
-        		new TextRun(" — нормативная нагрузка на настил,")
-   			]
-		}),
-		new Paragraph({
-			alignment: AlignmentType.LEFT,
-			spacing: {
-                before: 0,
-                after: 120,
-                line: 360,
-                lineRule: LineRuleType.AUTO,
-            },
-    		children: [
-        		new TextRun({
-        		    children: [n150]
-        		}),
-        		new TextRun(",")
-   			]
-		}),
-		new Paragraph({
-			alignment: AlignmentType.JUSTIFIED,
-			spacing: {
-                before: 0,
-                after: 120,
-                line: 360,
-                lineRule: LineRuleType.AUTO,
-            },
-    		children: [
-        		new TextRun({
-        		    children: [edef]
-        		}),
-        		new TextRun(",")
-   			]
-		}),
-		new Paragraph({
-			alignment: AlignmentType.JUSTIFIED,
-			spacing: {
-                before: 0,
-                after: 120,
-                line: 360,
-                lineRule: LineRuleType.AUTO,
-            },
-    		children: [
-        		new TextRun({
-        		    children: [Eba]
-        		}),
-        		new TextRun(" — модуль упругости стали "),
-        		new TextRun({
-        		    children: [eexp]
-        		}),
-        		new TextRun(","),
-   			]
-		}),
-		new Paragraph({
-			alignment: AlignmentType.JUSTIFIED,
-			spacing: {
-                before: 0,
-                after: 120,
-                line: 360,
-                lineRule: LineRuleType.AUTO,
-            },
-    		children: [
-        		new TextRun({
-        		    children: [puas]
-        		}),
-        		new TextRun(" — коэффициент Пуассона (для стали "),
-        		new TextRun({
-        		    children: [puasso]
-        		}),
-        		new TextRun("),"),
-   			]
-		}),
-		new Paragraph({
-			alignment: AlignmentType.JUSTIFIED,
-			spacing: {
-                before: 0,
-                after: 120,
-                line: 360,
-                lineRule: LineRuleType.AUTO,
-            },
-    		children: [
-        		new TextRun({
-        		    children: [l_nast]
-        		}),
-        		new TextRun(" — пролёт настила."),
-   			]
-		}),
-		new Paragraph({
-			alignment: AlignmentType.JUSTIFIED,
-			spacing: {
-                before: 0,
-                after: 120,
-                line: 360,
-                lineRule: LineRuleType.AUTO,
-            },
-    		children: [
-    			new TextRun({
-        		    children: [deckForm]
-        		}),
-   			]
-		}),
-		new Paragraph({
-			alignment: AlignmentType.JUSTIFIED,
-			spacing: {
-                before: 0,
-                after: 120,
-                line: 360,
-                lineRule: LineRuleType.AUTO,
-            },
-    		children: [
-    			new TextRun({
-        		    children: [deckResult]
-        		}),
-                new PageBreak()
-   			]
-		}),
-	)
+            ],
+        })
+    );
 }
-
 function generateDeck() {
-	createDeck()
+    createDeck();
     const doc = new Document({
         styles: {
             paragraphStyles: [
@@ -532,29 +497,20 @@ function generateDeck() {
                     name: "Custom Italic Style",
                     basedOn: "Normal",
                     next: "Normal",
-                    run: {
-                        font: "Times New Roman",
-                        size: 28, // Увеличено до 14pt (28 полупунктов)
-                        italics: true
-                    }
+                    run: { font: "Times New Roman", size: 28, italics: true }
                 },
                 {
                     id: "Normal",
                     name: "Normal",
-                    run: {
-                        font: "Times New Roman",
-                        size: 28 // Базовый шрифт документа теперь тоже 14pt
-                    }
+                    run: { font: "Times New Roman", size: 28 }
                 }
             ]
         },
         sections: [{
             properties: {
-                page: {
-                    margin: { top: 1134, bottom: 1134, left: 1700, right: 1700 }
-                }
+                page: { margin: { top: 1134, bottom: 1134, left: 1700, right: 1700 } }
             },
-            children: deckChildren
+            children: dkChildren
         }]
     });
 
@@ -566,229 +522,222 @@ function generateDeck() {
     });
 }
 
-
-function pushDeck() {
-    dataUrl = canvas.toDataURL("image/png");
-    snapshot = dataURLtoUint8Array(dataUrl).data;
-    deckChildren.push(
-        new Paragraph({
-            alignment: AlignmentType.CENTER,
-            children: [
-                new ImageRun({
-                    data: snapshot,
-                    transformation: {
-                        width: 370, // Ширина в пикселях в документе
-                        height: 222, // Высота в пикселях в документе
-                    },
-                    size: 28,
-                }),
-            ],
-        })
-    )
-}
-
-
-drawEveryVar(1)
-
-function drawEveryVar(num) {
-    ctx.shadowColor = 'transparent';
-    ctx.strokeStyle = 'black';
-    variant1A = 1
-    variant1B = 2
-    variant2A = 1.25
-    variant2B = 2
-    variant3A = 1
-    variant3B = 2.5
+function dkDrawEveryVar(num) {
+    dkCtx.fillStyle = "white"
+    dkCtx.fillRect(0, 0, canvas.width, canvas.height)
+    dkCtx.fillStyle = "black"
+    dkCtx.shadowColor = 'transparent';
+    dkCtx.strokeStyle = 'black';
+    var1A = parseFloat(vargen.shadowRoot.getElementById('variant1A').value);
+    var1B = parseFloat(vargen.shadowRoot.getElementById('variant1B').value);
+    var2A = parseFloat(vargen.shadowRoot.getElementById('variant2A').value);
+    var2B = parseFloat(vargen.shadowRoot.getElementById('variant2B').value);
+    var3A = parseFloat(vargen.shadowRoot.getElementById('variant3A').value);
+    var3B = parseFloat(vargen.shadowRoot.getElementById('variant3B').value);
     
+    localDist = -3 * 10 * dkScale / 2;
     if (num == 1) {
-        aVar = variant1A
-        bVar = variant1B
-        dist = -3*B*scale/2
+        localAVar = var1A;
+        localBVar = var1B;
     } else if (num == 2) {
-        aVar = variant2A
-        bVar = variant2B
-        dist = 0
+        localAVar = var2A;
+        localBVar = var2B;
     } else if (num == 3) {
-        aVar = variant3A
-        bVar = variant3B
-        dist = 3*B*scale/2
+        localAVar = var3A;
+        localBVar = var3B;
     }
 
-    let centerX = canvas.width / (2*dpi) + scale + dist + move;
-    let centerY = canvas.height / (2*dpi) + scale;
+    let centerX = dkCanvas.width / (2 * dkDpi) + dkScale + localDist + dkMove;
+    let centerY = dkCanvas.height / (2 * dkDpi) + dkScale;
     
-
-    if (zoom == 1) {
-        centerX = canvas.width / (2*dpi) + scale + dist + move
-        centerY = canvas.height / (2*dpi) + scale
+    if (dkZoom == 1) {
+        centerX = dkCanvas.width / (2 * dkDpi) + dkScale + localDist + dkMove;
+        centerY = dkCanvas.height / (2 * dkDpi) + dkScale;
     }
 
-    ctx.lineWidth = 3;
-    ctx.strokeRect(centerX-(B/2)*scale, centerY-(A/2)*scale, B*scale, A*scale)
+    dkCtx.lineWidth = 3;
+    dkCtx.strokeRect(centerX - (10 / 2) * dkScale, centerY - (dkA / 2) * dkScale, 10 * dkScale, dkA * dkScale);
 
-    let nA2 = parseInt(A/aVar)
-    let nB2 = parseInt(B/bVar)
+    let nA2 = parseInt(dkA / localAVar);
+    let nB2 = parseInt(10 / localBVar);
 
     for (var i = 0; i < nA2; i++) {
         for (var q = 0; q < nB2; q++) {
-            ctx.strokeRect(centerX-((B/2)-(q*bVar))*scale, centerY-((A/2)-(i*aVar))*scale, bVar*scale, aVar*scale)
+            dkCtx.strokeRect(centerX - ((10 / 2) - (q * localBVar)) * dkScale, centerY - ((dkA / 2) - (i * localAVar)) * dkScale, localBVar * dkScale, localAVar * dkScale);
         }
     }
 
-    ctx.lineWidth = 2
+    dkCtx.lineWidth = 2;
     
-    ctx.strokeRect(centerX-((B/2)*scale)-5, centerY-((A/2)*scale)-5, 10, 10)
-    ctx.strokeRect(centerX+((B/2)*scale)-5, centerY+((A/2)*scale)-5, 10, 10)
-    ctx.strokeRect(centerX+((B/2)*scale)-5, centerY-((A/2)*scale)-5, 10, 10)
-    ctx.strokeRect(centerX-((B/2)*scale)-5, centerY+((A/2)*scale)-5, 10, 10)
+    dkCtx.strokeRect(centerX - ((10 / 2) * dkScale) - 5, centerY - ((dkA / 2) * dkScale) - 5, 10, 10);
+    dkCtx.strokeRect(centerX + ((10 / 2) * dkScale) - 5, centerY + ((dkA / 2) * dkScale) - 5, 10, 10);
+    dkCtx.strokeRect(centerX + ((10 / 2) * dkScale) - 5, centerY - ((dkA / 2) * dkScale) - 5, 10, 10);
+    dkCtx.strokeRect(centerX - ((10 / 2) * dkScale) - 5, centerY + ((dkA / 2) * dkScale) - 5, 10, 10);
 
-    if (zoom == 1) {
-        ctx.beginPath()
+    if (dkZoom == 1) {
+        dkCtx.beginPath();
         for (var w = 0; w < nB2; w++) {
-        ctx.lineWidth = 1
-        ctx.moveTo((w * bVar * scale) + centerX-((B/2)*scale), centerY-((A/2)*scale))
-        ctx.lineTo((w * bVar * scale) + centerX-((B/2)*scale), centerY-((A/2)*scale) - 25)
-        ctx.lineTo((w * bVar * scale) + centerX-((B/2)*scale) + bVar*scale, centerY-((A/2)*scale) - 25)
-        ctx.lineTo((w * bVar * scale) + centerX-((B/2)*scale) + bVar*scale, centerY-((A/2)*scale))
-        ctx.moveTo((w * bVar * scale) + centerX-((B/2)*scale), centerY-((A/2)*scale) - 25)
-        ctx.lineTo((w * bVar * scale) + centerX-((B/2)*scale) + 5, centerY-((A/2)*scale) - 30)
-        ctx.lineTo((w * bVar * scale) + centerX-((B/2)*scale) - 5, centerY-((A/2)*scale) - 20)
-        ctx.moveTo((w * bVar * scale) + centerX-((B/2)*scale), centerY-((A/2)*scale) - 25)
-        ctx.lineTo((w * bVar * scale) + centerX-((B/2)*scale), centerY-((A/2)*scale) - 30)
-        ctx.moveTo((w * bVar * scale) + centerX-((B/2)*scale), centerY-((A/2)*scale) - 25)
-        ctx.lineTo((w * bVar * scale) + centerX-((B/2)*scale) - 5, centerY-((A/2)*scale) - 25)
-        ctx.moveTo((w * bVar * scale) + centerX-((B/2)*scale) + bVar*scale, centerY-((A/2)*scale) - 25)
-        ctx.lineTo((w * bVar * scale) + centerX-((B/2)*scale) + bVar*scale + 5, centerY-((A/2)*scale) - 30)
-        ctx.lineTo((w * bVar * scale) + centerX-((B/2)*scale) + bVar*scale - 5, centerY-((A/2)*scale) - 20)
-        ctx.moveTo((w * bVar * scale) + centerX-((B/2)*scale) + bVar*scale, centerY-((A/2)*scale) - 25)
-        ctx.lineTo((w * bVar * scale) + centerX-((B/2)*scale) + bVar*scale, centerY-((A/2)*scale) - 30)
-        ctx.moveTo((w * bVar * scale) + centerX-((B/2)*scale) + bVar*scale, centerY-((A/2)*scale) - 25)
-        ctx.lineTo((w * bVar * scale) + centerX-((B/2)*scale) + bVar*scale + 5, centerY-((A/2)*scale) - 25)
-        ctx.moveTo((w * bVar * scale) + centerX-((B/2)*scale) + bVar*scale/2, centerY-((A/2)*scale) - 25)
-        ctx.font = 'bold 12px GOST A';
-        ctx.fillStyle = 'black';
-        ctx.textAlign = 'center';
-        ctx.fillText('b=' +  String(bVar).replaceAll('.', ','), (w * bVar * scale) + centerX-((B/2)*scale) + bVar*scale/2, centerY-((A/2)*scale) - 35)
-        ctx.stroke()
+            dkCtx.lineWidth = 1;
+            dkCtx.moveTo((w * localBVar * dkScale) + centerX - ((10 / 2) * dkScale), centerY - ((dkA / 2) * dkScale));
+            dkCtx.lineTo((w * localBVar * dkScale) + centerX - ((10 / 2) * dkScale), centerY - ((dkA / 2) * dkScale) - 25);
+            dkCtx.lineTo((w * localBVar * dkScale) + centerX - ((10 / 2) * dkScale) + localBVar * dkScale, centerY - ((dkA / 2) * dkScale) - 25);
+            dkCtx.lineTo((w * localBVar * dkScale) + centerX - ((10 / 2) * dkScale) + localBVar * dkScale, centerY - ((dkA / 2) * dkScale));
+            dkCtx.moveTo((w * localBVar * dkScale) + centerX - ((10 / 2) * dkScale), centerY - ((dkA / 2) * dkScale) - 25);
+            dkCtx.lineTo((w * localBVar * dkScale) + centerX - ((10 / 2) * dkScale) + 5, centerY - ((dkA / 2) * dkScale) - 30);
+            dkCtx.lineTo((w * localBVar * dkScale) + centerX - ((10 / 2) * dkScale) - 5, centerY - ((dkA / 2) * dkScale) - 20);
+            dkCtx.moveTo((w * localBVar * dkScale) + centerX - ((10 / 2) * dkScale), centerY - ((dkA / 2) * dkScale) - 25);
+            dkCtx.lineTo((w * localBVar * dkScale) + centerX - ((10 / 2) * dkScale), centerY - ((dkA / 2) * dkScale) - 30);
+            dkCtx.moveTo((w * localBVar * dkScale) + centerX - ((10 / 2) * dkScale), centerY - ((dkA / 2) * dkScale) - 25);
+            dkCtx.lineTo((w * localBVar * dkScale) + centerX - ((10 / 2) * dkScale) - 5, centerY - ((dkA / 2) * dkScale) - 25);
+            dkCtx.moveTo((w * localBVar * dkScale) + centerX - ((10 / 2) * dkScale) + localBVar * dkScale, centerY - ((dkA / 2) * dkScale) - 25);
+            dkCtx.lineTo((w * localBVar * dkScale) + centerX - ((10 / 2) * dkScale) + localBVar * dkScale + 5, centerY - ((dkA / 2) * dkScale) - 30);
+            dkCtx.lineTo((w * localBVar * dkScale) + centerX - ((10 / 2) * dkScale) + localBVar * dkScale - 5, centerY - ((dkA / 2) * dkScale) - 20);
+            dkCtx.moveTo((w * localBVar * dkScale) + centerX - ((10 / 2) * dkScale) + localBVar * dkScale, centerY - ((dkA / 2) * dkScale) - 25);
+            dkCtx.lineTo((w * localBVar * dkScale) + centerX - ((10 / 2) * dkScale) + localBVar * dkScale, centerY - ((dkA / 2) * dkScale) - 30);
+            dkCtx.moveTo((w * localBVar * dkScale) + centerX - ((10 / 2) * dkScale) + localBVar * dkScale, centerY - ((dkA / 2) * dkScale) - 25);
+            dkCtx.lineTo((w * localBVar * dkScale) + centerX - ((10 / 2) * dkScale) + localBVar * dkScale + 5, centerY - ((dkA / 2) * dkScale) - 25);
+            dkCtx.moveTo((w * localBVar * dkScale) + centerX - ((10 / 2) * dkScale) + localBVar * dkScale / 2, centerY - ((dkA / 2) * dkScale) - 25);
+            dkCtx.font = 'bold 12px GOST A';
+            dkCtx.fillStyle = 'black';
+            dkCtx.textAlign = 'center';
+            dkCtx.fillText('b=' + String(localBVar).replaceAll('.', ','), (w * localBVar * dkScale) + centerX - ((10 / 2) * dkScale) + localBVar * dkScale / 2, centerY - ((dkA / 2) * dkScale) - 35);
+            dkCtx.stroke();
         }
     
         for (var r = 0; r < nA2; r++) {
-            ctx.moveTo(centerX-((B/2)*scale), (r * aVar * scale) + centerY-((A/2)*scale))
-            ctx.lineTo(centerX-((B/2)*scale) - 25, (r * aVar * scale) + centerY-((A/2)*scale))
-            ctx.lineTo(centerX-((B/2)*scale) - 25, (r * aVar * scale) + centerY-((A/2)*scale) + aVar*scale)
-            ctx.lineTo(centerX-((B/2)*scale), (r * aVar * scale) + centerY-((A/2)*scale) + aVar*scale)
-            ctx.moveTo(centerX-((B/2)*scale) - 25, (r * aVar * scale) + centerY-((A/2)*scale))
-            ctx.lineTo(centerX-((B/2)*scale) - 20, (r * aVar * scale) + centerY-((A/2)*scale) + 5)
-            ctx.lineTo(centerX-((B/2)*scale) - 30, (r * aVar * scale) + centerY-((A/2)*scale) -5)
-            ctx.moveTo(centerX-((B/2)*scale) - 25, (r * aVar * scale) + centerY-((A/2)*scale))
-            ctx.lineTo(centerX-((B/2)*scale) - 25, (r * aVar * scale) + centerY-((A/2)*scale) - 5)
-            ctx.moveTo(centerX-((B/2)*scale) - 25, (r * aVar * scale) + centerY-((A/2)*scale) + aVar*scale)
-            ctx.lineTo(centerX-((B/2)*scale) - 20, (r * aVar * scale) + centerY-((A/2)*scale) + aVar*scale + 5)
-            ctx.lineTo(centerX-((B/2)*scale) - 30, (r * aVar * scale) + centerY-((A/2)*scale) + aVar*scale - 5)
-            ctx.moveTo(centerX-((B/2)*scale) - 25, (r * aVar * scale) + centerY-((A/2)*scale) + aVar*scale)
-            ctx.lineTo(centerX-((B/2)*scale) - 25, (r * aVar * scale) + centerY-((A/2)*scale) + aVar*scale + 5)
-            ctx.save();
-            ctx.font = 'bold 12px GOST A';
-            ctx.textAlign = 'right';
-            ctx.textBaseline = 'middle';
-            ctx.translate(centerX-((B/2)*scale) - 30, (r * aVar * scale) + centerY-((A/2)*scale) + aVar*scale/2);
-            ctx.rotate(0 * Math.PI / 180);
-            ctx.fillText('a=' + String(aVar).replaceAll('.', ','), 0, 0);
-            ctx.restore();
-            ctx.stroke()
+            dkCtx.moveTo(centerX - ((10 / 2) * dkScale), (r * localAVar * dkScale) + centerY - ((dkA / 2) * dkScale));
+            dkCtx.lineTo(centerX - ((10 / 2) * dkScale) - 25, (r * localAVar * dkScale) + centerY - ((dkA / 2) * dkScale));
+            dkCtx.lineTo(centerX - ((10 / 2) * dkScale) - 25, (r * localAVar * dkScale) + centerY - ((dkA / 2) * dkScale) + localAVar * dkScale);
+            dkCtx.lineTo(centerX - ((10 / 2) * dkScale), (r * localAVar * dkScale) + centerY - ((dkA / 2) * dkScale) + localAVar * dkScale);
+            dkCtx.moveTo(centerX - ((10 / 2) * dkScale) - 25, (r * localAVar * dkScale) + centerY - ((dkA / 2) * dkScale));
+            dkCtx.lineTo(centerX - ((10 / 2) * dkScale) - 20, (r * localAVar * dkScale) + centerY - ((dkA / 2) * dkScale) + 5);
+            dkCtx.lineTo(centerX - ((10 / 2) * dkScale) - 30, (r * localAVar * dkScale) + centerY - ((dkA / 2) * dkScale) - 5);
+            dkCtx.moveTo(centerX - ((10 / 2) * dkScale) - 25, (r * localAVar * dkScale) + centerY - ((dkA / 2) * dkScale));
+            dkCtx.lineTo(centerX - ((10 / 2) * dkScale) - 25, (r * localAVar * dkScale) + centerY - ((dkA / 2) * dkScale) - 5);
+            dkCtx.moveTo(centerX - ((10 / 2) * dkScale) - 25, (r * localAVar * dkScale) + centerY - ((dkA / 2) * dkScale) + localAVar * dkScale);
+            dkCtx.lineTo(centerX - ((10 / 2) * dkScale) - 20, (r * localAVar * dkScale) + centerY - ((dkA / 2) * dkScale) + localAVar * dkScale + 5);
+            dkCtx.lineTo(centerX - ((10 / 2) * dkScale) - 30, (r * localAVar * dkScale) + centerY - ((dkA / 2) * dkScale) + localAVar * dkScale - 5);
+            dkCtx.moveTo(centerX - ((10 / 2) * dkScale) - 25, (r * localAVar * dkScale) + centerY - ((dkA / 2) * dkScale) + localAVar * dkScale);
+            dkCtx.lineTo(centerX - ((10 / 2) * dkScale) - 25, (r * localAVar * dkScale) + centerY - ((dkA / 2) * dkScale) + localAVar * dkScale + 5);
+            dkCtx.save();
+            dkCtx.font = 'bold 12px GOST A';
+            dkCtx.textAlign = 'right';
+            dkCtx.textBaseline = 'middle';
+            dkCtx.translate(centerX - ((10 / 2) * dkScale) - 30, (r * localAVar * dkScale) + centerY - ((dkA / 2) * dkScale) + localAVar * dkScale / 2);
+            dkCtx.fillText('a=' + String(localAVar).replaceAll('.', ','), 0, 0);
+            dkCtx.restore();
+            dkCtx.stroke();
         }
     
-        ctx.lineWidth = 1
-        ctx.moveTo(centerX-((B/2)*scale), centerY-((A/2)*scale))
-        ctx.lineTo(centerX-((B/2)*scale) - 65, centerY-((A/2)*scale))
-        ctx.lineTo(centerX-((B/2)*scale) - 65, centerY-((A/2)*scale) + A*scale)
-        ctx.lineTo(centerX-((B/2)*scale), centerY-((A/2)*scale) + A*scale)
-        ctx.moveTo(centerX-((B/2)*scale) - 65, + centerY-((A/2)*scale))
-        ctx.lineTo(centerX-((B/2)*scale) - 60, + centerY-((A/2)*scale) + 5)
-        ctx.lineTo(centerX-((B/2)*scale) - 70, + centerY-((A/2)*scale) -5)
-        ctx.moveTo(centerX-((B/2)*scale) - 65, + centerY-((A/2)*scale))
-        ctx.lineTo(centerX-((B/2)*scale) - 65, + centerY-((A/2)*scale) - 5)
-        ctx.moveTo(centerX-((B/2)*scale) - 65, + centerY-((A/2)*scale) + A*scale)
-        ctx.lineTo(centerX-((B/2)*scale) - 60, + centerY-((A/2)*scale) + A*scale + 5)
-        ctx.lineTo(centerX-((B/2)*scale) - 70, + centerY-((A/2)*scale) + A*scale - 5)
-        ctx.moveTo(centerX-((B/2)*scale) - 65, + centerY-((A/2)*scale) + A*scale)
-        ctx.lineTo(centerX-((B/2)*scale) - 65, + centerY-((A/2)*scale) + A*scale + 5)
-        ctx.save();
-        ctx.font = 'bold 14px GOST A';
-        ctx.textAlign = 'right';
-        ctx.textBaseline = 'middle';
-        ctx.translate(centerX-((B/2)*scale) - 70, centerY-((A/2)*scale) + A*scale/2);
-        // ctx.rotate(270 * Math.PI / 180);
-        ctx.fillText('l=' + String(A).replaceAll('.', ','), 0, 0);
-        ctx.restore();
-        ctx.stroke()
+        dkCtx.lineWidth = 1;
+        dkCtx.moveTo(centerX - ((10 / 2) * dkScale), centerY - ((dkA / 2) * dkScale));
+        dkCtx.lineTo(centerX - ((10 / 2) * dkScale) - 65, centerY - ((dkA / 2) * dkScale));
+        dkCtx.lineTo(centerX - ((10 / 2) * dkScale) - 65, centerY - ((dkA / 2) * dkScale) + dkA * dkScale);
+        dkCtx.lineTo(centerX - ((10 / 2) * dkScale), centerY - ((dkA / 2) * dkScale) + dkA * dkScale);
+        dkCtx.moveTo(centerX - ((10 / 2) * dkScale) - 65, centerY - ((dkA / 2) * dkScale));
+        dkCtx.lineTo(centerX - ((10 / 2) * dkScale) - 60, centerY - ((dkA / 2) * dkScale) + 5);
+        dkCtx.lineTo(centerX - ((10 / 2) * dkScale) - 70, centerY - ((dkA / 2) * dkScale) - 5);
+        dkCtx.moveTo(centerX - ((10 / 2) * dkScale) - 65, centerY - ((dkA / 2) * dkScale));
+        dkCtx.lineTo(centerX - ((10 / 2) * dkScale) - 65, centerY - ((dkA / 2) * dkScale) - 5);
+        dkCtx.moveTo(centerX - ((10 / 2) * dkScale) - 65, centerY - ((dkA / 2) * dkScale) + dkA * dkScale);
+        dkCtx.lineTo(centerX - ((10 / 2) * dkScale) - 60, centerY - ((dkA / 2) * dkScale) + dkA * dkScale + 5);
+        dkCtx.lineTo(centerX - ((10 / 2) * dkScale) - 70, centerY - ((dkA / 2) * dkScale) + dkA * dkScale - 5);
+        dkCtx.moveTo(centerX - ((10 / 2) * dkScale) - 65, centerY - ((dkA / 2) * dkScale) + dkA * dkScale);
+        dkCtx.lineTo(centerX - ((10 / 2) * dkScale) - 65, centerY - ((dkA / 2) * dkScale) + dkA * dkScale + 5);
+        dkCtx.save();
+        dkCtx.font = 'bold 14px GOST A';
+        dkCtx.textAlign = 'right';
+        dkCtx.textBaseline = 'middle';
+        dkCtx.translate(centerX - ((10 / 2) * dkScale) - 70, centerY - ((dkA / 2) * dkScale) + dkA * dkScale / 2);
+        dkCtx.fillText('l=' + String(dkA).replaceAll('.', ','), 0, 0);
+        dkCtx.restore();
+        dkCtx.stroke();
     
-        ctx.moveTo(centerX-((B/2)*scale), centerY-((A/2)*scale))
-        ctx.lineTo(centerX-((B/2)*scale), centerY-((A/2)*scale) - 55)
-        ctx.lineTo(centerX-((B/2)*scale) + B*scale, centerY-((A/2)*scale) - 55)
-        ctx.lineTo(centerX-((B/2)*scale) + B*scale, centerY-((A/2)*scale))
-        ctx.moveTo(centerX-((B/2)*scale), centerY-((A/2)*scale) - 55)
-        ctx.lineTo(centerX-((B/2)*scale) + 5, centerY-((A/2)*scale) - 60)
-        ctx.lineTo(centerX-((B/2)*scale) - 5, centerY-((A/2)*scale) - 50)
-        ctx.moveTo(centerX-((B/2)*scale), centerY-((A/2)*scale) - 55)
-        ctx.lineTo(centerX-((B/2)*scale), centerY-((A/2)*scale) - 60)
-        ctx.moveTo(centerX-((B/2)*scale), centerY-((A/2)*scale) - 55)
-        ctx.lineTo(centerX-((B/2)*scale) - 5, centerY-((A/2)*scale) - 55)
-        ctx.moveTo(centerX-((B/2)*scale) + B*scale, centerY-((A/2)*scale) - 55)
-        ctx.lineTo(centerX-((B/2)*scale) + B*scale + 5, centerY-((A/2)*scale) - 60)
-        ctx.lineTo(centerX-((B/2)*scale) + B*scale - 5, centerY-((A/2)*scale) - 50)
-        ctx.moveTo(centerX-((B/2)*scale) + B*scale, centerY-((A/2)*scale) - 55)
-        ctx.lineTo(centerX-((B/2)*scale) + B*scale, centerY-((A/2)*scale) - 60)
-        ctx.moveTo(centerX-((B/2)*scale) + B*scale, centerY-((A/2)*scale) - 55)
-        ctx.lineTo(centerX-((B/2)*scale) + B*scale + 5, centerY-((A/2)*scale) - 55)
-        ctx.moveTo(centerX-((B/2)*scale) + B*scale/2, centerY-((A/2)*scale) - 55)
-        ctx.font = 'bold 14px GOST A';
-        ctx.fillStyle = 'black';
-        ctx.textAlign = 'center';
-        ctx.fillText('L=' +  String(B).replaceAll('.', ','), centerX-((B/2)*scale) + B*scale/2, centerY-((A/2)*scale) - 60)
-
-        ctx.stroke()
-        ctx.lineWidth = 2
+        dkCtx.moveTo(centerX - ((10 / 2) * dkScale), centerY - ((dkA / 2) * dkScale));
+        dkCtx.lineTo(centerX - ((10 / 2) * dkScale), centerY - ((dkA / 2) * dkScale) - 55);
+        dkCtx.lineTo(centerX - ((10 / 2) * dkScale) + 10 * dkScale, centerY - ((dkA / 2) * dkScale) - 55);
+        dkCtx.lineTo(centerX - ((10 / 2) * dkScale) + 10 * dkScale, centerY - ((dkA / 2) * dkScale));
+        dkCtx.moveTo(centerX - ((10 / 2) * dkScale), centerY - ((dkA / 2) * dkScale) - 55);
+        dkCtx.lineTo(centerX - ((10 / 2) * dkScale) + 5, centerY - ((dkA / 2) * dkScale) - 60);
+        dkCtx.lineTo(centerX - ((10 / 2) * dkScale) - 5, centerY - ((dkA / 2) * dkScale) - 50);
+        dkCtx.moveTo(centerX - ((10 / 2) * dkScale), centerY - ((dkA / 2) * dkScale) - 55);
+        dkCtx.lineTo(centerX - ((10 / 2) * dkScale), centerY - ((dkA / 2) * dkScale) - 60);
+        dkCtx.moveTo(centerX - ((10 / 2) * dkScale), centerY - ((dkA / 2) * dkScale) - 55);
+        dkCtx.lineTo(centerX - ((10 / 2) * dkScale) - 5, centerY - ((dkA / 2) * dkScale) - 55);
+        dkCtx.moveTo(centerX - ((10 / 2) * dkScale) + 10 * dkScale, centerY - ((dkA / 2) * dkScale) - 55);
+        dkCtx.lineTo(centerX - ((10 / 2) * dkScale) + 10 * dkScale + 5, centerY - ((dkA / 2) * dkScale) - 60);
+        dkCtx.lineTo(centerX - ((10 / 2) * dkScale) + 10 * dkScale - 5, centerY - ((dkA / 2) * dkScale) - 50);
+        dkCtx.moveTo(centerX - ((10 / 2) * dkScale) + 10 * dkScale, centerY - ((dkA / 2) * dkScale) - 55);
+        dkCtx.lineTo(centerX - ((10 / 2) * dkScale) + 10 * dkScale, centerY - ((dkA / 2) * dkScale) - 60);
+        dkCtx.moveTo(centerX - ((10 / 2) * dkScale) + 10 * dkScale, centerY - ((dkA / 2) * dkScale) - 55);
+        dkCtx.lineTo(centerX - ((10 / 2) * dkScale) + 10 * dkScale + 5, centerY - ((dkA / 2) * dkScale) - 55);
+        dkCtx.moveTo(centerX - ((10 / 2) * dkScale) + 10 * dkScale / 2, centerY - ((dkA / 2) * dkScale) - 55);
+        dkCtx.font = 'bold 14px GOST A';
+        dkCtx.fillStyle = 'black';
+        dkCtx.textAlign = 'center';
+        dkCtx.fillText('L=' + String(10).replaceAll('.', ','), centerX - ((10 / 2) * dkScale) + 10 * dkScale / 2, centerY - ((dkA / 2) * dkScale) - 60);
+        dkCtx.stroke();
         
-        let nB1 = B/variant1B
-        let nA1 = A/variant1A
+        dkCtx.lineWidth = 2;
+        let nB1 = 10 / localBVar;
+        let nA1 = dkA / localAVar;
 
-        let wo = variant1B * scale;
-        let h = variant1A * scale;
-        let x = centerX - (B / 2) * scale + (variant1B / 2 * scale);
-        let y = centerY - (A / 2) * scale + (variant1A / 2 * scale);
+        let wo = localBVar * dkScale;
+        let h = localAVar * dkScale;
+        let x, y;
         if (nB1 % 2 == 0) {
-            x = centerX - variant1B*scale
+            x = centerX - localBVar * dkScale;
         } else {
-            x = centerX - variant1B/2*scale
+            x = centerX - localBVar / 2 * dkScale;
         }
         if (nA1 % 2 == 0) {
-            y = centerY - variant1A*scale
+            y = centerY - localAVar * dkScale;
         } else {
-            y = centerY - variant1A/2*scale
+            y = centerY - localAVar / 2 * dkScale;
         }
-        const step = 10; // Расстояние между линиями штриховки в пикселях
         
-        ctx.save(); // Сохраняем состояние холста
+        dkCtx.save();
+        dkCtx.strokeRect(x, y, wo, h);
+        dkCtx.beginPath();
+        dkCtx.rect(x, y, wo, h);
+        dkCtx.clip();
         
-        ctx.strokeRect(x, y, wo, h)
+        dkCtx.strokeStyle = '#000000';
+        dkCtx.lineWidth = 1;
+        dkCtx.beginPath();
+        for (let i = -h; i < wo; i += 10) {
+            dkCtx.moveTo(x + i, y);
+            dkCtx.lineTo(x + i + h, y + h);
+        }
+        dkCtx.stroke();
+        dkCtx.restore();
+    }
+}
+nextBtn.addEventListener("click", () => {
+    dkDrawEveryVar(numvaro);
+    calcThikness()
+});
 
-        // 2. Создаем маску по форме вашего прямоугольника
-        ctx.beginPath();
-        ctx.rect(x, y, wo, h);
-        ctx.clip();
-        
-        // 3. Рисуем штриховку внутри маски
-        ctx.strokeStyle = '#000000'; // Цвет штриховки
-        ctx.lineWidth = 1;           // Толщина линий штриховки
-        ctx.beginPath();
-        
-        for (let i = -h; i < wo; i += step) {
-            ctx.moveTo(x + i, y);
-            ctx.lineTo(x + i + h, y + h);
-        }
-        ctx.stroke();
-        
-        ctx.restore();
+dkDrawEveryVar(numvaro);
+
+// let decking_varo = decker.shadowRoot.getElementById('decking_varo')
+
+decking_varo.addEventListener("click", () => {
+    changeDeckVar()
+});
+
+function changeDeckVar() {
+    if (decking_varo.value == 1) {
+        numvaro = 1
+        dkDrawEveryVar(numvaro);
+        calcThikness()
+    } else if (decking_varo.value == 2) {
+        numvaro = 2
+        dkDrawEveryVar(numvaro);
+        calcThikness()
+    } else if (decking_varo.value == 3) {
+        numvaro = 3
+        dkDrawEveryVar(numvaro);
+        calcThikness()
     }
 }

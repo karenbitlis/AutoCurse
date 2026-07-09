@@ -354,7 +354,7 @@ function moving1() {
 	if (move < 3*B*scale/2) {
 		move += 3*B*scale/2/15
 	} else {
-		move = 0
+		// move = 0
 		allButtons.forEach(button => {
 			button.disabled = false;
 		});
@@ -363,24 +363,37 @@ function moving1() {
 	drawVar()
 	requestAnimationFrame(moving1)
 }
-function moving3() {
-	if (move > -3*B*scale/2) {
-		move -= 3*B*scale/2/15
+function moving2_3() {
+	if (move < 0) {
+		move += 3*B*scale/2/15
 	} else {
-		move = 0
+		// move = 0
 		allButtons.forEach(button => {
-    		button.disabled = false;
+			button.disabled = false;
 		});
 		return
 	}
 	drawVar()
-	requestAnimationFrame(moving3)
+	requestAnimationFrame(moving2_3)
 }
-function movingBig3() {
+function moving2_1() {
+	if (move > 0) {
+		move -= 3*B*scale/2/15
+	} else {
+		// move = 0
+		allButtons.forEach(button => {
+			button.disabled = false;
+		});
+		return
+	}
+	drawVar()
+	requestAnimationFrame(moving2_1)
+}
+function moving3() {
 	if (move > -3*B*scale/2) {
 		move -= 3*B*scale/2/15
 	} else {
-		move = 0
+		// move = 0
 		allButtons.forEach(button => {
     		button.disabled = false;
 		});
@@ -447,6 +460,7 @@ function smalling() {
 	zoomo2.style.backgroundColor = '#3498db'
 	zoomo3.innerHTML = 'Зум В3'
 	zoomo3.style.backgroundColor = '#3498db'
+	move = 0
 	drawVar()
 	zoom = 0
 	if (scale != 10){
@@ -515,12 +529,12 @@ zoomo2.addEventListener("click", () => {
 		pos = 2
 		zoomo2.style.backgroundColor = 'green'
 		zoomo2.innerHTML = 'Анзум'
-		moving3()
+		moving2_1()
 	} else if (pos == 3) {
 		pos = 2
 		zoomo2.style.backgroundColor = 'green'
 		zoomo2.innerHTML = 'Анзум'
-		moving1()
+		moving2_3()
 	} else {
 		pos = 2
 		zoomo2.style.backgroundColor = 'green'
@@ -663,19 +677,19 @@ function createVargen() {
 	pushScreen(3)
 	vargenChildren.push(
 		new Paragraph({
-            alignment: AlignmentType.CENTER,
+			alignment: AlignmentType.CENTER,
 			spacing: {
 				line: 360, // Полуторный интервал для ВСЕГО документа
 				before: 0,
 				after: 0,
 			},
-            children: [
-            	new TextRun({
-            		text: 'Рис.1 - Варианты компоновки средней ячейки'
-            	}),
-            	new PageBreak()
-            ]
-        }),
+			children: [
+				new TextRun({
+					text: 'Рис.1 - Варианты компоновки средней ячейки'
+				}),
+				new PageBreak()
+			]
+		}),
 	)
 	move = 0
 

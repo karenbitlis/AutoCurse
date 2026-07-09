@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let currentIndex = 0;
 
     function updateSlider() {
-        printVar()
+        // printVar()
         drawVar()
         // Переключаем активные классы для слоев-страниц
         pages.forEach((page, index) => {
@@ -47,22 +47,38 @@ document.addEventListener("DOMContentLoaded", () => {
     // Инициализация при старте
     updateSlider();
 })
-
+let documento = []
 function generateDocx() {
+    documento = []
     createTit()
     createIntro()
     createInit()
     createVargen()
     createFloor()
+    createDeck()
     createLitera()
-    
 
-    const documento = []
     documento.push(...titChildren)
     documento.push(...introChildren)
     documento.push(...initChildren)
     documento.push(...vargenChildren)
     documento.push(...floorChildren)
+
+        decking_varo.value = 1
+        changeDeckVar()
+        createDeck()
+        documento.push(...dkChildren)
+    
+        decking_varo.value = 2
+        changeDeckVar()
+        createDeck()
+        documento.push(...dkChildren)
+    
+        decking_varo.value = 3
+        changeDeckVar()
+        createDeck()
+        documento.push(...dkChildren)
+
     documento.push(...litChildren)
     
     if (!docxLib) {

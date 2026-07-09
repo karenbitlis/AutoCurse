@@ -1,4 +1,4 @@
-const introChildren = []
+let introChildren = []
 
 const IntroBut = document.getElementById('intro').shadowRoot.getElementById('IntroBut')
 IntroBut.addEventListener("click", () => {
@@ -6,9 +6,10 @@ IntroBut.addEventListener("click", () => {
 });
 
 function createIntro() {
-    const intro = document.getElementById('intro')
-    const rawText = intro.shadowRoot.getElementById('introductionText').value;
-    const textParagraphs = rawText.split(/\r?\n/).map(p => p.trim()).filter(p => p.length > 0);
+    introChildren = []
+    let intro = document.getElementById('intro')
+    let rawText = intro.shadowRoot.getElementById('introductionText').value;
+    let textParagraphs = rawText.split(/\r?\n/).map(p => p.trim()).filter(p => p.length > 0);
 
     // 1. ЗАГОЛОВОК "Введение" (По центру, Жирный)
     introChildren.push(

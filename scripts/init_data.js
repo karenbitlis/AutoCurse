@@ -1,5 +1,5 @@
 const saveAsLib = window.saveAs;
-const initChildren = [];
+let initChildren = [];
 
 const InitBut = document.getElementById('init').shadowRoot.getElementById('InitBut')
 InitBut.addEventListener("click", () => {
@@ -10,6 +10,7 @@ let after_intro1 = `Главная задача при проектирован�
 let after_intro2 =`С этой целью в работе составлены три варианта расположения вспомогательных балок и балок настила. После статического конструктивного расчетов настила и балок для всех вариантов производится их сравнение по расходу стали на 1 квадратный метр площади перекрытия балочной клетки и количеству монтажных единиц.`
 
 function createInit() {
+    initChildren = []
     const init = document.getElementById('init')
     const dataIn = {
         taskNum: init.shadowRoot.getElementById('taskNum').value,

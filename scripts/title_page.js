@@ -1,6 +1,6 @@
 const docxLib = window.docx;
 const { Document, Packer, ImageRun, XmlComponent, LineRuleType, Paragraph, ommlXmlText, BorderStyle, TextRun, AlignmentType, Table, TableRow, TableCell, WidthType, PageBreak, textParagraphs } = docxLib;
-const titChildren = [];
+let titChildren = [];
 
 const TitlePageBut = document.getElementById('tit').shadowRoot.getElementById('TitlePageBut')
 TitlePageBut.addEventListener("click", () => {
@@ -8,6 +8,7 @@ TitlePageBut.addEventListener("click", () => {
 });
 
 function createTit() {
+    titChildren = []
     const tit = document.getElementById('tit')
     const data = {
         university: tit.shadowRoot.getElementById('university').value,

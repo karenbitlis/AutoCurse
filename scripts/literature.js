@@ -1,4 +1,4 @@
-const litChildren = []
+let litChildren = []
 
 const LitBut = document.getElementById('litera').shadowRoot.getElementById('LitBut')
 LitBut.addEventListener("click", () => {
@@ -60,6 +60,7 @@ function renumberSources() {
 
 
 function createLitera() {
+    litChildren = []
     const textareas = container.querySelectorAll('.source-text');
     // 1. ЗАГОЛОВОК
     litChildren.push(new Paragraph({

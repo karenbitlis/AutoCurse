@@ -9,12 +9,12 @@ floor.shadowRoot.getElementById("generate-btn").addEventListener("click", () => 
 })
 
 
-let usefullLoad = 30
+usefullLoad = parseFloat(init.shadowRoot.getElementById('payload').value)
 let floorType = init.shadowRoot.getElementById('floorType').value
 let floorTable
 
 // Общий стиль для границ таблицы (тонкая черная рамка)
-const tableBorders = {
+const tableBorders0 = {
     top: { style: BorderStyle.SINGLE, size: 4, color: "000000" },
     bottom: { style: BorderStyle.SINGLE, size: 4, color: "000000" },
     left: { style: BorderStyle.SINGLE, size: 4, color: "000000" },
@@ -36,24 +36,32 @@ function createCell(textContent, alignment = AlignmentType.CENTER, columnSpan = 
     });
 }
 
-const oMath = new XmlComponent("m:oMath");
-oMath.root.push(createMathSub("q", "n"));
-oMath.root.push(createMathRun(", "));
-const numerator = createMathRun("кН");
-const denominator = createMathSup("м", "2");
-const fraction = createMathFraction(numerator, denominator);
-oMath.root.push(fraction);
+// const oMathFloor = new XmlComponent("m:oMathFloor");
+// oMathFloor.root.push(createMathSub("q", "n"));
+// oMathFloor.root.push(createMathRun(", "));
+// const numerator_Floor = createMathRun("кН");
+// const denominator_Floor = createMathSup("м", "2");
+// const fraction_Floor = createMathFraction(numerator_Floor, denominator_Floor);
+// oMathFloor.root.push(fraction_Floor);
+const oMathFloor = mFormula(
+    mSub("q", "n"),
+    mComma(),
+    mFrac(
+        "кН",
+        mSup("м", "2")
+    )
+);
 
-const oMatho = new XmlComponent("m:oMath");
-oMatho.root.push(createMathRun("q"));
-oMatho.root.push(createMathRun(", "));
-const numer = createMathRun("кН");
-const denomin = createMathSup("м", "2");
-const frac = createMathFraction(numerator, denominator);
-oMatho.root.push(fraction);
+const oMathFlooro = mFormula(
+    "q",
+    mComma(),
+    mFrac(
+        "кН",
+        mSup("м", "2")
+    )
+);
 
-const gammaF = new XmlComponent("m:oMath")
-gammaF.root.push(createMathSub("γ", "f"));
+const gammaFloor = mFormula(mSub("γ", "f"));
 
 floor.shadowRoot.getElementById('floorExplanation').innerText = 'Ранее вы выбрали тип ' + floorType
 
@@ -105,6 +113,7 @@ function createMathFraction(numComponent, denComponent) {
 function updateFloorChoice() {
 	floor.shadowRoot.getElementById('floorExplanation').innerText = 'Вы выбрали тип ' + floorType
 	init.shadowRoot.getElementById('floorType').value = floorType
+	usefullLoad = parseFloat(init.shadowRoot.getElementById('payload').value)
 }
 
 const labels = floor.shadowRoot.querySelectorAll(".radio-card");
@@ -121,9 +130,10 @@ labels.forEach(label => {
 });
 
 function getTheFloor() {
+	usefullLoad = parseFloat(init.shadowRoot.getElementById('payload').value)
 	if (floor.shadowRoot.getElementById('floorChoice1').checked) {
 	    floorTable = new Table({
-			borders: tableBorders,
+			borders: tableBorders0,
 			alignment: AlignmentType.JUSTIFIED,
 			width: {
 			    size: 100,
@@ -146,7 +156,7 @@ function getTheFloor() {
 			            createCell("Вид нагрузки", AlignmentType.LEFT),
 			            createCell([
 			                new TextRun({
-			                    children: [oMath],
+			                    children: [oMathFloor],
 			                    spacing: {
 									before: 0,
 									after: 120
@@ -155,7 +165,7 @@ function getTheFloor() {
 			            ]),
 			            createCell([
 			                new TextRun({
-			                    children: [gammaF],
+			                    children: [gammaFloor],
 			                    spacing: {
 									before: 0,
 									after: 120
@@ -164,7 +174,7 @@ function getTheFloor() {
 			            ]),
 			            createCell([
 			                new TextRun ({
-			                    children: [oMatho]
+			                    children: [oMathFlooro]
 			                })
 			            ]),
 			        ],
@@ -248,16 +258,16 @@ function getTheFloor() {
 	        	    children: [
 	        	        // Объединяем первую и вторую колонки под текст "Итого:"
 	        	        createCell("Итого:", AlignmentType.LEFT, 2), 
-	        	        createCell(String(usefullLoad + 1.33).replace(/\./g, ",")),
+	        	        createCell(String(Math.ceil((usefullLoad + 1.33)*1000)/1000).replace(/\./g, ",")),
 	        	        createCell(""), // Пустая ячейка под коэффициентом нагрузки
-	        	        createCell(String(usefullLoad*1.05 + 1.729).replace(/\./g, ",")),
+	        	        createCell(String(Math.ceil((usefullLoad*1.05 + 1.729)*1000)/1000).replace(/\./g, ",")),
 	        	    ],
 	        	}),
 	    	],
 		});
 	} else if (floor.shadowRoot.getElementById('floorChoice2').checked) {
 		floorTable = new Table({
-			borders: tableBorders,
+			borders: tableBorders0,
 			alignment: AlignmentType.JUSTIFIED,
             spacing: {
                 before: 0,
@@ -284,17 +294,17 @@ function getTheFloor() {
 			            createCell("Вид нагрузки", AlignmentType.LEFT),
 			            createCell([
 			                new TextRun({
-			                    children: [oMath]
+			                    children: [oMathFloor]
 			                })
 			            ]),
 			            createCell([
 			                new TextRun({
-			                    children: [gammaF]
+			                    children: [gammaFloor]
 			                }),
 			            ]),
 			            createCell([
 			                new TextRun ({
-			                    children: [oMatho]
+			                    children: [oMathFlooro]
 			                })
 			            ]),
 			        ],
@@ -379,9 +389,9 @@ function getTheFloor() {
 	        	    children: [
 	        	        // Объединяем первую и вторую колонки под текст "Итого:"
 	        	        createCell("Итого:", AlignmentType.LEFT, 2), 
-	        	        createCell(String(usefullLoad + 0.7).replace(/\./g, ",")),
+	        	        createCell(String(Math.ceil((usefullLoad + 0.7)*1000)/1000).replace(/\./g, ",")),
 	        	        createCell(""), // Пустая ячейка под коэффициентом нагрузки
-	        	        createCell(String(usefullLoad*1.05 + 0.91).replace(/\./g, ",")),
+	        	        createCell(String(Math.ceil((usefullLoad*1.05 + 0.91)*1000)/1000).replace(/\./g, ",")),
 	        	    ],
 	        	}),
 	    	],
@@ -389,10 +399,20 @@ function getTheFloor() {
 	}
 }
 nextBtn.addEventListener("click", () => {
+	floorType = init.shadowRoot.getElementById('floorType').value
+	if (floorType == 1) {
+		floor.shadowRoot.getElementById("floorChoice1").checked = true
+	} else if (floorType == 2) {
+		floor.shadowRoot.getElementById("floorChoice2").checked = true
+	}
     floor.shadowRoot.getElementById('floorExplanation').innerText = 'Ранее вы выбрали тип ' + floorType
+
+    usefullLoad = parseFloat(init.shadowRoot.getElementById('payload').value)
 });
 prevBtn.addEventListener("click", () => {
     floor.shadowRoot.getElementById('floorExplanation').innerText = 'Ранее вы выбрали тип ' + floorType
+    init.shadowRoot.getElementById('floorType').value = floorType
+    usefullLoad = parseFloat(init.shadowRoot.getElementById('payload').value)
 });
 
 function generateFloor() {
