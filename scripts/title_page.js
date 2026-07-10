@@ -27,7 +27,6 @@ function createTit() {
         reviewerDep: tit.shadowRoot.getElementById('reviewerDep').value,
         reviewerName: tit.shadowRoot.getElementById('reviewerName').value,
         city: tit.shadowRoot.getElementById('city').value+', '+tit.shadowRoot.getElementById('year').value
-        
     };
     if (typeof window.docx === 'undefined') {
         alert("Библиотека docx еще не загрузилась. Пожалуйста, подождите.");

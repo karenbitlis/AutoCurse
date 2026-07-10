@@ -739,3 +739,4 @@ function exportCanvasToDocx() {
 load.addEventListener("click", () => {
 	exportCanvasToDocx()
 })
+// delVar()

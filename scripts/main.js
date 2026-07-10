@@ -58,6 +58,7 @@ function generateDocx() {
     createDeck()
     createLitera()
 
+
     documento.push(...titChildren)
     documento.push(...introChildren)
     documento.push(...initChildren)
@@ -65,19 +66,31 @@ function generateDocx() {
     documento.push(...floorChildren)
 
         decking_varo.value = 1
+        roof_varo.value = 1
         changeDeckVar()
+        changeRoofVar()
         createDeck()
+        createRoof()
         documento.push(...dkChildren)
+        documento.push(...roofChildren)
     
         decking_varo.value = 2
+        roof_varo.value = 2
         changeDeckVar()
+        changeRoofVar()
         createDeck()
+        createRoof()
         documento.push(...dkChildren)
+        documento.push(...roofChildren)
     
         decking_varo.value = 3
+        roof_varo.value = 3
         changeDeckVar()
+        changeRoofVar()
         createDeck()
+        createRoof()
         documento.push(...dkChildren)
+        documento.push(...roofChildren)
 
     documento.push(...litChildren)
     

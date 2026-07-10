@@ -235,7 +235,7 @@ function calcThikness() {
             )
         )
     );
-    dkTEN = (localAVar * 100) / (((4 * 150) / 15) * (1 + (72 * (2.06 * 10 ** 4 / (1 - 0.3 ** 2))) / (150 ** 4 * dkQNormis * 10 ** -4)));
+    dkTEN = Math.ceil(((localAVar * 100) / (((4 * 150) / 15) * (1 + (72 * (2.06 * 10 ** 4 / (1 - 0.3 ** 2))) / (150 ** 4 * dkQNormis * 10 ** -4))))*1000)/1000;
     dkDeckThickness = String(dkFindNearestCeil(dkDataBase, dkTEN * 10)).replaceAll(".", ",");
     dkDeckResult = mFormula(
         mSub("t", "н"),
@@ -250,7 +250,6 @@ function calcThikness() {
     );
     decker.shadowRoot.getElementById('deck_thickness').innerText = dkDeckThickness + 'мм';
 }
-
 
 decker.shadowRoot.getElementById('deck_thickness').innerText = dkDeckThickness + 'мм';
 
@@ -271,12 +270,11 @@ dkCanvas.style.height = dkCssHeight + "px";
 dkCtx.scale(dkDpi, dkDpi);
 
 let dkZoom = 1;
-let dkA = 5;
-
-let dkB = 10;
+let dkA = parseFloat(init.shadowRoot.getElementById('param_l').value);
+let dkB = parseFloat(init.shadowRoot.getElementById('paramL').value);
 
 let dkScale = 35;
-const dkMove = 3 * 10 * dkScale / 2;
+const dkMove = 3 * dkB * dkScale / 2;
 
 let dkSnapshotDataUrl, dkSnapshotBinary;
 
@@ -523,6 +521,8 @@ function generateDeck() {
 }
 
 function dkDrawEveryVar(num) {
+    dkA = parseFloat(init.shadowRoot.getElementById('param_l').value);
+    dkB = parseFloat(init.shadowRoot.getElementById('paramL').value);
     dkCtx.fillStyle = "white"
     dkCtx.fillRect(0, 0, canvas.width, canvas.height)
     dkCtx.fillStyle = "black"
@@ -556,130 +556,130 @@ function dkDrawEveryVar(num) {
     }
 
     dkCtx.lineWidth = 3;
-    dkCtx.strokeRect(centerX - (10 / 2) * dkScale, centerY - (dkA / 2) * dkScale, 10 * dkScale, dkA * dkScale);
+    dkCtx.strokeRect(centerX - (dkB / 2) * dkScale, centerY - (dkA / 2) * dkScale, dkB * dkScale, dkA * dkScale);
 
     let nA2 = parseInt(dkA / localAVar);
-    let nB2 = parseInt(10 / localBVar);
+    let nB2 = parseInt(dkB / localBVar);
 
     for (var i = 0; i < nA2; i++) {
         for (var q = 0; q < nB2; q++) {
-            dkCtx.strokeRect(centerX - ((10 / 2) - (q * localBVar)) * dkScale, centerY - ((dkA / 2) - (i * localAVar)) * dkScale, localBVar * dkScale, localAVar * dkScale);
+            dkCtx.strokeRect(centerX - ((dkB / 2) - (q * localBVar)) * dkScale, centerY - ((dkA / 2) - (i * localAVar)) * dkScale, localBVar * dkScale, localAVar * dkScale);
         }
     }
 
     dkCtx.lineWidth = 2;
     
-    dkCtx.strokeRect(centerX - ((10 / 2) * dkScale) - 5, centerY - ((dkA / 2) * dkScale) - 5, 10, 10);
-    dkCtx.strokeRect(centerX + ((10 / 2) * dkScale) - 5, centerY + ((dkA / 2) * dkScale) - 5, 10, 10);
-    dkCtx.strokeRect(centerX + ((10 / 2) * dkScale) - 5, centerY - ((dkA / 2) * dkScale) - 5, 10, 10);
-    dkCtx.strokeRect(centerX - ((10 / 2) * dkScale) - 5, centerY + ((dkA / 2) * dkScale) - 5, 10, 10);
+    dkCtx.strokeRect(centerX - ((dkB / 2) * dkScale) - 5, centerY - ((dkA / 2) * dkScale) - 5, 10, 10);
+    dkCtx.strokeRect(centerX + ((dkB / 2) * dkScale) - 5, centerY + ((dkA / 2) * dkScale) - 5, 10, 10);
+    dkCtx.strokeRect(centerX + ((dkB / 2) * dkScale) - 5, centerY - ((dkA / 2) * dkScale) - 5, 10, 10);
+    dkCtx.strokeRect(centerX - ((dkB / 2) * dkScale) - 5, centerY + ((dkA / 2) * dkScale) - 5, 10, 10);
 
     if (dkZoom == 1) {
         dkCtx.beginPath();
         for (var w = 0; w < nB2; w++) {
             dkCtx.lineWidth = 1;
-            dkCtx.moveTo((w * localBVar * dkScale) + centerX - ((10 / 2) * dkScale), centerY - ((dkA / 2) * dkScale));
-            dkCtx.lineTo((w * localBVar * dkScale) + centerX - ((10 / 2) * dkScale), centerY - ((dkA / 2) * dkScale) - 25);
-            dkCtx.lineTo((w * localBVar * dkScale) + centerX - ((10 / 2) * dkScale) + localBVar * dkScale, centerY - ((dkA / 2) * dkScale) - 25);
-            dkCtx.lineTo((w * localBVar * dkScale) + centerX - ((10 / 2) * dkScale) + localBVar * dkScale, centerY - ((dkA / 2) * dkScale));
-            dkCtx.moveTo((w * localBVar * dkScale) + centerX - ((10 / 2) * dkScale), centerY - ((dkA / 2) * dkScale) - 25);
-            dkCtx.lineTo((w * localBVar * dkScale) + centerX - ((10 / 2) * dkScale) + 5, centerY - ((dkA / 2) * dkScale) - 30);
-            dkCtx.lineTo((w * localBVar * dkScale) + centerX - ((10 / 2) * dkScale) - 5, centerY - ((dkA / 2) * dkScale) - 20);
-            dkCtx.moveTo((w * localBVar * dkScale) + centerX - ((10 / 2) * dkScale), centerY - ((dkA / 2) * dkScale) - 25);
-            dkCtx.lineTo((w * localBVar * dkScale) + centerX - ((10 / 2) * dkScale), centerY - ((dkA / 2) * dkScale) - 30);
-            dkCtx.moveTo((w * localBVar * dkScale) + centerX - ((10 / 2) * dkScale), centerY - ((dkA / 2) * dkScale) - 25);
-            dkCtx.lineTo((w * localBVar * dkScale) + centerX - ((10 / 2) * dkScale) - 5, centerY - ((dkA / 2) * dkScale) - 25);
-            dkCtx.moveTo((w * localBVar * dkScale) + centerX - ((10 / 2) * dkScale) + localBVar * dkScale, centerY - ((dkA / 2) * dkScale) - 25);
-            dkCtx.lineTo((w * localBVar * dkScale) + centerX - ((10 / 2) * dkScale) + localBVar * dkScale + 5, centerY - ((dkA / 2) * dkScale) - 30);
-            dkCtx.lineTo((w * localBVar * dkScale) + centerX - ((10 / 2) * dkScale) + localBVar * dkScale - 5, centerY - ((dkA / 2) * dkScale) - 20);
-            dkCtx.moveTo((w * localBVar * dkScale) + centerX - ((10 / 2) * dkScale) + localBVar * dkScale, centerY - ((dkA / 2) * dkScale) - 25);
-            dkCtx.lineTo((w * localBVar * dkScale) + centerX - ((10 / 2) * dkScale) + localBVar * dkScale, centerY - ((dkA / 2) * dkScale) - 30);
-            dkCtx.moveTo((w * localBVar * dkScale) + centerX - ((10 / 2) * dkScale) + localBVar * dkScale, centerY - ((dkA / 2) * dkScale) - 25);
-            dkCtx.lineTo((w * localBVar * dkScale) + centerX - ((10 / 2) * dkScale) + localBVar * dkScale + 5, centerY - ((dkA / 2) * dkScale) - 25);
-            dkCtx.moveTo((w * localBVar * dkScale) + centerX - ((10 / 2) * dkScale) + localBVar * dkScale / 2, centerY - ((dkA / 2) * dkScale) - 25);
+            dkCtx.moveTo((w * localBVar * dkScale) + centerX - ((dkB / 2) * dkScale), centerY - ((dkA / 2) * dkScale));
+            dkCtx.lineTo((w * localBVar * dkScale) + centerX - ((dkB / 2) * dkScale), centerY - ((dkA / 2) * dkScale) - 25);
+            dkCtx.lineTo((w * localBVar * dkScale) + centerX - ((dkB / 2) * dkScale) + localBVar * dkScale, centerY - ((dkA / 2) * dkScale) - 25);
+            dkCtx.lineTo((w * localBVar * dkScale) + centerX - ((dkB / 2) * dkScale) + localBVar * dkScale, centerY - ((dkA / 2) * dkScale));
+            dkCtx.moveTo((w * localBVar * dkScale) + centerX - ((dkB / 2) * dkScale), centerY - ((dkA / 2) * dkScale) - 25);
+            dkCtx.lineTo((w * localBVar * dkScale) + centerX - ((dkB / 2) * dkScale) + 5, centerY - ((dkA / 2) * dkScale) - 30);
+            dkCtx.lineTo((w * localBVar * dkScale) + centerX - ((dkB / 2) * dkScale) - 5, centerY - ((dkA / 2) * dkScale) - 20);
+            dkCtx.moveTo((w * localBVar * dkScale) + centerX - ((dkB / 2) * dkScale), centerY - ((dkA / 2) * dkScale) - 25);
+            dkCtx.lineTo((w * localBVar * dkScale) + centerX - ((dkB / 2) * dkScale), centerY - ((dkA / 2) * dkScale) - 30);
+            dkCtx.moveTo((w * localBVar * dkScale) + centerX - ((dkB / 2) * dkScale), centerY - ((dkA / 2) * dkScale) - 25);
+            dkCtx.lineTo((w * localBVar * dkScale) + centerX - ((dkB / 2) * dkScale) - 5, centerY - ((dkA / 2) * dkScale) - 25);
+            dkCtx.moveTo((w * localBVar * dkScale) + centerX - ((dkB / 2) * dkScale) + localBVar * dkScale, centerY - ((dkA / 2) * dkScale) - 25);
+            dkCtx.lineTo((w * localBVar * dkScale) + centerX - ((dkB / 2) * dkScale) + localBVar * dkScale + 5, centerY - ((dkA / 2) * dkScale) - 30);
+            dkCtx.lineTo((w * localBVar * dkScale) + centerX - ((dkB / 2) * dkScale) + localBVar * dkScale - 5, centerY - ((dkA / 2) * dkScale) - 20);
+            dkCtx.moveTo((w * localBVar * dkScale) + centerX - ((dkB / 2) * dkScale) + localBVar * dkScale, centerY - ((dkA / 2) * dkScale) - 25);
+            dkCtx.lineTo((w * localBVar * dkScale) + centerX - ((dkB / 2) * dkScale) + localBVar * dkScale, centerY - ((dkA / 2) * dkScale) - 30);
+            dkCtx.moveTo((w * localBVar * dkScale) + centerX - ((dkB / 2) * dkScale) + localBVar * dkScale, centerY - ((dkA / 2) * dkScale) - 25);
+            dkCtx.lineTo((w * localBVar * dkScale) + centerX - ((dkB / 2) * dkScale) + localBVar * dkScale + 5, centerY - ((dkA / 2) * dkScale) - 25);
+            dkCtx.moveTo((w * localBVar * dkScale) + centerX - ((dkB / 2) * dkScale) + localBVar * dkScale / 2, centerY - ((dkA / 2) * dkScale) - 25);
             dkCtx.font = 'bold 12px GOST A';
             dkCtx.fillStyle = 'black';
             dkCtx.textAlign = 'center';
-            dkCtx.fillText('b=' + String(localBVar).replaceAll('.', ','), (w * localBVar * dkScale) + centerX - ((10 / 2) * dkScale) + localBVar * dkScale / 2, centerY - ((dkA / 2) * dkScale) - 35);
+            dkCtx.fillText('b=' + String(localBVar).replaceAll('.', ','), (w * localBVar * dkScale) + centerX - ((dkB / 2) * dkScale) + localBVar * dkScale / 2, centerY - ((dkA / 2) * dkScale) - 35);
             dkCtx.stroke();
         }
     
         for (var r = 0; r < nA2; r++) {
-            dkCtx.moveTo(centerX - ((10 / 2) * dkScale), (r * localAVar * dkScale) + centerY - ((dkA / 2) * dkScale));
-            dkCtx.lineTo(centerX - ((10 / 2) * dkScale) - 25, (r * localAVar * dkScale) + centerY - ((dkA / 2) * dkScale));
-            dkCtx.lineTo(centerX - ((10 / 2) * dkScale) - 25, (r * localAVar * dkScale) + centerY - ((dkA / 2) * dkScale) + localAVar * dkScale);
-            dkCtx.lineTo(centerX - ((10 / 2) * dkScale), (r * localAVar * dkScale) + centerY - ((dkA / 2) * dkScale) + localAVar * dkScale);
-            dkCtx.moveTo(centerX - ((10 / 2) * dkScale) - 25, (r * localAVar * dkScale) + centerY - ((dkA / 2) * dkScale));
-            dkCtx.lineTo(centerX - ((10 / 2) * dkScale) - 20, (r * localAVar * dkScale) + centerY - ((dkA / 2) * dkScale) + 5);
-            dkCtx.lineTo(centerX - ((10 / 2) * dkScale) - 30, (r * localAVar * dkScale) + centerY - ((dkA / 2) * dkScale) - 5);
-            dkCtx.moveTo(centerX - ((10 / 2) * dkScale) - 25, (r * localAVar * dkScale) + centerY - ((dkA / 2) * dkScale));
-            dkCtx.lineTo(centerX - ((10 / 2) * dkScale) - 25, (r * localAVar * dkScale) + centerY - ((dkA / 2) * dkScale) - 5);
-            dkCtx.moveTo(centerX - ((10 / 2) * dkScale) - 25, (r * localAVar * dkScale) + centerY - ((dkA / 2) * dkScale) + localAVar * dkScale);
-            dkCtx.lineTo(centerX - ((10 / 2) * dkScale) - 20, (r * localAVar * dkScale) + centerY - ((dkA / 2) * dkScale) + localAVar * dkScale + 5);
-            dkCtx.lineTo(centerX - ((10 / 2) * dkScale) - 30, (r * localAVar * dkScale) + centerY - ((dkA / 2) * dkScale) + localAVar * dkScale - 5);
-            dkCtx.moveTo(centerX - ((10 / 2) * dkScale) - 25, (r * localAVar * dkScale) + centerY - ((dkA / 2) * dkScale) + localAVar * dkScale);
-            dkCtx.lineTo(centerX - ((10 / 2) * dkScale) - 25, (r * localAVar * dkScale) + centerY - ((dkA / 2) * dkScale) + localAVar * dkScale + 5);
+            dkCtx.moveTo(centerX - ((dkB / 2) * dkScale), (r * localAVar * dkScale) + centerY - ((dkA / 2) * dkScale));
+            dkCtx.lineTo(centerX - ((dkB / 2) * dkScale) - 25, (r * localAVar * dkScale) + centerY - ((dkA / 2) * dkScale));
+            dkCtx.lineTo(centerX - ((dkB / 2) * dkScale) - 25, (r * localAVar * dkScale) + centerY - ((dkA / 2) * dkScale) + localAVar * dkScale);
+            dkCtx.lineTo(centerX - ((dkB / 2) * dkScale), (r * localAVar * dkScale) + centerY - ((dkA / 2) * dkScale) + localAVar * dkScale);
+            dkCtx.moveTo(centerX - ((dkB / 2) * dkScale) - 25, (r * localAVar * dkScale) + centerY - ((dkA / 2) * dkScale));
+            dkCtx.lineTo(centerX - ((dkB / 2) * dkScale) - 20, (r * localAVar * dkScale) + centerY - ((dkA / 2) * dkScale) + 5);
+            dkCtx.lineTo(centerX - ((dkB / 2) * dkScale) - 30, (r * localAVar * dkScale) + centerY - ((dkA / 2) * dkScale) - 5);
+            dkCtx.moveTo(centerX - ((dkB / 2) * dkScale) - 25, (r * localAVar * dkScale) + centerY - ((dkA / 2) * dkScale));
+            dkCtx.lineTo(centerX - ((dkB / 2) * dkScale) - 25, (r * localAVar * dkScale) + centerY - ((dkA / 2) * dkScale) - 5);
+            dkCtx.moveTo(centerX - ((dkB / 2) * dkScale) - 25, (r * localAVar * dkScale) + centerY - ((dkA / 2) * dkScale) + localAVar * dkScale);
+            dkCtx.lineTo(centerX - ((dkB / 2) * dkScale) - 20, (r * localAVar * dkScale) + centerY - ((dkA / 2) * dkScale) + localAVar * dkScale + 5);
+            dkCtx.lineTo(centerX - ((dkB / 2) * dkScale) - 30, (r * localAVar * dkScale) + centerY - ((dkA / 2) * dkScale) + localAVar * dkScale - 5);
+            dkCtx.moveTo(centerX - ((dkB / 2) * dkScale) - 25, (r * localAVar * dkScale) + centerY - ((dkA / 2) * dkScale) + localAVar * dkScale);
+            dkCtx.lineTo(centerX - ((dkB / 2) * dkScale) - 25, (r * localAVar * dkScale) + centerY - ((dkA / 2) * dkScale) + localAVar * dkScale + 5);
             dkCtx.save();
             dkCtx.font = 'bold 12px GOST A';
             dkCtx.textAlign = 'right';
             dkCtx.textBaseline = 'middle';
-            dkCtx.translate(centerX - ((10 / 2) * dkScale) - 30, (r * localAVar * dkScale) + centerY - ((dkA / 2) * dkScale) + localAVar * dkScale / 2);
+            dkCtx.translate(centerX - ((dkB / 2) * dkScale) - 30, (r * localAVar * dkScale) + centerY - ((dkA / 2) * dkScale) + localAVar * dkScale / 2);
             dkCtx.fillText('a=' + String(localAVar).replaceAll('.', ','), 0, 0);
             dkCtx.restore();
             dkCtx.stroke();
         }
     
         dkCtx.lineWidth = 1;
-        dkCtx.moveTo(centerX - ((10 / 2) * dkScale), centerY - ((dkA / 2) * dkScale));
-        dkCtx.lineTo(centerX - ((10 / 2) * dkScale) - 65, centerY - ((dkA / 2) * dkScale));
-        dkCtx.lineTo(centerX - ((10 / 2) * dkScale) - 65, centerY - ((dkA / 2) * dkScale) + dkA * dkScale);
-        dkCtx.lineTo(centerX - ((10 / 2) * dkScale), centerY - ((dkA / 2) * dkScale) + dkA * dkScale);
-        dkCtx.moveTo(centerX - ((10 / 2) * dkScale) - 65, centerY - ((dkA / 2) * dkScale));
-        dkCtx.lineTo(centerX - ((10 / 2) * dkScale) - 60, centerY - ((dkA / 2) * dkScale) + 5);
-        dkCtx.lineTo(centerX - ((10 / 2) * dkScale) - 70, centerY - ((dkA / 2) * dkScale) - 5);
-        dkCtx.moveTo(centerX - ((10 / 2) * dkScale) - 65, centerY - ((dkA / 2) * dkScale));
-        dkCtx.lineTo(centerX - ((10 / 2) * dkScale) - 65, centerY - ((dkA / 2) * dkScale) - 5);
-        dkCtx.moveTo(centerX - ((10 / 2) * dkScale) - 65, centerY - ((dkA / 2) * dkScale) + dkA * dkScale);
-        dkCtx.lineTo(centerX - ((10 / 2) * dkScale) - 60, centerY - ((dkA / 2) * dkScale) + dkA * dkScale + 5);
-        dkCtx.lineTo(centerX - ((10 / 2) * dkScale) - 70, centerY - ((dkA / 2) * dkScale) + dkA * dkScale - 5);
-        dkCtx.moveTo(centerX - ((10 / 2) * dkScale) - 65, centerY - ((dkA / 2) * dkScale) + dkA * dkScale);
-        dkCtx.lineTo(centerX - ((10 / 2) * dkScale) - 65, centerY - ((dkA / 2) * dkScale) + dkA * dkScale + 5);
+        dkCtx.moveTo(centerX - ((dkB / 2) * dkScale), centerY - ((dkA / 2) * dkScale));
+        dkCtx.lineTo(centerX - ((dkB / 2) * dkScale) - 65, centerY - ((dkA / 2) * dkScale));
+        dkCtx.lineTo(centerX - ((dkB / 2) * dkScale) - 65, centerY - ((dkA / 2) * dkScale) + dkA * dkScale);
+        dkCtx.lineTo(centerX - ((dkB / 2) * dkScale), centerY - ((dkA / 2) * dkScale) + dkA * dkScale);
+        dkCtx.moveTo(centerX - ((dkB / 2) * dkScale) - 65, centerY - ((dkA / 2) * dkScale));
+        dkCtx.lineTo(centerX - ((dkB / 2) * dkScale) - 60, centerY - ((dkA / 2) * dkScale) + 5);
+        dkCtx.lineTo(centerX - ((dkB / 2) * dkScale) - 70, centerY - ((dkA / 2) * dkScale) - 5);
+        dkCtx.moveTo(centerX - ((dkB / 2) * dkScale) - 65, centerY - ((dkA / 2) * dkScale));
+        dkCtx.lineTo(centerX - ((dkB / 2) * dkScale) - 65, centerY - ((dkA / 2) * dkScale) - 5);
+        dkCtx.moveTo(centerX - ((dkB / 2) * dkScale) - 65, centerY - ((dkA / 2) * dkScale) + dkA * dkScale);
+        dkCtx.lineTo(centerX - ((dkB / 2) * dkScale) - 60, centerY - ((dkA / 2) * dkScale) + dkA * dkScale + 5);
+        dkCtx.lineTo(centerX - ((dkB / 2) * dkScale) - 70, centerY - ((dkA / 2) * dkScale) + dkA * dkScale - 5);
+        dkCtx.moveTo(centerX - ((dkB / 2) * dkScale) - 65, centerY - ((dkA / 2) * dkScale) + dkA * dkScale);
+        dkCtx.lineTo(centerX - ((dkB / 2) * dkScale) - 65, centerY - ((dkA / 2) * dkScale) + dkA * dkScale + 5);
         dkCtx.save();
         dkCtx.font = 'bold 14px GOST A';
         dkCtx.textAlign = 'right';
         dkCtx.textBaseline = 'middle';
-        dkCtx.translate(centerX - ((10 / 2) * dkScale) - 70, centerY - ((dkA / 2) * dkScale) + dkA * dkScale / 2);
+        dkCtx.translate(centerX - ((dkB / 2) * dkScale) - 70, centerY - ((dkA / 2) * dkScale) + dkA * dkScale / 2);
         dkCtx.fillText('l=' + String(dkA).replaceAll('.', ','), 0, 0);
         dkCtx.restore();
         dkCtx.stroke();
     
-        dkCtx.moveTo(centerX - ((10 / 2) * dkScale), centerY - ((dkA / 2) * dkScale));
-        dkCtx.lineTo(centerX - ((10 / 2) * dkScale), centerY - ((dkA / 2) * dkScale) - 55);
-        dkCtx.lineTo(centerX - ((10 / 2) * dkScale) + 10 * dkScale, centerY - ((dkA / 2) * dkScale) - 55);
-        dkCtx.lineTo(centerX - ((10 / 2) * dkScale) + 10 * dkScale, centerY - ((dkA / 2) * dkScale));
-        dkCtx.moveTo(centerX - ((10 / 2) * dkScale), centerY - ((dkA / 2) * dkScale) - 55);
-        dkCtx.lineTo(centerX - ((10 / 2) * dkScale) + 5, centerY - ((dkA / 2) * dkScale) - 60);
-        dkCtx.lineTo(centerX - ((10 / 2) * dkScale) - 5, centerY - ((dkA / 2) * dkScale) - 50);
-        dkCtx.moveTo(centerX - ((10 / 2) * dkScale), centerY - ((dkA / 2) * dkScale) - 55);
-        dkCtx.lineTo(centerX - ((10 / 2) * dkScale), centerY - ((dkA / 2) * dkScale) - 60);
-        dkCtx.moveTo(centerX - ((10 / 2) * dkScale), centerY - ((dkA / 2) * dkScale) - 55);
-        dkCtx.lineTo(centerX - ((10 / 2) * dkScale) - 5, centerY - ((dkA / 2) * dkScale) - 55);
-        dkCtx.moveTo(centerX - ((10 / 2) * dkScale) + 10 * dkScale, centerY - ((dkA / 2) * dkScale) - 55);
-        dkCtx.lineTo(centerX - ((10 / 2) * dkScale) + 10 * dkScale + 5, centerY - ((dkA / 2) * dkScale) - 60);
-        dkCtx.lineTo(centerX - ((10 / 2) * dkScale) + 10 * dkScale - 5, centerY - ((dkA / 2) * dkScale) - 50);
-        dkCtx.moveTo(centerX - ((10 / 2) * dkScale) + 10 * dkScale, centerY - ((dkA / 2) * dkScale) - 55);
-        dkCtx.lineTo(centerX - ((10 / 2) * dkScale) + 10 * dkScale, centerY - ((dkA / 2) * dkScale) - 60);
-        dkCtx.moveTo(centerX - ((10 / 2) * dkScale) + 10 * dkScale, centerY - ((dkA / 2) * dkScale) - 55);
-        dkCtx.lineTo(centerX - ((10 / 2) * dkScale) + 10 * dkScale + 5, centerY - ((dkA / 2) * dkScale) - 55);
-        dkCtx.moveTo(centerX - ((10 / 2) * dkScale) + 10 * dkScale / 2, centerY - ((dkA / 2) * dkScale) - 55);
+        dkCtx.moveTo(centerX - ((dkB / 2) * dkScale), centerY - ((dkA / 2) * dkScale));
+        dkCtx.lineTo(centerX - ((dkB / 2) * dkScale), centerY - ((dkA / 2) * dkScale) - 55);
+        dkCtx.lineTo(centerX - ((dkB / 2) * dkScale) + dkB * dkScale, centerY - ((dkA / 2) * dkScale) - 55);
+        dkCtx.lineTo(centerX - ((dkB / 2) * dkScale) + dkB * dkScale, centerY - ((dkA / 2) * dkScale));
+        dkCtx.moveTo(centerX - ((dkB / 2) * dkScale), centerY - ((dkA / 2) * dkScale) - 55);
+        dkCtx.lineTo(centerX - ((dkB / 2) * dkScale) + 5, centerY - ((dkA / 2) * dkScale) - 60);
+        dkCtx.lineTo(centerX - ((dkB / 2) * dkScale) - 5, centerY - ((dkA / 2) * dkScale) - 50);
+        dkCtx.moveTo(centerX - ((dkB / 2) * dkScale), centerY - ((dkA / 2) * dkScale) - 55);
+        dkCtx.lineTo(centerX - ((dkB / 2) * dkScale), centerY - ((dkA / 2) * dkScale) - 60);
+        dkCtx.moveTo(centerX - ((dkB / 2) * dkScale), centerY - ((dkA / 2) * dkScale) - 55);
+        dkCtx.lineTo(centerX - ((dkB / 2) * dkScale) - 5, centerY - ((dkA / 2) * dkScale) - 55);
+        dkCtx.moveTo(centerX - ((dkB / 2) * dkScale) + dkB * dkScale, centerY - ((dkA / 2) * dkScale) - 55);
+        dkCtx.lineTo(centerX - ((dkB / 2) * dkScale) + dkB * dkScale + 5, centerY - ((dkA / 2) * dkScale) - 60);
+        dkCtx.lineTo(centerX - ((dkB / 2) * dkScale) + dkB * dkScale - 5, centerY - ((dkA / 2) * dkScale) - 50);
+        dkCtx.moveTo(centerX - ((dkB / 2) * dkScale) + dkB * dkScale, centerY - ((dkA / 2) * dkScale) - 55);
+        dkCtx.lineTo(centerX - ((dkB / 2) * dkScale) + dkB * dkScale, centerY - ((dkA / 2) * dkScale) - 60);
+        dkCtx.moveTo(centerX - ((dkB / 2) * dkScale) + dkB * dkScale, centerY - ((dkA / 2) * dkScale) - 55);
+        dkCtx.lineTo(centerX - ((dkB / 2) * dkScale) + dkB * dkScale + 5, centerY - ((dkA / 2) * dkScale) - 55);
+        dkCtx.moveTo(centerX - ((dkB / 2) * dkScale) + dkB * dkScale / 2, centerY - ((dkA / 2) * dkScale) - 55);
         dkCtx.font = 'bold 14px GOST A';
         dkCtx.fillStyle = 'black';
         dkCtx.textAlign = 'center';
-        dkCtx.fillText('L=' + String(10).replaceAll('.', ','), centerX - ((10 / 2) * dkScale) + 10 * dkScale / 2, centerY - ((dkA / 2) * dkScale) - 60);
+        dkCtx.fillText('L=' + String(dkB).replaceAll('.', ','), centerX, centerY - ((dkA / 2) * dkScale) - 60);
         dkCtx.stroke();
         
         dkCtx.lineWidth = 2;
-        let nB1 = 10 / localBVar;
+        let nB1 = dkB / localBVar;
         let nA1 = dkA / localAVar;
 
         let wo = localBVar * dkScale;

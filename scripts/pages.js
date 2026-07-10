@@ -940,7 +940,6 @@ class DeckRoof extends HTMLElement {
                 }
                 #decking_varo {
                     font-size: 25px
-
                 }
             </style>
             <div class="container">
@@ -1081,6 +1080,9 @@ class RoofBeam extends HTMLElement {
                     max-width: 550px;
                     padding-bottom: 10px;
                 }
+                #roof_varo {
+                    font-size: 25px
+                }
             </style>
             <div class="container" id="withCanvas">
                 <h2>Балка настила</h2>
@@ -1088,10 +1090,17 @@ class RoofBeam extends HTMLElement {
                     <img src="img/roof_beam.jpg" id="picDeck">
                     <div>
                         <h1 id="roof_beam"></h1>
+                        <h3>
+                            <select id="roof_varo">
+                                <option value="1"><h3>Вариант 1</h3></option>
+                                <option value="2"><h3>Вариант 2</h3></option>
+                                <option value="3"><h3>Вариант 3</h3></option>
+                            </select>
+                        </h3>
                     </div>
                 </div><br>
-                <div class="form-container" id="canvas-containerRoof">
-                    <canvas id="canvasRoof"></canvas>
+                <div class="form-container" id="canvas-container">
+                    <canvas id="canvas"></canvas>
                 </div>
                 <button id="roofing">Скачать расчет</button>
             </div>
