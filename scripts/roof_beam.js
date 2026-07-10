@@ -247,7 +247,7 @@ function rBcounting() {
         "24",
         mFrac("кН", mSup("см", "2"))
     );
-    roof_beam1.shadowRoot.getElementById('roof_beam').innerText = 'Расчетная нагрузка на балку настила ' + String(mainest * aVarRb).replace('.', ',') + ' кН/м.';
+    roof_beam1.shadowRoot.getElementById('roof_beam').innerText = 'Расчетная нагрузка на балку настила ' + String(Math.ceil((mainest * aVarRb)*1000)/1000).replace('.', ',') + ' кН/м.';
 }
 
 function getTheRoof() {
@@ -432,7 +432,9 @@ function generateRoof() {
     });
 }
 
+
 function drawEveryVarRoof(num) {
+    let aVarRb, bVarRb, dist;
     rbCtx.fillStyle = "white"
     rbCtx.fillRect(0, 0, rbCanvas.width, rbCanvas.height)
     rbCtx.shadowColor = 'transparent';
@@ -446,8 +448,6 @@ function drawEveryVarRoof(num) {
     varus3A = parseFloat(vargen.shadowRoot.getElementById('variant3A').value);
     varus3B = parseFloat(vargen.shadowRoot.getElementById('variant3B').value);
     
-    let aVarRb, bVarRb, dist;
-
     if (num == 1) {
         aVarRb = varus1A;
         bVarRb = varus1B;
@@ -478,11 +478,6 @@ function drawEveryVarRoof(num) {
     }
 
     rbCtx.lineWidth = 2;
-    
-    // rbCtx.strokeRect(centerX - ((rbB / 2) * rbScale) - 5, centerY - ((rbA / 2) * rbScale) - 5, 10, 10);
-    // rbCtx.strokeRect(centerX + ((rbB / 2) * rbScale) - 5, centerY + ((rbA / 2) * rbScale) - 5, 10, 10);
-    // rbCtx.strokeRect(centerX + ((rbB / 2) * rbScale) - 5, centerY - ((rbA / 2) * rbScale) - 5, 10, 10);
-    // rbCtx.strokeRect(centerX - ((rbB / 2) * rbScale) - 5, centerY + ((rbA / 2) * rbScale) - 5, 10, 10);
 
     if (rbZoom == 1) {
         rbCtx.beginPath();
@@ -614,12 +609,6 @@ function drawEveryVarRoof(num) {
 rBcounting()
 drawEveryVarRoof(1);
 
-nextBtn.addEventListener("click", () => { 
-    rBcounting();
-    drawEveryVarRoof(1);
-})
-
-
 roof_varo.addEventListener("click", () => {
     changeRoofVar()
 });
@@ -627,14 +616,40 @@ function changeRoofVar() {
     if (roof_varo.value == 1) {
         roofvaro = 1
         drawEveryVarRoof(roofvaro);
+        decking_varo.value = roof_varo.value
+        changeDeckVar()
         rBcounting()
     } else if (roof_varo.value == 2) {
         roofvaro = 2
         drawEveryVarRoof(roofvaro);
+        decking_varo.value = roof_varo.value
+        changeDeckVar()
         rBcounting()
     } else if (roof_varo.value == 3) {
         roofvaro = 3
         drawEveryVarRoof(roofvaro);
+        decking_varo.value = roof_varo.value
+        changeDeckVar()
         rBcounting()
     }
 }
+// nextBtn.addEventListener("click", () => {
+//     changeRoofVar()
+// });
+
+init.shadowRoot.addEventListener('input', (event) => {
+    drawEveryVarRoof(numvaro);
+    rBcounting()
+    changeRoofVar()
+});
+floor.shadowRoot.addEventListener('input', (event) => {
+    drawEveryVarRoof(numvaro);
+    rBcounting()
+    changeRoofVar()
+    console.log('input')
+});
+vargen.shadowRoot.addEventListener('input', (event) => {
+    drawEveryVarRoof(numvaro);
+    rBcounting()
+    changeRoofVar()
+});

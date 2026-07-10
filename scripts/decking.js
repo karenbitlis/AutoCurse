@@ -713,9 +713,21 @@ function dkDrawEveryVar(num) {
         dkCtx.restore();
     }
 }
-nextBtn.addEventListener("click", () => {
+
+init.shadowRoot.addEventListener('input', (event) => {
     dkDrawEveryVar(numvaro);
     calcThikness()
+    changeDeckVar()
+});
+floor.shadowRoot.addEventListener('input', (event) => {
+    dkDrawEveryVar(numvaro);
+    calcThikness()
+    changeDeckVar()
+});
+vargen.shadowRoot.addEventListener('input', (event) => {
+    dkDrawEveryVar(numvaro);
+    calcThikness()
+    changeDeckVar()
 });
 
 dkDrawEveryVar(numvaro);
@@ -730,14 +742,17 @@ function changeDeckVar() {
     if (decking_varo.value == 1) {
         numvaro = 1
         dkDrawEveryVar(numvaro);
+
         calcThikness()
     } else if (decking_varo.value == 2) {
         numvaro = 2
         dkDrawEveryVar(numvaro);
+
         calcThikness()
     } else if (decking_varo.value == 3) {
         numvaro = 3
         dkDrawEveryVar(numvaro);
+
         calcThikness()
     }
 }

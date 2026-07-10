@@ -942,7 +942,7 @@ class DeckRoof extends HTMLElement {
                     font-size: 25px
                 }
             </style>
-            <div class="container">
+            <div class="container" id="withCanvas">
                 <h2>Толщина настила</h2>
                 <div class="form-row">
                     <img src="img/deck.jpg" id="picDeck">
