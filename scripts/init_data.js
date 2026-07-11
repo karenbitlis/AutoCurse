@@ -24,7 +24,7 @@ function createInit() {
         floorType: init.shadowRoot.getElementById('floorType').value,
         note: init.shadowRoot.getElementById('note').value
     };
-    let grid_sizes = 'В данной курсовой работе проектируется балочная клетка с размерами в плане' + dataIn.paramL + '×' + dataIn.param_l + 'м.'
+    let grid_sizes = 'В данной курсовой работе проектируется балочная клетка с размерами в плане ' + dataIn.paramL + '×' + dataIn.param_l + 'м.'
     
     if (typeof window.docx === 'undefined') {
         alert("Ошибка: Библиотека docx не загрузилась. Проверьте интернет-подключение.");
