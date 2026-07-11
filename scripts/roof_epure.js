@@ -1,62 +1,314 @@
-let roofBeamChildren = []
+let reBeamChildren = []
 
-const docxLib = window.docx;
-const { Document, Packer, ImageRun, LineRuleType, XmlComponent, Paragraph, ommlXmlText, BorderStyle, TextRun, AlignmentType, Table, TableRow, TableCell, WidthType, PageBreak, textParagraphs } = docxLib;
-let usefullLoad = 30
-let roofType = 1
-let roofTable
-let deck_thickness = 14
-let varus1A = 1
-let varus1B = 2
-let scale = 75
 
-let q_normal = 32.429
-let q_real = 34.383
+let rEpure = document.getElementById("roof-epure1")
+let reCanvas = rEpure.shadowRoot.getElementById("canvas");
+let reCtx = reCanvas.getContext("2d");
+let reCtnr = rEpure.shadowRoot.getElementById("canvas-container");
+let reScale = 75
+let reMscale = 50
+let reRoofTable
 
-let q_normal_linear = q_normal*varus1A
-let q_real_linear = q_real*varus1A
+let reDataUrl = reCanvas.toDataURL("image/png");
+let reSnapshot = [];
+let { data: reInitialData } = reDataURLtoUint8Array(reDataUrl)
+let reMMax
+let reBiQ 
 
-let M_max = q_real_linear*(varus1B**2)/8
-let biQ = q_real_linear * varus1B / 2
+const reCssWidth = reCtnr.offsetWidth - 8;
+const reCssHeight = 450;
+const reDpi = 10;
 
-const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d");
+let reCenterX
+let reCenterY
 
-let dataUrl = canvas.toDataURL("image/png");
-let snapshot = []
-let { data } = dataURLtoUint8Array(dataUrl);
+let reP1
+let reP3
+let reP2
 
-const ctnr = document.getElementById("canvas-container");
+let reWneed
+let reRoofBeamchey
+let reBeamRoofParameters
+let reRoofPowerCheck
+let reRoofPowerCheckCalc
+let reRoofPowerCheckEnd
+let reRoofTauCheck
+let reTauMaxRoof
+let reRoofTauCheckCalc
+let reRoofTauCheckUnequ1
+let reRoofTauCheckUnequ2
+let reRoofDeflectionFormula
+let reRoofDeflectionAnsw 
+let reRoofDeflectionCalc
 
-const cssWidth = ctnr.offsetWidth-8;
-const cssHeight = 450;
-const dpi = 10;
+function doingEpures() {
+	reBeamChildren = [];
+	varus1A = parseFloat(vargen.shadowRoot.getElementById('variant1A').value);
+	varus1B = parseFloat(vargen.shadowRoot.getElementById('variant1B').value);
+	varus2A = parseFloat(vargen.shadowRoot.getElementById('variant2A').value);
+	varus2B = parseFloat(vargen.shadowRoot.getElementById('variant2B').value);
+	varus3A = parseFloat(vargen.shadowRoot.getElementById('variant3A').value);
+	varus3B = parseFloat(vargen.shadowRoot.getElementById('variant3B').value);
+	
+	dataInB = {
+		taskNum: init.shadowRoot.getElementById('taskNum').value,
+		paramL: init.shadowRoot.getElementById('paramL').value,
+		param_l: init.shadowRoot.getElementById('param_l').value,
+		paramH: init.shadowRoot.getElementById('paramH').value,
+		payload: init.shadowRoot.getElementById('payload').value,
+		concrete: init.shadowRoot.getElementById('concrete').value,
+		columns: init.shadowRoot.getElementById('columns').value,
+		joints: init.shadowRoot.getElementById('joints').value,
+		floorType: init.shadowRoot.getElementById('floorType').value,
+		note: init.shadowRoot.getElementById('note').value
+	};
+	
+	reUsefullLoad = usefullLoad
+	reRoofType = roofType
+	reDeckThickness = deck_thickness
+	
+	if (roofvaro == 1) {
+	    aVarRb = varus1A;
+	    bVarRb = varus1B;
+	    dist = -3 * rbB * rbScale / 2;
+	} else if (roofvaro == 2) {
+	    aVarRb = varus2A;
+	    bVarRb = varus2B;
+	    dist = -3 * rbB * rbScale / 2;
+	} else if (roofvaro == 3) {
+	    aVarRb = varus3A;
+	    bVarRb = varus3B;
+	    dist = -3 * rbB * rbScale / 2;
+	}
+	
+	reVarus1A = aVarRb
+	reVarus1B = bVarRb
+	reScale = 75
+	
+	reQNormal = maine * aVarRb
+	reQReal = mainest * aVarRb
+	
+	reQNormalLinear = reQNormal * reVarus1A
+	reQRealLinear = reQReal * reVarus1A
+	
+	reMMax = reQRealLinear * (reVarus1B ** 2) / 8;
+	reBiQ = reQRealLinear * reVarus1B / 2;
+	
+	reDataUrl = reCanvas.toDataURL("image/png");
+	reSnapshot = [];
+	({ data: reInitialData } = reDataURLtoUint8Array(reDataUrl));;
+	
+	reCanvas.width = reCssWidth * reDpi;
+	reCanvas.height = reCssHeight * reDpi;
+	
+	reCanvas.style.width = reCssWidth + "px";
+	reCanvas.style.height = reCssHeight + "px";
+	
+	reCtx.scale(reDpi, reDpi);
+	
+	reCenterX = reCanvas.width / (2 * reDpi);
+	reCenterY = reCanvas.height / (2 * reDpi) + 300;
+	
+	reMscale = 50
+	
+	if (reVarus1B > 3) {
+	    reMscale = 110;
+	    if (reVarus1B > 4) {
+	        reMscale = 200;
+	    }
+	}
+	
+	reP1 = { x: reCenterX - reVarus1B / 2 * reScale, y: reCenterY / 7 + 2 * reScale };
+	reP3 = { x: reCenterX + (reVarus1B / 2) * reScale, y: reCenterY / 7 + 2 * reScale };
+	reP2 = { x: reCenterX, y: reCenterY / 7 + 2 * reScale + reMMax / reMscale * reScale };
 
-canvas.width = cssWidth * dpi;
-canvas.height = cssHeight * dpi;
-
-canvas.style.width = cssWidth + "px";
-canvas.style.height = cssHeight + "px";
-
-ctx.scale(dpi, dpi);
-
-let centerX = canvas.width / (2*dpi);
-let centerY = canvas.height / (2*dpi)+300;
-
-let Mscale = 50
-
-if (varus1B > 3) {
-	Mscale = 110
-    if (varus1B > 4) {
-        Mscale = 200
-    }
+	drawRoofBeamEpure();
+	reWneed = mFormula(
+	    mText('σ'), mEq(),
+	    mFrac(mSub('M', 'max'), mText('W')),
+	    ' ≤ ',
+	    mGroup(mSub('R', 'y'), mMul(), mSub('γ', 'c')),
+	
+	    mText(' ⇒ '),
+	    mSub('W', 'тр'), mEq(),
+	    mFrac(
+	        mSub('M', 'max'),
+	        mGroup(mSub('R', 'y'), mMul(), mSub('γ', 'c'))
+	    ),
+	    mEq(),
+	    mFrac(
+	        mGroup(String(Math.ceil(reMMax * 1000) / 1000).replace('.', ',')),
+	        '0,24'
+	    ),
+	    mEq(),
+	    String(Math.ceil(reMMax / 0.24 * 1000) / 1000).replace('.', ','), mSup('см', '3'));
+	reRoofBeamchey = selectBeamByWx(Math.ceil(reMMax / 0.24 * 1000) / 1000);
+	reBeamRoofParameters = mFormula(
+	    mSub('I', 'x'), mEq(), String(reRoofBeamchey.Ix).replace('.', ','), mText(' '), mSup('см', '4'),
+	    mText('; '), 
+	    mSub('S', 'x'), mEq(), String(reRoofBeamchey.Sx).replace('.', ','), mText(' '), mSup('см', '3'),
+	    mText('; '),
+	    mText('Масса на 1м'), mEq(), String(reRoofBeamchey.weight).replace('.', ','), mText(' кг'));
+	reRoofPowerCheck = mFormula(
+	    mText('σ'), mEq(),
+	    mFrac(
+	        mSub('M', 'max'),
+	        mText('W')
+	    ),
+	    ' ≤ ',
+	    mGroup(mSub('R', 'y'), mMul(), mSub('γ', 'c')));
+	reRoofPowerCheckCalc = mFormula(
+	    mFrac(
+	        mSub('M', 'max'),
+	        mSub('W', 'x')
+	    ),
+	    mEq(), 
+	    mFrac(
+	        mGroup(String(Math.ceil(reMMax * 1000) / 1000).replace('.', ','), mMul(), '100'),
+	        (String(Math.ceil(reRoofBeamchey.Wx * 1000) / 1000).replace('.', ','))
+	    ),
+	    mEq(), 
+	    String(Math.ceil(reMMax * 100 / reRoofBeamchey.Wx * 1000) / 1000).replace('.', ','), 
+	    mText(' '),
+	    mFrac(
+	        'кН',
+	        mGroup(mSup('см', '2'))
+	    ));
+	reRoofPowerCheckEnd = mFormula(
+	    String(Math.ceil(reMMax * 100 / reRoofBeamchey.Wx * 1000) / 1000).replace('.', ','),
+	    mText(' '),
+	    mFrac('кН', mSup('см', '2')),
+	    ' < ',
+	    '24',
+	    mText(' '),
+	    mFrac('кН', mSup('см', '2')));
+	reRoofTauCheck = mFormula(
+	    mSub('τ', 'max'), mEq(),
+	    mFrac(mGroup(mSub('Q', 'max'), mMul(), mSub('S', 'x')), mGroup(mSub('I', 'x'), mMul(), 't')),
+	    ' ≤ ',
+	    mGroup(mSub('R', 's'), mMul(), mSub('γ', 'c')),
+	    mText(' (где '), mSub('R', 's'), mEq(), '0,58', mMul(), mSub('R', 'y'), mText(')'));
+	reTauMaxRoof = (reBiQ * reRoofBeamchey.Sx) / (reRoofBeamchey.Ix * reRoofBeamchey.t / 10);
+	reRoofTauCheckCalc = mFormula(
+	    mSub('τ', 'max'), mEq(),
+	    mFrac(
+	        mGroup(mSub('Q', 'max'), mMul(), mSub('S', 'x')),
+	        mGroup(mSub('I', 'x'), mMul(), 't')
+	    ),
+	    mEq(),
+	    mFrac(
+	        mGroup(String(Math.ceil(reBiQ * 1000) / 1000).replace('.', ','), mMul(), String(Math.ceil(reRoofBeamchey.Sx * 1000) / 1000).replace('.', ',')),
+	        mGroup(String(Math.ceil(reRoofBeamchey.Ix * 1000) / 1000).replace('.', ','), mMul(), String(Math.ceil(reRoofBeamchey.t / 10 * 1000) / 1000).replace('.', ','))
+	    ),
+	    mEq(),
+	    String(Math.ceil(reTauMaxRoof * 1000) / 1000).replace('.', ','), 
+	    mText(' '), 
+	    mFrac('кН', mSup('см', '2')));
+	reRoofTauCheckUnequ1 = mFormula(
+	    String(Math.ceil(reTauMaxRoof * 1000) / 1000).replace('.', ','),
+	    mText(' '),
+	    mFrac('кН', mSup('см', '2')),
+	    ' ≤ ',
+	    '0,58',
+	    mMul(),
+	    '24',
+	    mText(' '),
+	    mFrac('кН', mSup('см', '2')));
+	reRoofTauCheckUnequ2 = mFormula(
+	    String(Math.ceil(reTauMaxRoof * 1000) / 1000).replace('.', ','),
+	    mText(' '),
+	    mFrac('кН', mSup('см', '2')),
+	    ' ≤ ',
+	    '13,92',
+	    mText(' '),
+	    mFrac('кН', mSup('см', '2')));
+	reRoofDeflectionFormula = mFormula(
+	    mFrac(
+	        mSub('f', 'бн'),
+	        mSub('l', 'бн')
+	    ),
+	    mEq(), 
+	    mFrac('5', '384'),
+	    mMul(),
+	    mFrac(
+			mGroup(
+				mSub('q', 'н'), 
+				mMul(), 
+				mGroup(mSup(mSub('l', 'бн'), '3'))
+			),
+			mGroup('E', mMul(), mSub('I', 'x'))
+		),
+		' ≤ ',
+		mSquareParen(mFrac('f', 'l')));
+	reRoofDeflectionAnsw = (5 / 384) * ((reQNormal) * (10 ** (-2)) * ((reVarus1B * 100) ** 3)) / (2.06 * (10 ** 4) * reRoofBeamchey.Ix);
+	reRoofDeflectionCalc = mFormula(
+		mFrac('5', '384'),
+		mMul(),
+		mFrac(
+			mGroup(
+				String(Math.ceil(reQNormal * 1000) / 1000).replace('.', ','),
+				mText('·'), 
+				mSup('10', '-2'),
+				mText('·'),
+				mGroup(mSup(String(Math.ceil(reVarus1B * 100 * 1000) / 1000).replace('.', ','), '3'))
+			),
+			mGroup(
+				'2,06', mText('·'),  mSup('10', '4'),
+				mText('·'),
+				String(Math.ceil(reRoofBeamchey.Ix * 1000) / 1000).replace('.', ',')
+			)
+		),
+		mEq(),
+		String(Math.ceil(reRoofDeflectionAnsw * 100000) / 100000).replace('.', ','),
+		' < ',
+		'0,0066');
+	
+	rEpure.shadowRoot.getElementById('epuring').addEventListener("click", () => {
+		generateRoofEpure();
+	});
+	'rEpure-result'
+	rEpure.shadowRoot.getElementById('rEpure-result').innerText = 'Назначен двутавр №' + reRoofBeamchey.number
 }
 
-let p1 = { x: centerX-varus1B/2*scale, y: centerY/7+2*scale };
-let p3 = { x: centerX+(varus1B/2)*scale, y: centerY/7+2*scale };
-let p2 = { x: centerX, y: centerY/7+2*scale+M_max/Mscale*scale };
+function pushRoofEpure() {
+    reDataUrl = reCanvas.toDataURL("image/png");
+    reSnapshot = reDataURLtoUint8Array(reDataUrl).data;
+}
 
-function dataURLtoUint8Array(dataurl) {
+let roofe_varo = rEpure.shadowRoot.getElementById('roofe_varo')
+
+const reEpureOnly = rEpure.shadowRoot.getElementById('epure_only');
+reEpureOnly.addEventListener("click", () => {
+	exportRoof();
+});
+
+roofe_varo.addEventListener("click", () => {
+    changerEpureVar()
+});
+
+doingEpures()
+
+function changerEpureVar() {
+	if (roofe_varo.value == 1) {
+		roofvaro = 1
+		doingEpures()
+	} else if (roofe_varo.value == 2) {
+		roofvaro = 2
+		doingEpures()
+	} else if (roofe_varo.value == 3) {
+		roofvaro = 3
+		doingEpures()
+	}
+}
+
+function exportRoof() {
+    const a = document.createElement("a");
+    a.href = reCanvas.toDataURL("image/jpg");
+    a.download = "roof_beam_epure.jpg";
+    a.click();
+}
+
+function reDataURLtoUint8Array(dataurl) {
     const arr = dataurl.split(',');
     const mime = arr[0].match(/:(.*?);/)[1];
     const bstr = atob(arr[1]);
@@ -69,1007 +321,644 @@ function dataURLtoUint8Array(dataurl) {
     return { data: u8arr, mime };
 }
 
-drawRoofBeamEpure()
-
-function drawRoofBeamEpure() {
-	ctx.fillStyle = "white"
-    ctx.fillRect(0, 0, canvas.width, canvas.height)
-
-// beam
-	ctx.beginPath()
-		ctx.lineWidth = 4
-		ctx.moveTo(centerX, centerY)
-		ctx.moveTo(centerX, centerY/7)
-		ctx.moveTo(centerX-varus1B/2*scale+0.1*scale, centerY/7)
-		ctx.lineTo(centerX+(varus1B/2)*scale-0.1*scale, centerY/7)
-		ctx.moveTo(centerX-varus1B/2*scale, centerY/7)
-		ctx.lineTo(centerX-varus1B/2*scale+0.15*scale, centerY/7+0.3*scale)
-		ctx.moveTo(centerX-varus1B/2*scale, centerY/7)
-		ctx.lineTo(centerX-varus1B/2*scale-0.15*scale, centerY/7+0.3*scale)
-		ctx.lineTo(centerX-varus1B/2*scale+0.15*scale, centerY/7+0.3*scale)
-		ctx.closePath()
-		ctx.stroke()
-
-	ctx.beginPath()
-		ctx.lineWidth = 4
-		ctx.moveTo(centerX+varus1B/2*scale, centerY/7)
-		ctx.lineTo(centerX+varus1B/2*scale, centerY/7+0.3*scale)
-		ctx.closePath()
-		ctx.stroke()
-// ground
-	ctx.beginPath()
-		ctx.lineWidth = 4
-		ctx.moveTo(centerX+varus1B/2*scale, centerY/7+0.3*scale+0.1*scale)
-		ctx.moveTo(centerX+varus1B/2*scale+0.3*scale, centerY/7+0.3*scale+0.1*scale)
-		ctx.lineTo(centerX+varus1B/2*scale-0.3*scale, centerY/7+0.3*scale+0.1*scale)
-		ctx.stroke()
-	ctx.beginPath()
-		ctx.lineWidth = 4
-		ctx.moveTo(centerX-varus1B/2*scale, centerY/7+0.3*scale+0.1*scale)
-		ctx.moveTo(centerX-varus1B/2*scale+0.3*scale, centerY/7+0.3*scale+0.1*scale)
-		ctx.lineTo(centerX-varus1B/2*scale-0.3*scale, centerY/7+0.3*scale+0.1*scale)
-		ctx.stroke()
-	ctx.beginPath()
-		ctx.lineWidth = 4
-		ctx.moveTo(-0.05 * scale + centerX-varus1B/2*scale-0.3*scale+0.1*scale, centerY/7+0.3*scale+0.1*scale)
-		ctx.lineTo(-0.05 * scale + centerX-varus1B/2*scale-0.3*scale+0.1*scale+0.1*scale, centerY/7+0.3*scale+0.1*scale+0.1*scale)
-		ctx.moveTo(-0.05 * scale + centerX-varus1B/2*scale-0.3*scale+0.3*scale, centerY/7+0.3*scale+0.1*scale)
-		ctx.lineTo(-0.05 * scale + centerX-varus1B/2*scale-0.3*scale+0.3*scale+0.1*scale, centerY/7+0.3*scale+0.1*scale+0.1*scale)
-		ctx.moveTo(-0.05 * scale + centerX-varus1B/2*scale-0.3*scale+0.5*scale, centerY/7+0.3*scale+0.1*scale)
-		ctx.lineTo(-0.05 * scale + centerX-varus1B/2*scale-0.3*scale+0.5*scale+0.1*scale, centerY/7+0.3*scale+0.1*scale+0.1*scale)
-		ctx.stroke()
-	ctx.beginPath()
-		ctx.lineWidth = 4
-		ctx.moveTo(-0.05 * scale + centerX+varus1B/2*scale-0.3*scale+0.1*scale, centerY/7+0.3*scale+0.1*scale)
-		ctx.lineTo(-0.05 * scale + centerX+varus1B/2*scale-0.3*scale+0.1*scale+0.1*scale, centerY/7+0.3*scale+0.1*scale+0.1*scale)
-		ctx.moveTo(-0.05 * scale + centerX+varus1B/2*scale-0.3*scale+0.3*scale, centerY/7+0.3*scale+0.1*scale)
-		ctx.lineTo(-0.05 * scale + centerX+varus1B/2*scale-0.3*scale+0.3*scale+0.1*scale, centerY/7+0.3*scale+0.1*scale+0.1*scale)
-		ctx.moveTo(-0.05 * scale + centerX+varus1B/2*scale-0.3*scale+0.5*scale, centerY/7+0.3*scale+0.1*scale)
-		ctx.lineTo(-0.05 * scale + centerX+varus1B/2*scale-0.3*scale+0.5*scale+0.1*scale, centerY/7+0.3*scale+0.1*scale+0.1*scale)
-		ctx.stroke()
-// ramalines
-	ctx.beginPath()
-		ctx.lineWidth = 2.5
-		ctx.moveTo(centerX+varus1B/2*scale, centerY/7+0.3*scale)
-		ctx.lineTo(centerX+varus1B/2*scale, centerY/7+4*scale)
-		ctx.closePath()
-		ctx.stroke()
-	ctx.beginPath()
-		ctx.lineWidth = 2.5
-		ctx.moveTo(centerX-varus1B/2*scale, centerY/7+0.3*scale)
-		ctx.lineTo(centerX-varus1B/2*scale, centerY/7+4*scale)
-		ctx.closePath()
-		ctx.stroke()
-	ctx.beginPath()
-		ctx.lineWidth = 3
-		ctx.moveTo(centerX-varus1B/2*scale, centerY/7+4*scale)
-		ctx.lineTo(centerX+(varus1B/2)*scale, centerY/7+4*scale)
-		ctx.closePath()
-		ctx.stroke()
-	ctx.beginPath()
-		ctx.lineWidth = 3
-		ctx.moveTo(centerX-varus1B/2*scale, centerY/7+2*scale)
-		ctx.lineTo(centerX+(varus1B/2)*scale, centerY/7+2*scale)
-		ctx.closePath()
-		ctx.stroke()
-	ctx.beginPath()
-		ctx.lineWidth = 2
-		ctx.moveTo(centerX-varus1B/2*scale, centerY/7+1*scale)
-		ctx.lineTo(centerX+(varus1B/2)*scale, centerY/7+1*scale)
-		ctx.closePath()
-		ctx.stroke()
-// size_arrows
-	ctx.beginPath()
-		ctx.lineWidth = 2
-		ctx.moveTo(centerX-varus1B/2*scale, centerY/7+1*scale)
-		ctx.lineTo(centerX-varus1B/2*scale+0.1*scale, centerY/7+1*scale+0.1*scale)
-		ctx.moveTo(centerX-varus1B/2*scale, centerY/7+1*scale)
-		ctx.lineTo(centerX-varus1B/2*scale+0.1*scale, centerY/7+1*scale-0.1*scale)
-		ctx.closePath()
-		ctx.stroke()
-	ctx.beginPath()
-		ctx.lineWidth = 2
-		ctx.moveTo(centerX+varus1B/2*scale, centerY/7+1*scale)
-		ctx.lineTo(centerX+varus1B/2*scale-0.1*scale, centerY/7+1*scale-0.1*scale)
-		ctx.moveTo(centerX+varus1B/2*scale, centerY/7+1*scale)
-		ctx.lineTo(centerX+varus1B/2*scale-0.1*scale, centerY/7+1*scale+0.1*scale)
-		ctx.closePath()
-		ctx.stroke()
-// 2m
-	ctx.beginPath()
-		ctx.lineWidth = 2
-		ctx.font = 'bold 22px GOST A';
-		ctx.fillStyle = 'black';
-		ctx.textAlign = 'center';
-		ctx.fillText(String(varus1B).replaceAll('.', ',')+' м', centerX, centerY/7+1*scale-0.05*scale)
-		ctx.stroke()
-		ctx.closePath()
-		ctx.stroke()
-// load_arrows
-	ctx.beginPath()
-		ctx.lineWidth = 2
-		ctx.moveTo(centerX-varus1B/2*scale, centerY/7-0.4*scale)
-		ctx.lineTo(centerX+(varus1B/2)*scale, centerY/7-0.4*scale)
-		for (let cvb = 0; cvb <= 7; cvb++) {
-			ctx.moveTo(centerX-varus1B/2*scale + cvb*varus1B/7*scale, centerY/7-0.4*scale)
-			ctx.lineTo(centerX-varus1B/2*scale + cvb*varus1B/7*scale, centerY/7)
-			ctx.moveTo(centerX-varus1B/2*scale + cvb*varus1B/7*scale, centerY/7)
-			ctx.lineTo(centerX-varus1B/2*scale + cvb*varus1B/7*scale-0.08*scale, centerY/7-0.08*scale)
-			ctx.moveTo(centerX-varus1B/2*scale + cvb*varus1B/7*scale, centerY/7)
-			ctx.lineTo(centerX-varus1B/2*scale + cvb*varus1B/7*scale+0.08*scale, centerY/7-0.08*scale)
-		}
-		
-		ctx.font = 'bold 22px GOST A';
-		ctx.fillStyle = 'black';
-		ctx.textAlign = 'center';
-		ctx.fillText('q', centerX, centerY/7 - 0.5*scale)
-
-		ctx.closePath()
-		ctx.stroke()
-
-
-// circles
-	ctx.beginPath()
-		ctx.arc(centerX-varus1B/2*scale+0.15*scale, centerY/7+0.3*scale, 0.1*scale, 0, 2 * Math.PI, false)
-		ctx.fillStyle = "white"
-		ctx.fill()
-		ctx.lineWidth = 4
-		ctx.strokeStyle = 'black'
-		ctx.stroke()
-	ctx.beginPath()
-		ctx.arc(centerX-varus1B/2*scale-0.15*scale, centerY/7+0.3*scale, 0.1*scale, 0, 2 * Math.PI, false);
-		ctx.fillStyle = "white"
-		ctx.fill()
-		ctx.lineWidth = 4
-		ctx.strokeStyle = 'black';
-		ctx.stroke()
-	ctx.beginPath()
-		ctx.arc(centerX-varus1B/2*scale, centerY/7, 0.1*scale, 0, 2 * Math.PI, false);
-		ctx.fillStyle = "white"
-		ctx.fill()
-		ctx.lineWidth = 4
-		ctx.strokeStyle = 'black';
-		ctx.stroke()
-	ctx.beginPath()
-		ctx.arc(centerX+varus1B/2*scale, centerY/7, 0.1*scale, 0, 2 * Math.PI, false);
-		ctx.fillStyle = "white"
-		ctx.fill()
-		ctx.lineWidth = 4
-		ctx.strokeStyle = 'black';
-		ctx.stroke()
-	ctx.beginPath()
-		ctx.arc(centerX-varus1B/2*scale+0.3*scale, centerY/7+0.3*scale, 0, 2 * Math.PI, false);
-		ctx.fillStyle = "white"
-		ctx.fill()
-		ctx.lineWidth = 4
-		ctx.strokeStyle = 'black';
-		ctx.stroke()
-	ctx.beginPath()
-		ctx.arc(centerX+varus1B/2*scale, centerY/7+0.3*scale, 0.1*scale, 0, 2 * Math.PI, false);
-		ctx.fillStyle = "white"
-		ctx.fill()
-		ctx.lineWidth = 4
-		ctx.strokeStyle = 'black';
-		ctx.stroke()
-// momentum
-	const cx = p2.x;
-    const cy = 2 * p2.y - (p1.y + p3.y) / 2;
-
-    // Определяем границы параболы для штриховки
-    const minX_m = p1.x;
-    const maxX_m = p3.x;
-    const minY_m = p2.y; // Вершина параболы (самая верхняя точка в Canvas)
-    const maxY_m = p1.y; // Основание (нижняя граница)
-    
-    const spacingM = 10; // Плотность штриховки для момента
-
-
-
-
-    // ШАГ А: Создаем замкнутый путь для параболы, чтобы сделать clip()
-    ctx.beginPath();
-    ctx.moveTo(centerX-varus1B/2*scale, centerY/7+4*scale)
-    ctx.font = 'bold 22px GOST A';
-    ctx.fillStyle = 'black';
-    ctx.textAlign = 'center';
-    ctx.fillText('M', centerX-varus1B/2*scale-0.2*scale, centerY/7+2*scale)
-    ctx.moveTo(p1.x, p1.y);
-    ctx.quadraticCurveTo(cx, cy, p3.x, p3.y);
-    // ВАЖНО: Замыкаем контур прямой линией обратно к началу, иначе clip не сработает корректно
-    
-    ctx.font = 'bold 18px GOST A';
-    ctx.fillStyle = 'black';
-    ctx.textAlign = 'center';
-    ctx.fillText(String(Math.ceil(M_max*1000)/1000).replace('.', ',') + 'кНм', centerX, centerY/7+2*scale+M_max/Mscale*scale+0.3*scale)
-        
-
-    ctx.lineTo(p1.x, p1.y); 
-    ctx.closePath();
-
-    ctx.save(); // Сохраняем текущее состояние
-    ctx.clip(); // Теперь всё, что рисуем, будет только ВНУТРИ параболы
-
-    // ШАГ Б: Рисуем вертикальную штриховку внутри параболы
-    ctx.strokeStyle = '#000';
-    ctx.lineWidth = 1;
-    
-    for (let x = minX_m; x <= maxX_m; x += spacingM) {
-        ctx.beginPath();
-
-        ctx.moveTo(x, minY_m); 
-        ctx.lineTo(x, maxY_m);
-        ctx.stroke();
-    }
-    
-    ctx.restore();
-
-    ctx.lineWidth = 4;
-    ctx.strokeStyle = '#000';
-    
-    ctx.beginPath();
-    ctx.moveTo(p1.x, p1.y);
-    ctx.quadraticCurveTo(cx, cy, p3.x, p3.y);
-
-    ctx.stroke();
-
-    ctx.beginPath()
-    ctx.arc(centerX, centerY/7+2*scale+M_max/Mscale*scale, 0.02*scale, 0, 2 * Math.PI, false);
-        ctx.lineWidth = 4
-        ctx.strokeStyle = 'black';
-        ctx.stroke()
-// big Q power
-	ctx.lineWidth = 4;
-	ctx.beginPath()
-	ctx.moveTo(centerX-varus1B/2*scale, centerY/7+4*scale)
-    ctx.font = 'bold 22px GOST A';
-    ctx.fillStyle = 'black';
-    ctx.textAlign = 'center';
-    ctx.fillText('Q', centerX-varus1B/2*scale-0.2*scale, centerY/7+4*scale)
-
-	ctx.lineTo(centerX-varus1B/2*scale, centerY/7+4*scale-biQ/150*scale)
-	ctx.lineTo(centerX+varus1B/2*scale, centerY/7+4*scale+biQ/150*scale)
-	ctx.lineTo(centerX+varus1B/2*scale, centerY/7+4*scale)
-	ctx.closePath()
-	ctx.stroke()
-
-	const leftX = centerX - (varus1B / 2) * scale;
-	const rightX = centerX + (varus1B / 2) * scale;
-	
-	const baseY = (centerY/7) + (4 * scale);
-	const topLeftY = baseY - (biQ / 150) * scale;
-	const bottomRightY = baseY + (biQ / 150) * scale;
-
-	const minX = leftX;
-	const maxX = rightX;
-	const minY = topLeftY; 
-	const maxY = bottomRightY;
-
-	const spacing = 10;
-	const strokeColor = '#000';
-	const lineWidth = 1;
-
-	ctx.beginPath();
-	ctx.moveTo(leftX, baseY);              
-	ctx.lineTo(leftX, topLeftY);           
-	ctx.lineTo(rightX, bottomRightY);      
-	ctx.lineTo(rightX, baseY);             
-	ctx.closePath();
-
-    ctx.save()
-	ctx.clip();
-
-	ctx.strokeStyle = strokeColor;
-	ctx.lineWidth = lineWidth;
-
-	for (let x = minX; x <= maxX; x += spacing) {
-	    ctx.beginPath();
-	    ctx.moveTo(x, minY); 
-	    ctx.lineTo(x, maxY);
-	    ctx.stroke();
-	}
-
-	ctx.restore();
-
-	ctx.lineWidth = 4;
-	ctx.strokeStyle = '#000';
-	ctx.fillStyle = 'transparent';
-
-	ctx.beginPath();
-	ctx.moveTo(leftX, baseY);
-	ctx.lineTo(leftX, topLeftY);
-	ctx.lineTo(rightX, bottomRightY);
-	ctx.lineTo(rightX, baseY);
-	ctx.closePath();
-	ctx.stroke();
-
-    ctx.beginPath()
-    ctx.font = 'bold 18px GOST A';
-    ctx.fillStyle = 'black';
-    ctx.fillText(String('+'+Math.ceil(biQ*1000)/1000).replace('.',',')+'кН', centerX-varus1B/2*scale + 0.5*scale, centerY/7+4*scale-(biQ/150)*scale - 0.1*scale)
-    ctx.closePath()
-    ctx.stroke()
-
-    ctx.beginPath()
-    ctx.font = 'bold 18px GOST A';
-    ctx.fillStyle = 'black';
-    ctx.fillText(String('-'+Math.ceil(biQ*1000)/1000).replace('.',',')+'кН', centerX+varus1B/2*scale - 0.5*scale, centerY/7+4*scale+(biQ/150)*scale + 0.3*scale)
-    ctx.closePath()
-    ctx.stroke()
-
-    ctx.beginPath()
-    ctx.arc(centerX+varus1B/2*scale, centerY/7+4*scale+(biQ/150)*scale, 0.02*scale, 0, 2 * Math.PI, false);
-        ctx.lineWidth = 4
-        ctx.strokeStyle = 'black';
-        ctx.stroke()
-    ctx.beginPath()
-    ctx.arc(centerX-varus1B/2*scale, centerY/7+4*scale-(biQ/150)*scale, 0.02*scale, 0, 2 * Math.PI, false);
-        ctx.lineWidth = 4
-        ctx.strokeStyle = 'black';
-        ctx.stroke()
-}
-
-document.getElementById('epuring').addEventListener("click", () => {
-    generateRoofEpure()})
-
-function pushRoofEpure() {
-    dataUrl = canvas.toDataURL("image/png");
-    snapshot = dataURLtoUint8Array(dataUrl).data;
-}
-
-let Wneed = mFormula(
-    // σ = M_max / W  ≤  R_y · γ_c
-    mText('σ'), mEq(),
-    mFrac(mSub('M', 'max'), mText('W')),
-    ' ≤ ',
-    mGroup(mSub('R', 'y'), mMul(), mSub('γ', 'c')),
-
-    // ⇒ W_тр = M_max / (R_y · γ_c)
-    mText(' ⇒ '),
-    mSub('W', 'тр'), mEq(),
-    mFrac(
-        mSub('M', 'max'),
-        mGroup(mSub('R', 'y'), mMul(), mSub('γ', 'c'))
-    ),
-    // = (36,7717 · 100) / 24 = 153,215 см³
-    mEq(),
-    mFrac(
-        mGroup(String(Math.ceil(M_max*1000)/1000).replace('.',',')),
-        '0,24'
-    ),
-    mEq(),
-    String(Math.ceil(M_max/0.24*1000)/1000).replace('.',','), mSup('см', '3')
-);
-let roof_beamchey = selectBeamByWx(Math.ceil(M_max/0.24*1000)/1000);
-let beam_roof_parameters = mFormula(
-    mSub('I', 'x'), mEq(), String(roof_beamchey.Ix).replace('.',','), mText(' '), mSup('см', '4'),
-    mText('; '), 
-    mSub('S', 'x'), mEq(), String(roof_beamchey.Sx).replace('.',','), mText(' '), mSup('см', '3'),
-    mText('; '),
-    mText('Масса на 1м'), mEq(), String(roof_beamchey.weight).replace('.',','), mText(' кг')
-);
-let roof_power_check =  mFormula(
-    mText('σ'), mEq(),
-    mFrac(
-        mSub('M', 'max'),
-        mText('W')
-    ),
-    ' ≤ ',
-    mGroup(mSub('R', 'y'), mMul(), mSub('γ', 'c'))
-);
-let roof_power_check_сalc = mFormula(
-    mFrac(
-        mSub('M', 'max'),
-        mSub('W', 'x')
-    ),
-    mEq(), 
-    mFrac(
-        mGroup(String(Math.ceil(M_max*1000)/1000).replace('.',','), mMul(), '100'),
-        (String(Math.ceil(roof_beamchey.Wx*1000)/1000).replace('.',','))
-    ),
-    mEq(), 
-    String(Math.ceil(M_max*100/roof_beamchey.Wx*1000)/1000).replace('.',','), 
-    mText(' '),
-    mFrac(
-        'кН',
-        mGroup(mSup('см', '2'))
-    )
-);
-let roof_power_check_end = mFormula(
-    String(Math.ceil(M_max*100/roof_beamchey.Wx*1000)/1000).replace('.',','),
-    mText(' '), // Пробел перед единицами
-    mFrac('кН', mSup('см', '2')), // Дробь кН/см²
-    
-    ' < ',      // Знак неравенства
-    
-    '24',
-    mText(' '),
-    mFrac('кН', mSup('см', '2'))  // Та же дробь кН/см²
-);
-let roof_tau_check = mFormula(
-    mSub('τ', 'max'), mEq(),
-    mFrac(mGroup(mSub('Q', 'max'), mMul(), mSub('S', 'x')), mGroup(mSub('I', 'x'), mMul(), 't')),
-    ' ≤ ',
-    mGroup(mSub('R', 's'), mMul(), mSub('γ', 'c')),
-    mText(' (где '), mSub('R', 's'), mEq(), '0,58', mMul(), mSub('R', 'y'), mText(')')
-);
-let tau_max_roof = (biQ*roof_beamchey.Sx)/(roof_beamchey.Ix*roof_beamchey.t/10)
-let roof_tau_check_calc = mFormula(
-    mSub('τ', 'max'), mEq(),
-    mFrac(
-        mGroup(mSub('Q', 'max'), mMul(), mSub('S', 'x')),
-        mGroup(mSub('I', 'x'), mMul(), 't')
-    ),
-    mEq(),
-    mFrac(
-        mGroup(String(Math.ceil(biQ*1000)/1000).replace('.',','), mMul(), String(Math.ceil(roof_beamchey.Sx*1000)/1000).replace('.',',')),
-        mGroup(String(Math.ceil(roof_beamchey.Ix*1000)/1000).replace('.',','), mMul(), String(Math.ceil(roof_beamchey.t/10*1000)/1000).replace('.',','))
-    ),
-    mEq(),
-    String(Math.ceil(tau_max_roof*1000)/1000).replace('.',','), 
-    mText(' '), 
-    mFrac('кН', mSup('см', '2')));
-let roof_tau_check_unequ1 = mFormula(
-    String(Math.ceil(tau_max_roof*1000)/1000).replace('.',','),
-    mText(' '),
-    mFrac('кН', mSup('см', '2')),
-    ' ≤ ',
-    '0,58',
-    mMul(),
-    '24',
-    mText(' '),
-    mFrac('кН', mSup('см', '2')));
-let roof_tau_check_unequ2 = mFormula(
-    String(Math.ceil(tau_max_roof*1000)/1000).replace('.',','),
-    mText(' '),
-    mFrac('кН', mSup('см', '2')),
-    ' ≤ ',
-    '13,92',
-    mText(' '),
-    mFrac('кН', mSup('см', '2')));
-let roof_deflection_formula = mFormula(
-    mFrac(
-        mSub('f', 'бн'),
-        mSub('l', 'бн')
-    ),
-    mEq(), 
-    mFrac('5', '384'),
-    mMul(),
-    mFrac(
-        mGroup(
-            mSub('q', 'н'), 
-            mMul(), 
-            mGroup(mSup(mSub('l', 'бн'), '3'))
-        ),
-        mGroup('E', mMul(), mSub('I', 'x'))
-    ),
-    ' ≤ ',
-
-    mSquareParen(mFrac('f', 'l')),);
-let roof_deflection_answ = (5/384)*((q_normal)*(10**(-2))*((varus1B*100)**3))/(2.06*(10**4)*roof_beamchey.Ix)
-let roof_deflection_calc = mFormula(
-    mFrac('5', '384'),
-    mMul(),
-    mFrac(
-        mGroup(
-            String(Math.ceil(q_normal*1000)/1000).replace('.',','),
-            mText('·'), 
-            mSup('10','-2'),
-            mText('·'),
-            mGroup(mSup(String(Math.ceil(varus1B*100*1000)/1000).replace('.',','),'3'))
-        ),
-        mGroup(
-            '2,06', mText('·'),  mSup('10','4'), // 2,06·10^4
-            mText('·'),
-            String(Math.ceil(roof_beamchey.Ix*1000)/1000).replace('.',',')
-        )
-    ),
-    mEq(),
-    String(Math.ceil(roof_deflection_answ*100000)/100000).replace('.',','),
-    ' < ',
-    '0,0066');
-
 function createRoofEpure() {
-    roofBeamChildren.push(
-        new Paragraph({
-            alignment: AlignmentType.CENTER,
-            spacing: {
-                line: 360, // Полуторный интервал для ВСЕГО документа
-                before: 0,
-                after: 0,
-            },
-            children: [
-                new TextRun({
-                    text: 'Определение требуемого момента сопротивления балки настила:', bold: true
-                }),
-            ]
-        }),
-        new Paragraph({
-            alignment: AlignmentType.JUSTIFIED,
-            spacing: {
-                line: 360,
-                before: 0,
-                after: 0,
-            },
-            children: [
-                Wneed, 
-                new TextRun({
-                    text: ' '
-                })
-            ]
-        }),
-        new Paragraph({
-            alignment: AlignmentType.JUSTIFIED,
-            spacing: {
-                line: 360,
-                before: 0,
-                after: 0,
-            },
-            children: [
-                new TextRun({
-                    text: 'Согласно ГОСТ 8239-89 выбирается двутавр №' + roof_beamchey.number + '  '
-                }),
-                mFormula(
-                    mParen(mSub('W', 'x'), mEq(),
-                    String(Math.ceil(roof_beamchey.Wx*1000)/1000).replace('.',','), mSup('см', '3'))
-                ),
-            ]
-        }),
-        new Paragraph({
-            alignment: AlignmentType.JUSTIFIED,
-            spacing: {
-                line: 360,
-                before: 0,
-                after: 0,
-            },
-            children: [
-                beam_roof_parameters, 
-                new TextRun({
-                    text: '.'
-                })
-            ]
-        }),
-        new Paragraph({
-            alignment: AlignmentType.JUSTIFIED,
-            spacing: {
-                before: 0,
-                after: 120,
-                line: 360,
-                lineRule: LineRuleType.AUTO,
-            },
-            indent: {
-                firstLine: 709, // Красная строка 1,25 см
-            },
-            children: [
-                new TextRun({
-                    text: 'Для определения фактических напряжений, возникающих в балке настила, применяются действительные геометрические характеристики:'
-                })
-            ]
-        }),
-        new Paragraph({
-            alignment: AlignmentType.CENTER,
-            spacing: {
-                line: 360, // Полуторный интервал для ВСЕГО документа
-                before: 0,
-                after: 0,
-            },
-            children: [
-                new TextRun({
-                    text: 'Проверка прочности по нормальным напряжениям:', bold: true
-                }),
-            ]
-        }),
-        new Paragraph({
-            alignment: AlignmentType.JUSTIFIED,
-            spacing: {
-                line: 360,
-                before: 0,
-                after: 0,
-            },
-            children: [
-                roof_power_check, 
-                new TextRun({
-                    text: ' '
-                })
-            ]
-        }),
-        new Paragraph({
-            alignment: AlignmentType.JUSTIFIED,
-            spacing: {
-                line: 360,
-                before: 0,
-                after: 0,
-            },
-            children: [
-                roof_power_check_сalc, 
-                new TextRun({
-                    text: ' '
-                })
-            ]
-        }),
-        new Paragraph({
-            alignment: AlignmentType.JUSTIFIED,
-            spacing: {
-                line: 360,
-                before: 0,
-                after: 0,
-            },
-            children: [
-                roof_power_check_end,
-                new TextRun({
-                    text: ' '
-                })
-            ]
-        }),
-        new Paragraph({
-            alignment: AlignmentType.CENTER,
-            spacing: {
-                line: 360,
-                before: 0,
-                after: 0,
-            },
-            children: [
-                new TextRun({
-                    underline: true,
-                    text: 'Условие прочности по нормальным напряжениям выполняется.'
-                }),
-                new PageBreak(),
-            ]
-        }),
-        new Paragraph({
-            alignment: AlignmentType.CENTER,
-            spacing: {
-                line: 360, // Полуторный интервал для ВСЕГО документа
-                before: 0,
-                after: 0,
-            },
-            children: [
-                new TextRun({
-                    text: 'Проверка прочности по касательным напряжениям:', bold: true
-                }),
-            ]
-        }),
-        new Paragraph({
-            alignment: AlignmentType.JUSTIFIED,
-            spacing: {
-                line: 360,
-                before: 0,
-                after: 0,
-            },
-            children: [
-                roof_tau_check, 
-                new TextRun({
-                    text: ' '
-                })
-            ]
-        }),
-        new Paragraph({
-            alignment: AlignmentType.JUSTIFIED,
-            spacing: {
-                line: 360,
-                before: 0,
-                after: 0,
-            },
-            children: [
-                new TextRun({
-                    text: 'Толщина стенки двутавра t ='+String(Math.ceil(roof_beamchey.t*1000)/1000).replace('.',',')+'мм.'
-                })
-            ]
-        }),
-        new Paragraph({
-            alignment: AlignmentType.JUSTIFIED,
-            spacing: {
-                line: 360,
-                before: 0,
-                after: 0,
-            },
-            children: [
-                roof_tau_check_calc, 
-                new TextRun({
-                    text: ' '
-                })
-            ]
-        }),
-        new Paragraph({
-            alignment: AlignmentType.JUSTIFIED,
-            spacing: {
-                line: 360,
-                before: 0,
-                after: 0,
-            },
-            children: [
-                roof_tau_check_unequ1, 
-                new TextRun({
-                    text: ' '
-                })
-            ]
-        }),
-        new Paragraph({
-            alignment: AlignmentType.JUSTIFIED,
-            spacing: {
-                line: 360,
-                before: 0,
-                after: 0,
-            },
-            children: [
-                roof_tau_check_unequ2, 
-                new TextRun({
-                    text: ' '
-                })
-            ]
-        }),
-        new Paragraph({
-            alignment: AlignmentType.CENTER,
-            spacing: {
-                line: 360,
-                before: 0,
-                after: 0,
-            },
-            children: [
-                new TextRun({
-                    underline: true,
-                    text: 'Условие прочности по касательным напряжениям выполняется.'
-                }),
-            ]
-        }),
-        new Paragraph({
-            alignment: AlignmentType.CENTER,
-            spacing: {
-                line: 360, // Полуторный интервал для ВСЕГО документа
-                before: 0,
-                after: 0,
-            },
-            children: [
-                new TextRun({
-                    text: 'Проверка жесткости балки:', bold: true
-                }),
-            ]
-        }),
-        new Paragraph({
-            alignment: AlignmentType.JUSTIFIED,
-            spacing: {
-                line: 360,
-                before: 0,
-                after: 0,
-            },
-            children: [
-                roof_deflection_formula, 
-                new TextRun({
-                    text: ' '
-                })
-            ]
-        }),
-        new Paragraph({
-            alignment: AlignmentType.JUSTIFIED,
-            spacing: {
-                before: 0,
-                after: 120,
-                line: 360,
-                lineRule: LineRuleType.AUTO,
-            },
-            indent: {
-                firstLine: 709, // Красная строка 1,25 см
-            },
-            children: 
-                [
-                    new TextRun({
-                        text: "где",
-                        size: 28,
-                        font: "Times New Roman" 
-                    }), 
-                ]
-        }),
-        new Paragraph({
-            alignment: AlignmentType.JUSTIFIED,
-            spacing: {
-                before: 0,
-                after: 120,
-                line: 360,
-                lineRule: LineRuleType.AUTO,
-            },
-            children: [
-                mFormula(mSub('q','н')),
-                new TextRun(" — нормативная погонная нагрузка,")
-            ]
-        }),
-        new Paragraph({
-            alignment: AlignmentType.JUSTIFIED,
-            spacing: {
-                before: 0,
-                after: 120,
-                line: 360,
-                lineRule: LineRuleType.AUTO,
-            },
-            children: [
-                mFormula(mSub('l','бн')),
-                new TextRun(" — пролёт балки настила,")
-            ]
-        }),
-        new Paragraph({
-            alignment: AlignmentType.JUSTIFIED,
-            spacing: {
-                before: 0,
-                after: 120,
-                line: 360,
-                lineRule: LineRuleType.AUTO,
-            },
-            children: [
-                mFormula(mSub('I','x')),
-                new TextRun(" — момент инерции сечения балки настила,")
-            ]
-        }),
-        new Paragraph({
-            alignment: AlignmentType.JUSTIFIED,
-            spacing: {
-                before: 0,
-                after: 120,
-                line: 360,
-                lineRule: LineRuleType.AUTO,
-            },
-            indent: {
-                firstLine: 709,
-            },
-            children: [
-                new TextRun("Предельный относительный прогиб балки настила принят равным 1/150 в соответствии с эстетико-психологическими требованиями.")
-            ]
-        }),
-        new Paragraph({
-            alignment: AlignmentType.CENTER,
-            spacing: {
-                line: 360,
-                before: 0,
-                after: 0,
-            },
-            children: [
-                roof_deflection_calc, 
-            ]
-        }),
-    )
-    if (roof_deflection_answ > (1/150)) {
-        roofBeamChildren.push(
-            new Paragraph({
-                alignment: AlignmentType.CENTER,
-                spacing: {
-                    line: 360,
-                    before: 0,
-                    after: 0,
-                },
-                children: [
-                    new TextRun({
-                        underline: true,
-                        text: 'Необходимо увеличить сечение.'
-                    }),
-                    new PageBreak()
-                ]
-            })
-        )
-        roof_beamchey = selectBeamByWx(roof_beamchey.Wx+0.1)
-        roof_deflection_answ = (5/384)*((q_normal)*(10**(-2))*((varus1B*100)**3))/(2.06*(10**4)*roof_beamchey.Ix)
-        roof_deflection_calc = mFormula(
-            mFrac('5', '384'),
-            mMul(),
-            mFrac(
-                mGroup(
-                    String(Math.ceil(q_normal*1000)/1000).replace('.',','),
-                    mText('·'), 
-                    mSup('10','-2'),
-                    mText('·'),
-                    mGroup(mSup(String(Math.ceil(varus1B*100*1000)/1000).replace('.',','),'3'))
-                ),
-                mGroup(
-                    '2,06', mText('·'),  mSup('10','4'), // 2,06·10^4
-                    mText('·'),
-                    String(Math.ceil(roof_beamchey.Ix*1000)/1000).replace('.',',')
-                )
-            ),
-            mEq(),
-            String(Math.ceil(roof_deflection_answ*100000)/100000).replace('.',','),
-            ' < ',
-            '0,0066'
-        )
-        createRoofEpure()
-    } else {
-        roofBeamChildren.push(
-            new Paragraph({
-                alignment: AlignmentType.CENTER,
-                spacing: {
-                    line: 360,
-                    before: 0,
-                    after: 0,
-                },
-                children: [
-                    new TextRun({
-                        underline: true,
-                        text: 'Условие жесткости выполняется.'
-                    }),
-                    new PageBreak
-                ]
-            })
-        )
-        
-    }
+		pushRoofEpure();
+	    reBeamChildren.push(
+	        new Paragraph({
+	            alignment: AlignmentType.CENTER,
+	            children: [
+	                new ImageRun({
+	                    data: reSnapshot,
+	                    transformation: { width: 550, height: 450 },
+	                    size: 28,
+	                }),
+	            ],
+	        })
+	    );
+	    if (roofvaro == 1) {
+	    	reBeamChildren.push(
+	        	new Paragraph({
+	        	    alignment: AlignmentType.CENTER,
+	        	    spacing: { line: 360, before: 0, after: 0 },
+	        	    children: [
+	        	        new TextRun({ text: 'Рис.4 - Расчетная схема балки настила (В1)' }),
+	        	    ]
+	        	}),
+	        	new Paragraph({}),
+	    	);
+	    } else if (roofvaro == 2) {
+	    	reBeamChildren.push(
+	        	new Paragraph({
+	        	    alignment: AlignmentType.CENTER,
+	        	    spacing: { line: 360, before: 0, after: 0 },
+	        	    children: [
+	        	        new TextRun({ text: 'Рис.10 - Расчетная схема балки настила (В2)' }),
+	        	    ]
+	        	}),
+	        	new Paragraph({}),
+	    	);
+	    } else if (roofvaro == 3) {
+	    	reBeamChildren.push(
+	        	new Paragraph({
+	        	    alignment: AlignmentType.CENTER,
+	        	    spacing: { line: 360, before: 0, after: 0 },
+	        	    children: [
+	        	        new TextRun({ text: 'Рис.16 - Расчетная схема балки настила (В3)' }),
+	        	    ]
+	        	}),
+	        	new Paragraph({}),
+	    	);
+	    }
+	    
+	    reBeamChildren.push(
+	        new Paragraph({
+	            alignment: AlignmentType.CENTER,
+	            spacing: { line: 360, before: 0, after: 0 },
+	            children: [
+	                new TextRun({ text: 'Определение требуемого момента сопротивления балки настила:', bold: true }),
+	            ]
+	        }),
+	        new Paragraph({
+	            alignment: AlignmentType.JUSTIFIED,
+	            spacing: { line: 360, before: 0, after: 0 },
+	            children: [ reWneed, new TextRun({ text: ' ' }) ]
+	        }),
+	        new Paragraph({
+	            alignment: AlignmentType.JUSTIFIED,
+	            spacing: { line: 360, before: 0, after: 0 },
+	            children: [
+	                new TextRun({ text: 'Согласно ГОСТ 8239-89 выбирается двутавр №' + reRoofBeamchey.number + '  ' }),
+	                mFormula(
+	                    mParen(mSub('W', 'x'), mEq(),
+	                    String(Math.ceil(reRoofBeamchey.Wx * 1000) / 1000).replace('.', ','), mSup('см', '3'))
+	                ),
+	            ]
+	        }),
+	        new Paragraph({
+	            alignment: AlignmentType.JUSTIFIED,
+	            spacing: { line: 360, before: 0, after: 0 },
+	            children: [ reBeamRoofParameters, new TextRun({ text: '.' }) ]
+	        }),
+	        new Paragraph({
+	            alignment: AlignmentType.JUSTIFIED,
+	            spacing: { before: 0, after: 120, line: 360, lineRule: LineRuleType.AUTO },
+	            indent: { firstLine: 709 },
+	            children: [
+	                new TextRun({ text: 'Для определения фактических напряжений, возникающих в балке настила, применяются действительные геометрические характеристики:' })
+	            ]
+	        }),
+	        new Paragraph({
+	            alignment: AlignmentType.CENTER,
+	            spacing: { line: 360, before: 0, after: 0 },
+	            children: [
+	                new TextRun({ text: 'Проверка прочности по нормальным напряжениям:', bold: true }),
+	            ]
+	        }),
+	        new Paragraph({
+	            alignment: AlignmentType.JUSTIFIED,
+	            spacing: { line: 360, before: 0, after: 0 },
+	            children: [ reRoofPowerCheck, new TextRun({ text: ' ' }) ]
+	        }),
+	        new Paragraph({
+	            alignment: AlignmentType.JUSTIFIED,
+	            spacing: { line: 360, before: 0, after: 0 },
+	            children: [ reRoofPowerCheckCalc, new TextRun({ text: ' ' }) ]
+	        }),
+	        new Paragraph({
+	            alignment: AlignmentType.JUSTIFIED,
+	            spacing: { line: 360, before: 0, after: 0 },
+	            children: [ reRoofPowerCheckEnd, new TextRun({ text: ' ' }) ]
+	        }),
+	        new Paragraph({
+	            alignment: AlignmentType.CENTER,
+	            spacing: { line: 360, before: 0, after: 0 },
+	            children: [
+	                new TextRun({ underline: true, text: 'Условие прочности по нормальным напряжениям выполняется.' }),
+	                new PageBreak(),
+	            ]
+	        }),
+	        new Paragraph({
+	            alignment: AlignmentType.CENTER,
+	            spacing: { line: 360, before: 0, after: 0 },
+	            children: [
+	                new TextRun({ text: 'Проверка прочности по касательным напряжениям:', bold: true }),
+	            ]
+	        }),
+	        new Paragraph({
+	            alignment: AlignmentType.JUSTIFIED,
+	            spacing: { line: 360, before: 0, after: 0 },
+	            children: [ reRoofTauCheck, new TextRun({ text: ' ' }) ]
+	        }),
+	        new Paragraph({
+	            alignment: AlignmentType.JUSTIFIED,
+	            spacing: { line: 360, before: 0, after: 0 },
+	            children: [
+	                new TextRun({ text: 'Толщина стенки двутавра t =' + String(Math.ceil(reRoofBeamchey.t * 1000) / 1000).replace('.', ',') + 'мм.' })
+	            ]
+	        }),
+	        new Paragraph({
+	            alignment: AlignmentType.JUSTIFIED,
+	            spacing: { line: 360, before: 0, after: 0 },
+	            children: [ reRoofTauCheckCalc, new TextRun({ text: ' ' }) ]
+	        }),
+	        new Paragraph({
+	            alignment: AlignmentType.JUSTIFIED,
+	            spacing: { line: 360, before: 0, after: 0 },
+	            children: [ reRoofTauCheckUnequ1, new TextRun({ text: ' ' }) ]
+	        }),
+	        new Paragraph({
+	            alignment: AlignmentType.JUSTIFIED,
+	            spacing: { line: 360, before: 0, after: 0 },
+	            children: [ reRoofTauCheckUnequ2, new TextRun({ text: ' ' }) ]
+	        }),
+	        new Paragraph({
+	            alignment: AlignmentType.CENTER,
+	            spacing: { line: 360, before: 0, after: 0 },
+	            children: [
+	                new TextRun({ underline: true, text: 'Условие прочности по касательным напряжениям выполняется.' }),
+	            ]
+	        }),
+	        new Paragraph({
+	            alignment: AlignmentType.CENTER,
+	            spacing: { line: 360, before: 0, after: 0 },
+	            children: [
+	                new TextRun({ text: 'Проверка жесткости балки:', bold: true }),
+	            ]
+	        }),
+	        new Paragraph({
+	            alignment: AlignmentType.JUSTIFIED,
+	            spacing: { line: 360, before: 0, after: 0 },
+	            children: [ reRoofDeflectionFormula, new TextRun({ text: ' ' }) ]
+	        }),
+	        new Paragraph({
+	            alignment: AlignmentType.JUSTIFIED,
+	            spacing: { before: 0, after: 120, line: 360, lineRule: LineRuleType.AUTO },
+	            indent: { firstLine: 709 },
+	            children: [
+	                new TextRun({ text: "где", size: 28, font: "Times New Roman" }), 
+	            ]
+	        }),
+	        new Paragraph({
+	            alignment: AlignmentType.JUSTIFIED,
+	            spacing: { before: 0, after: 120, line: 360, lineRule: LineRuleType.AUTO },
+	            children: [
+	                mFormula(mSub('q', 'н')),
+	                new TextRun(" — нормативная погонная нагрузка,")
+	            ]
+	        }),
+	        new Paragraph({
+	            alignment: AlignmentType.JUSTIFIED,
+	            spacing: { before: 0, after: 120, line: 360, lineRule: LineRuleType.AUTO },
+	            children: [
+	                mFormula(mSub('l', 'бн')),
+	                new TextRun(" — пролёт балки настила,")
+	            ]
+	        }),
+	        new Paragraph({
+	            alignment: AlignmentType.JUSTIFIED,
+	            spacing: { before: 0, after: 120, line: 360, lineRule: LineRuleType.AUTO },
+	            children: [
+	                mFormula(mSub('I', 'x')),
+	                new TextRun(" — момент инерции сечения балки настила,")
+	            ]
+	        }),
+	        new Paragraph({
+	            alignment: AlignmentType.JUSTIFIED,
+	            spacing: { before: 0, after: 120, line: 360, lineRule: LineRuleType.AUTO },
+	            indent: { firstLine: 709 },
+	            children: [
+	                new TextRun("Предельный относительный прогиб балки настила принят равным 1/150 в соответствии с эстетико-психологическими требованиями.")
+	            ]
+	        }),
+	        new Paragraph({
+	            alignment: AlignmentType.CENTER,
+	            spacing: { line: 360, before: 0, after: 0 },
+	            children: [ reRoofDeflectionCalc ]
+	        }),
+	    );
+	
+	    if (reRoofDeflectionAnsw > (1 / 150)) {
+	        reBeamChildren.push(
+	            new Paragraph({
+	                alignment: AlignmentType.CENTER,
+	                spacing: { line: 360, before: 0, after: 0 },
+	                children: [
+	                    new TextRun({ underline: true, text: 'Необходимо увеличить сечение.' }),
+	                    new PageBreak()
+	                ]
+	            })
+	        );
+	        reRoofBeamchey = selectBeamByWx(reRoofBeamchey.Wx + 0.1);
+	        reRoofDeflectionAnsw = (5 / 384) * ((reQNormal) * (10 ** (-2)) * ((reVarus1B * 100) ** 3)) / (2.06 * (10 ** 4) * reRoofBeamchey.Ix);
+	        reRoofDeflectionCalc = mFormula(
+	            mFrac('5', '384'),
+	            mMul(),
+	            mFrac(
+	                mGroup(
+	                    String(Math.ceil(reQNormal * 1000) / 1000).replace('.', ','),
+	                    mText('·'), 
+	                    mSup('10', '-2'),
+	                    mText('·'),
+	                    mGroup(mSup(String(Math.ceil(reVarus1B * 100 * 1000) / 1000).replace('.', ','), '3'))
+	                ),
+	                mGroup(
+	                    '2,06', mText('·'),  mSup('10', '4'),
+	                    mText('·'),
+	                    String(Math.ceil(reRoofBeamchey.Ix * 1000) / 1000).replace('.', ',')
+	                )
+	            ),
+	            mEq(),
+	            String(Math.ceil(reRoofDeflectionAnsw * 100000) / 100000).replace('.', ','),
+	            ' < ',
+	            '0,0066'
+	        );
+	        createRoofEpure();
+	    } else {
+	        reBeamChildren.push(
+	            new Paragraph({
+	                alignment: AlignmentType.CENTER,
+	                spacing: { line: 360, before: 0, after: 0 },
+	                children: [
+	                    new TextRun({ underline: true, text: 'Условие жесткости выполняется.' }),
+	                    new PageBreak()
+	                ]
+	            })
+	        );
+	    }
 }
 
 function generateRoofEpure() {
-    pushRoofEpure()
-    roofBeamChildren.push(
-        new Paragraph({
-            alignment: AlignmentType.CENTER,
-            children: [
-                new ImageRun({
-                    data: snapshot,
-                    transformation: {
-                        width:  550, // Ширина в пикселях в документе
-                        height: 450, // Высота в пикселях в документе
-                    },
-                    size: 28,
-                }),
-            ],
-        })
-    )
-    roofBeamChildren.push(
-        new Paragraph({
-            alignment: AlignmentType.CENTER,
-            spacing: {
-                line: 360, // Полуторный интервал для ВСЕГО документа
-                before: 0,
-                after: 0,
-            },
-            children: [
-                new TextRun({
-                    text: 'Рис.4 - Расчетная схема балки настила'
-                }),
-            ]
-        }),
-        new Paragraph({}),
-    )
-    createRoofEpure()
-    const doc = new Document({
-        styles: {
-            paragraphStyles: [
-                {
-                    id: "customItalicStyle",
-                    name: "Custom Italic Style",
-                    basedOn: "Normal",
-                    next: "Normal",
-                    run: {
-                        font: "Times New Roman",
-                        size: 28, // Увеличено до 14pt (28 полупунктов)
-                        italics: true
-                    }
-                },
-                {
-                    id: "Normal",
-                    name: "Normal",
-                    run: {
-                        font: "Times New Roman",
-                        size: 28 // Базовый шрифт документа теперь тоже 14pt
-                    }
-                }
-            ]
-        },
-        sections: [
-            {
-                properties: {
-                    page: {
-                        margin: { top: 1134, bottom: 1134, left: 1700, right: 1700 }
-                    }
-                },
-                children: roofBeamChildren
-            },
-        ],
-    });
-    Packer.toBlob(doc).then((blob) => {
-        saveAs(blob, "Roof_epure.docx");
-    });
-    roofBeamChildren = []
+	    createRoofEpure();
+	    const doc = new Document({
+	        styles: {
+	            paragraphStyles: [
+	                {
+	                    id: "customItalicStyle",
+	                    name: "Custom Italic Style",
+	                    basedOn: "Normal",
+	                    next: "Normal",
+	                    run: { font: "Times New Roman", size: 28, italics: true }
+	                },
+	                {
+	                    id: "Normal",
+	                    name: "Normal",
+	                    run: { font: "Times New Roman", size: 28 }
+	                }
+	            ]
+	        },
+	        sections: [
+	            {
+	                properties: {
+	                    page: { margin: { top: 1134, bottom: 1134, left: 1700, right: 1700 } }
+	                },
+	                children: reBeamChildren
+	            },
+	        ],
+	    });
+	    Packer.toBlob(doc).then((blob) => {
+	        saveAs(blob, "Roof_epure.docx");
+	    });
+	    reBeamChildren = [];
 }
-function exportRoof() {
-	const a = document.createElement("a");
-	a.href = canvas.toDataURL("image/jpg");
-	a.download = "roof_beam_epure.jpg";
-	a.click();
+
+function drawRoofBeamEpure() {
+	    reCtx.fillStyle = "white";
+	    reCtx.fillRect(0, 0, reCanvas.width, reCanvas.height);
+	
+	// beam
+	    reCtx.beginPath();
+	    reCtx.lineWidth = 4;
+	    reCtx.moveTo(reCenterX, reCenterY);
+	    reCtx.moveTo(reCenterX, reCenterY / 7);
+	    reCtx.moveTo(reCenterX - reVarus1B / 2 * reScale + 0.1 * reScale, reCenterY / 7);
+	    reCtx.lineTo(reCenterX + (reVarus1B / 2) * reScale - 0.1 * reScale, reCenterY / 7);
+	    reCtx.moveTo(reCenterX - reVarus1B / 2 * reScale, reCenterY / 7);
+	    reCtx.lineTo(reCenterX - reVarus1B / 2 * reScale + 0.15 * reScale, reCenterY / 7 + 0.3 * reScale);
+	    reCtx.moveTo(reCenterX - reVarus1B / 2 * reScale, reCenterY / 7);
+	    reCtx.lineTo(reCenterX - reVarus1B / 2 * reScale - 0.15 * reScale, reCenterY / 7 + 0.3 * reScale);
+	    reCtx.lineTo(reCenterX - reVarus1B / 2 * reScale + 0.15 * reScale, reCenterY / 7 + 0.3 * reScale);
+	    reCtx.closePath();
+	    reCtx.stroke();
+	
+	    reCtx.beginPath();
+	    reCtx.lineWidth = 4;
+	    reCtx.moveTo(reCenterX + reVarus1B / 2 * reScale, reCenterY / 7);
+	    reCtx.lineTo(reCenterX + reVarus1B / 2 * reScale, reCenterY / 7 + 0.3 * reScale);
+	    reCtx.closePath();
+	    reCtx.stroke();
+	// ground
+	    reCtx.beginPath();
+	    reCtx.lineWidth = 4;
+	    reCtx.moveTo(reCenterX + reVarus1B / 2 * reScale, reCenterY / 7 + 0.3 * reScale + 0.1 * reScale);
+	    reCtx.moveTo(reCenterX + reVarus1B / 2 * reScale + 0.3 * reScale, reCenterY / 7 + 0.3 * reScale + 0.1 * reScale);
+	    reCtx.lineTo(reCenterX + reVarus1B / 2 * reScale - 0.3 * reScale, reCenterY / 7 + 0.3 * reScale + 0.1 * reScale);
+	    reCtx.stroke();
+	
+	    reCtx.beginPath();
+	    reCtx.lineWidth = 4;
+	    reCtx.moveTo(reCenterX - reVarus1B / 2 * reScale, reCenterY / 7 + 0.3 * reScale + 0.1 * reScale);
+	    reCtx.moveTo(reCenterX - reVarus1B / 2 * reScale + 0.3 * reScale, reCenterY / 7 + 0.3 * reScale + 0.1 * reScale);
+	    reCtx.lineTo(reCenterX - reVarus1B / 2 * reScale - 0.3 * reScale, reCenterY / 7 + 0.3 * reScale + 0.1 * reScale);
+	    reCtx.stroke();
+	
+	    reCtx.beginPath();
+	    reCtx.lineWidth = 4;
+	    reCtx.moveTo(-0.05 * reScale + reCenterX - reVarus1B / 2 * reScale - 0.3 * reScale + 0.1 * reScale, reCenterY / 7 + 0.3 * reScale + 0.1 * reScale);
+	    reCtx.lineTo(-0.05 * reScale + reCenterX - reVarus1B / 2 * reScale - 0.3 * reScale + 0.1 * reScale + 0.1 * reScale, reCenterY / 7 + 0.3 * reScale + 0.1 * reScale + 0.1 * reScale);
+	    reCtx.moveTo(-0.05 * reScale + reCenterX - reVarus1B / 2 * reScale - 0.3 * reScale + 0.3 * reScale, reCenterY / 7 + 0.3 * reScale + 0.1 * reScale);
+	    reCtx.lineTo(-0.05 * reScale + reCenterX - reVarus1B / 2 * reScale - 0.3 * reScale + 0.3 * reScale + 0.1 * reScale, reCenterY / 7 + 0.3 * reScale + 0.1 * reScale + 0.1 * reScale);
+	    reCtx.moveTo(-0.05 * reScale + reCenterX - reVarus1B / 2 * reScale - 0.3 * reScale + 0.5 * reScale, reCenterY / 7 + 0.3 * reScale + 0.1 * reScale);
+	    reCtx.lineTo(-0.05 * reScale + reCenterX - reVarus1B / 2 * reScale - 0.3 * reScale + 0.5 * reScale + 0.1 * reScale, reCenterY / 7 + 0.3 * reScale + 0.1 * reScale + 0.1 * reScale);
+	    reCtx.stroke();
+	
+	    reCtx.beginPath();
+	    reCtx.lineWidth = 4;
+	    reCtx.moveTo(-0.05 * reScale + reCenterX + reVarus1B / 2 * reScale - 0.3 * reScale + 0.1 * reScale, reCenterY / 7 + 0.3 * reScale + 0.1 * reScale);
+	    reCtx.lineTo(-0.05 * reScale + reCenterX + reVarus1B / 2 * reScale - 0.3 * reScale + 0.1 * reScale + 0.1 * reScale, reCenterY / 7 + 0.3 * reScale + 0.1 * reScale + 0.1 * reScale);
+	    reCtx.moveTo(-0.05 * reScale + reCenterX + reVarus1B / 2 * reScale - 0.3 * reScale + 0.3 * reScale, reCenterY / 7 + 0.3 * reScale + 0.1 * reScale);
+	    reCtx.lineTo(-0.05 * reScale + reCenterX + reVarus1B / 2 * reScale - 0.3 * reScale + 0.3 * reScale + 0.1 * reScale, reCenterY / 7 + 0.3 * reScale + 0.1 * reScale + 0.1 * reScale);
+	    reCtx.moveTo(-0.05 * reScale + reCenterX + reVarus1B / 2 * reScale - 0.3 * reScale + 0.5 * reScale, reCenterY / 7 + 0.3 * reScale + 0.1 * reScale);
+	    reCtx.lineTo(-0.05 * reScale + reCenterX + reVarus1B / 2 * reScale - 0.3 * reScale + 0.5 * reScale + 0.1 * reScale, reCenterY / 7 + 0.3 * reScale + 0.1 * reScale + 0.1 * reScale);
+	    reCtx.stroke();
+	// ramalines
+	    reCtx.beginPath();
+	    reCtx.lineWidth = 2.5;
+	    reCtx.moveTo(reCenterX + reVarus1B / 2 * reScale, reCenterY / 7 + 0.3 * reScale);
+	    reCtx.lineTo(reCenterX + reVarus1B / 2 * reScale, reCenterY / 7 + 4 * reScale);
+	    reCtx.closePath();
+	    reCtx.stroke();
+	
+	    reCtx.beginPath();
+	    reCtx.lineWidth = 2.5;
+	    reCtx.moveTo(reCenterX - reVarus1B / 2 * reScale, reCenterY / 7 + 0.3 * reScale);
+	    reCtx.lineTo(reCenterX - reVarus1B / 2 * reScale, reCenterY / 7 + 4 * reScale);
+	    reCtx.closePath();
+	    reCtx.stroke();
+	
+	    reCtx.beginPath();
+	    reCtx.lineWidth = 3;
+	    reCtx.moveTo(reCenterX - reVarus1B / 2 * reScale, reCenterY / 7 + 4 * reScale);
+	    reCtx.lineTo(reCenterX + (reVarus1B / 2) * reScale, reCenterY / 7 + 4 * reScale);
+	    reCtx.closePath();
+	    reCtx.stroke();
+	
+	    reCtx.beginPath();
+	    reCtx.lineWidth = 3;
+	    reCtx.moveTo(reCenterX - reVarus1B / 2 * reScale, reCenterY / 7 + 2 * reScale);
+	    reCtx.lineTo(reCenterX + (reVarus1B / 2) * reScale, reCenterY / 7 + 2 * reScale);
+	    reCtx.closePath();
+	    reCtx.stroke();
+	
+	    reCtx.beginPath();
+	    reCtx.lineWidth = 2;
+	    reCtx.moveTo(reCenterX - reVarus1B / 2 * reScale, reCenterY / 7 + 1 * reScale);
+	    reCtx.lineTo(reCenterX + (reVarus1B / 2) * reScale, reCenterY / 7 + 1 * reScale);
+	    reCtx.closePath();
+	    reCtx.stroke();
+	
+	    // size_arrows
+	    reCtx.beginPath();
+	    reCtx.lineWidth = 2;
+	    reCtx.moveTo(reCenterX - reVarus1B / 2 * reScale, reCenterY / 7 + 1 * reScale);
+	    reCtx.lineTo(reCenterX - reVarus1B / 2 * reScale + 0.1 * reScale, reCenterY / 7 + 1 * reScale + 0.1 * reScale);
+	    reCtx.moveTo(reCenterX - reVarus1B / 2 * reScale, reCenterY / 7 + 1 * reScale);
+	    reCtx.lineTo(reCenterX - reVarus1B / 2 * reScale + 0.1 * reScale, reCenterY / 7 + 1 * reScale - 0.1 * reScale);
+	    reCtx.closePath();
+	    reCtx.stroke();
+	
+	    reCtx.beginPath();
+	    reCtx.lineWidth = 2;
+	    reCtx.moveTo(reCenterX + reVarus1B / 2 * reScale, reCenterY / 7 + 1 * reScale);
+	    reCtx.lineTo(reCenterX + reVarus1B / 2 * reScale - 0.1 * reScale, reCenterY / 7 + 1 * reScale - 0.1 * reScale);
+	    reCtx.moveTo(reCenterX + reVarus1B / 2 * reScale, reCenterY / 7 + 1 * reScale);
+	    reCtx.lineTo(reCenterX + reVarus1B / 2 * reScale - 0.1 * reScale, reCenterY / 7 + 1 * reScale + 0.1 * reScale);
+	    reCtx.closePath();
+	    reCtx.stroke();
+	// 2m
+	    reCtx.beginPath();
+	    reCtx.lineWidth = 2;
+	    reCtx.font = 'bold 22px GOST A';
+	    reCtx.fillStyle = 'black';
+	    reCtx.textAlign = 'center';
+	    reCtx.fillText(String(reVarus1B).replaceAll('.', ',') + ' м', reCenterX, reCenterY / 7 + 1 * reScale - 0.05 * reScale);
+	    reCtx.stroke();
+	    reCtx.closePath();
+	    reCtx.stroke();
+	// load_arrows
+	    reCtx.beginPath();
+	    reCtx.lineWidth = 2;
+	    reCtx.moveTo(reCenterX - reVarus1B / 2 * reScale, reCenterY / 7 - 0.4 * reScale);
+	    reCtx.lineTo(reCenterX + (reVarus1B / 2) * reScale, reCenterY / 7 - 0.4 * reScale);
+	    for (let cvb = 0; cvb <= 7; cvb++) {
+	        reCtx.moveTo(reCenterX - reVarus1B / 2 * reScale + cvb * reVarus1B / 7 * reScale, reCenterY / 7 - 0.4 * reScale);
+	        reCtx.lineTo(reCenterX - reVarus1B / 2 * reScale + cvb * reVarus1B / 7 * reScale, reCenterY / 7);
+	        reCtx.moveTo(reCenterX - reVarus1B / 2 * reScale + cvb * reVarus1B / 7 * reScale, reCenterY / 7);
+	        reCtx.lineTo(reCenterX - reVarus1B / 2 * reScale + cvb * reVarus1B / 7 * reScale - 0.08 * reScale, reCenterY / 7 - 0.08 * reScale);
+	        reCtx.moveTo(reCenterX - reVarus1B / 2 * reScale + cvb * reVarus1B / 7 * reScale, reCenterY / 7);
+	        reCtx.lineTo(reCenterX - reVarus1B / 2 * reScale + cvb * reVarus1B / 7 * reScale + 0.08 * reScale, reCenterY / 7 - 0.08 * reScale);
+	    }
+	    
+	    reCtx.font = 'bold 22px GOST A';
+	    reCtx.fillStyle = 'black';
+	    reCtx.textAlign = 'center';
+	    reCtx.fillText('q', reCenterX, reCenterY / 7 - 0.5 * reScale);
+	
+	    reCtx.closePath();
+	    reCtx.stroke();
+	// circles
+	    reCtx.beginPath();
+	    reCtx.arc(reCenterX - reVarus1B / 2 * reScale + 0.15 * reScale, reCenterY / 7 + 0.3 * reScale, 0.1 * reScale, 0, 2 * Math.PI, false);
+	    reCtx.fillStyle = "white";
+	    reCtx.fill();
+	    reCtx.lineWidth = 4;
+	    reCtx.strokeStyle = 'black';
+	    reCtx.stroke();
+	
+	    reCtx.beginPath();
+	    reCtx.arc(reCenterX - reVarus1B / 2 * reScale - 0.15 * reScale, reCenterY / 7 + 0.3 * reScale, 0.1 * reScale, 0, 2 * Math.PI, false);
+	    reCtx.fillStyle = "white";
+	    reCtx.fill();
+	    reCtx.lineWidth = 4;
+	    reCtx.strokeStyle = 'black';
+	    reCtx.stroke();
+	
+	    reCtx.beginPath();
+	    reCtx.arc(reCenterX - reVarus1B / 2 * reScale, reCenterY / 7, 0.1 * reScale, 0, 2 * Math.PI, false);
+	    reCtx.fillStyle = "white";
+	    reCtx.fill();
+	    reCtx.lineWidth = 4;
+	    reCtx.strokeStyle = 'black';
+	    reCtx.stroke();
+	
+	    reCtx.beginPath();
+	    reCtx.arc(reCenterX + reVarus1B / 2 * reScale, reCenterY / 7, 0.1 * reScale, 0, 2 * Math.PI, false);
+	    reCtx.fillStyle = "white";
+	    reCtx.fill();
+	    reCtx.lineWidth = 4;
+	    reCtx.strokeStyle = 'black';
+	    reCtx.stroke();
+	
+	    reCtx.beginPath();
+	    reCtx.arc(reCenterX - reVarus1B / 2 * reScale + 0.3 * reScale, reCenterY / 7 + 0.3 * reScale, 0, 2 * Math.PI, false);
+	    reCtx.fillStyle = "white";
+	    reCtx.fill();
+	    reCtx.lineWidth = 4;
+	    reCtx.strokeStyle = 'black';
+	    reCtx.stroke();
+	
+	    reCtx.beginPath();
+	    reCtx.arc(reCenterX + reVarus1B / 2 * reScale, reCenterY / 7 + 0.3 * reScale, 0.1 * reScale, 0, 2 * Math.PI, false);
+	    reCtx.fillStyle = "white";
+	    reCtx.fill();
+	    reCtx.lineWidth = 4;
+	    reCtx.strokeStyle = 'black';
+	    reCtx.stroke();
+	
+	// momentum
+	    const reCx = reP2.x;
+	    const reCy = 2 * reP2.y - (reP1.y + reP3.y) / 2;
+	
+	    const reMinX_m = reP1.x;
+	    const reMaxX_m = reP3.x;
+	    const reMinY_m = reP2.y;
+	    const reMaxY_m = reP1.y;
+	    
+	    const reSpacingM = 10;
+	
+	    reCtx.beginPath();
+	    reCtx.moveTo(reCenterX - reVarus1B / 2 * reScale, reCenterY / 7 + 4 * reScale);
+	    reCtx.font = 'bold 22px GOST A';
+	    reCtx.fillStyle = 'black';
+	    reCtx.textAlign = 'center';
+	    reCtx.fillText('M', reCenterX - reVarus1B / 2 * reScale - 0.2 * reScale, reCenterY / 7 + 2 * reScale);
+	    reCtx.moveTo(reP1.x, reP1.y);
+	    reCtx.quadraticCurveTo(reCx, reCy, reP3.x, reP3.y);
+	    
+	    reCtx.font = 'bold 18px GOST A';
+	    reCtx.fillStyle = 'black';
+	    reCtx.textAlign = 'center';
+	    reCtx.fillText(String(Math.ceil(reMMax * 1000) / 1000).replace('.', ',') + 'кНм', reCenterX, reCenterY / 7 + 2 * reScale + reMMax / reMscale * reScale + 0.3 * reScale);
+	
+	    reCtx.lineTo(reP1.x, reP1.y); 
+	    reCtx.closePath();
+	
+	    reCtx.save();
+	    reCtx.clip();
+	
+	    reCtx.strokeStyle = '#000';
+	    reCtx.lineWidth = 1;
+	    
+	    for (let x = reMinX_m; x <= reMaxX_m; x += reSpacingM) {
+	        reCtx.beginPath();
+	        reCtx.moveTo(x, reMinY_m); 
+	        reCtx.lineTo(x, reMaxY_m);
+	        reCtx.stroke();
+	    }
+	    
+	    reCtx.restore();
+	
+	    reCtx.lineWidth = 4;
+	    reCtx.strokeStyle = '#000';
+	    
+	    reCtx.beginPath();
+	    reCtx.moveTo(reP1.x, reP1.y);
+	    reCtx.quadraticCurveTo(reCx, reCy, reP3.x, reP3.y);
+	    reCtx.stroke();
+	
+	    reCtx.beginPath();
+	    reCtx.arc(reCenterX, reCenterY / 7 + 2 * reScale + reMMax / reMscale * reScale, 0.02 * reScale, 0, 2 * Math.PI, false);
+	    reCtx.lineWidth = 4;
+	    reCtx.strokeStyle = 'black';
+	    reCtx.stroke();
+	
+	    // big Q power
+	    reCtx.lineWidth = 4;
+	    reCtx.beginPath();
+	    reCtx.moveTo(reCenterX - reVarus1B / 2 * reScale, reCenterY / 7 + 4 * reScale);
+	    reCtx.font = 'bold 22px GOST A';
+	    reCtx.fillStyle = 'black';
+	    reCtx.textAlign = 'center';
+	    reCtx.fillText('Q', reCenterX - reVarus1B / 2 * reScale - 0.2 * reScale, reCenterY / 7 + 4 * reScale);
+	
+	    reCtx.lineTo(reCenterX - reVarus1B / 2 * reScale, reCenterY / 7 + 4 * reScale - reBiQ / 150 * reScale);
+	    reCtx.lineTo(reCenterX + reVarus1B / 2 * reScale, reCenterY / 7 + 4 * reScale + reBiQ / 150 * reScale);
+	    reCtx.lineTo(reCenterX + reVarus1B / 2 * reScale, reCenterY / 7 + 4 * reScale);
+	    reCtx.closePath();
+	    reCtx.stroke();
+	
+	    const reLeftX = reCenterX - (reVarus1B / 2) * reScale;
+	    const reRightX = reCenterX + (reVarus1B / 2) * reScale;
+	    
+	    const reBaseY = (reCenterY / 7) + (4 * reScale);
+	    const reTopLeftY = reBaseY - (reBiQ / 150) * reScale;
+	    const reBottomRightY = reBaseY + (reBiQ / 150) * reScale;
+	
+	    const reMinX = reLeftX;
+	    const reMaxX = reRightX;
+	    const reMinY = reTopLeftY; 
+	    const reMaxY = reBottomRightY;
+	
+	    const reSpacing = 10;
+	    const reStrokeColor = '#000';
+	    const reLineWidth = 1;
+	
+	    reCtx.beginPath();
+	    reCtx.moveTo(reLeftX, reBaseY);              
+	    reCtx.lineTo(reLeftX, reTopLeftY);           
+	    reCtx.lineTo(reRightX, reBottomRightY);      
+	    reCtx.lineTo(reRightX, reBaseY);             
+	    reCtx.closePath();
+	
+	    reCtx.save();
+	    reCtx.clip();
+	
+	    reCtx.strokeStyle = reStrokeColor;
+	    reCtx.lineWidth = reLineWidth;
+	
+	    for (let x = reMinX; x <= reMaxX; x += reSpacing) {
+	        reCtx.beginPath();
+	        reCtx.moveTo(x, reMinY); 
+	        reCtx.lineTo(x, reMaxY);
+	        reCtx.stroke();
+	    }
+	
+	    reCtx.restore();
+	
+	    reCtx.lineWidth = 4;
+	    reCtx.strokeStyle = '#000';
+	    reCtx.fillStyle = 'transparent';
+	
+	    reCtx.beginPath();
+	    reCtx.moveTo(reLeftX, reBaseY);
+	    reCtx.lineTo(reLeftX, reTopLeftY);
+	    reCtx.lineTo(reRightX, reBottomRightY);
+	    reCtx.lineTo(reRightX, reBaseY);
+	    reCtx.closePath();
+	    reCtx.stroke();
+	
+	    reCtx.beginPath();
+	    reCtx.font = 'bold 18px GOST A';
+	    reCtx.fillStyle = 'black';
+	    reCtx.fillText(String('+' + Math.ceil(reBiQ * 1000) / 1000).replace('.', ',') + 'кН', reCenterX - reVarus1B / 2 * reScale + 0.5 * reScale, reCenterY / 7 + 4 * reScale - (reBiQ / 150) * reScale - 0.1 * reScale);
+	    reCtx.closePath();
+	    reCtx.stroke();
+	
+	    reCtx.beginPath();
+	    reCtx.font = 'bold 18px GOST A';
+	    reCtx.fillStyle = 'black';
+	    reCtx.fillText(String('-' + Math.ceil(reBiQ * 1000) / 1000).replace('.', ',') + 'кН', reCenterX + reVarus1B / 2 * reScale - 0.5 * reScale, reCenterY / 7 + 4 * reScale + (reBiQ / 150) * reScale + 0.3 * reScale);
+	    reCtx.closePath();
+	    reCtx.stroke();
+	
+	    reCtx.beginPath();
+	    reCtx.arc(reCenterX + reVarus1B / 2 * reScale, reCenterY / 7 + 4 * reScale + (reBiQ / 150) * reScale, 0.02 * reScale, 0, 2 * Math.PI, false);
+	    reCtx.lineWidth = 4;
+	    reCtx.strokeStyle = 'black';
+	    reCtx.stroke();
+	
+	    reCtx.beginPath();
+	    reCtx.arc(reCenterX - reVarus1B / 2 * reScale, reCenterY / 7 + 4 * reScale - (reBiQ / 150) * reScale, 0.02 * reScale, 0, 2 * Math.PI, false);
+	    reCtx.lineWidth = 4;
+	    reCtx.strokeStyle = 'black';
+	    reCtx.stroke();
 }
-const epureOnly = document.getElementById('epure_only')
-epureOnly.addEventListener("click", () => {
-	exportRoof()
-})
