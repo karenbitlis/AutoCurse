@@ -262,11 +262,6 @@ function doingEpures() {
 		String(Math.ceil(reRoofDeflectionAnsw * 100000) / 100000).replace('.', ','),
 		' < ',
 		'0,0066');
-	
-	rEpure.shadowRoot.getElementById('epuring').addEventListener("click", () => {
-		generateRoofEpure();
-	});
-	'rEpure-result'
 	rEpure.shadowRoot.getElementById('rEpure-result').innerText = 'Назначен двутавр №' + reRoofBeamchey.number
 }
 
@@ -281,7 +276,9 @@ const reEpureOnly = rEpure.shadowRoot.getElementById('epure_only');
 reEpureOnly.addEventListener("click", () => {
 	exportRoof();
 });
-
+rEpure.shadowRoot.getElementById('epuring').addEventListener("click", () => {
+		generateRoofEpure();
+	});
 roofe_varo.addEventListener("click", () => {
     changerEpureVar()
 });

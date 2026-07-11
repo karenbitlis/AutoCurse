@@ -67,42 +67,54 @@ function generateDocx() {
 
         decking_varo.value = 1
         roof_varo.value = 1
-        numvaro = 1
+        roofe_varo.value = 1
+        sece_varo.value = 1
         changeDeckVar()
         changeRoofVar()
         changerEpureVar()
+        changeSecBeamVar()
         createDeck()
         createRoof()
         createRoofEpure()
+        createSecBeam()
         documento.push(...dkChildren)
         documento.push(...roofChildren)
         documento.push(...reBeamChildren)
+        documento.push(...secChildren)
         
         decking_varo.value = 2
         roof_varo.value = 2
-        numvaro = 2
+        roofe_varo.value = 2
+        sece_varo.value = 2
         changeDeckVar()
         changeRoofVar()
         changerEpureVar()
+        changeSecBeamVar()
         createDeck()
         createRoof()
         createRoofEpure()
+        createSecBeam()
         documento.push(...dkChildren)
         documento.push(...roofChildren)
         documento.push(...reBeamChildren)
+        documento.push(...secChildren)
         
         decking_varo.value = 3
         roof_varo.value = 3
-        numvaro = 3
+        roofe_varo.value = 3
+        sece_varo.value = 3
         changeDeckVar()
         changeRoofVar()
         changerEpureVar()
+        changeSecBeamVar()
         createDeck()
         createRoof()
         createRoofEpure()
+        createSecBeam()
         documento.push(...dkChildren)
         documento.push(...roofChildren)
         documento.push(...reBeamChildren)
+        documento.push(...secChildren)
 
     documento.push(...litChildren)
     

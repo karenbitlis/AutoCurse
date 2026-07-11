@@ -23,29 +23,29 @@ let q_real_linear = q_real*varus1A
 let M_max = q_real_linear*(A**2)/8
 let biQ = q_real_linear * A / 2
 
-const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d");
+const seCanvas = document.getElementById("canvas");
+const reCtx = seCanvas.getContext("2d");
 
-let dataUrl = canvas.toDataURL("image/png");
+let dataUrl = seCanvas.toDataURL("image/png");
 let snapshot = []
 let { data } = dataURLtoUint8Array(dataUrl);
 
-const ctnr = document.getElementById("canvas-container");
+const ctnr = document.getElementById("seCanvas-container");
 
 const cssWidth = ctnr.offsetWidth-8;
 const cssHeight = 450;
 const dpi = 10;
 
-canvas.width = cssWidth * dpi;
-canvas.height = cssHeight * dpi;
+seCanvas.width = cssWidth * dpi;
+seCanvas.height = cssHeight * dpi;
 
-canvas.style.width = cssWidth + "px";
-canvas.style.height = cssHeight + "px";
+seCanvas.style.width = cssWidth + "px";
+seCanvas.style.height = cssHeight + "px";
 
-ctx.scale(dpi, dpi);
+reCtx.scale(dpi, dpi);
 
-let centerX = canvas.width / (2*dpi);
-let centerY = canvas.height / (2*dpi) + 250;
+let centerX = seCanvas.width / (2*dpi);
+let centerY = seCanvas.height / (2*dpi) + 250;
 
 let Mscaler = 300
 let Qscaler = 200
@@ -97,292 +97,292 @@ function Mcalc(i) {
 }
 
 function drawSocondBeamEpure() {
-    ctx.fillStyle = "white"
-    ctx.fillRect(0, 0, canvas.width, canvas.height)
+    reCtx.fillStyle = "white"
+    reCtx.fillRect(0, 0, seCanvas.width, seCanvas.height)
 //beam
-	ctx.beginPath()
-		ctx.lineWidth = 4
-		ctx.moveTo(centerX, centerY)
-		ctx.moveTo(centerX, centerY/7)
-		ctx.moveTo(centerX-A/2*scale+0.1*scale, centerY/7)
-		ctx.lineTo(centerX+(A/2)*scale-0.1*scale, centerY/7)
-		ctx.moveTo(centerX-A/2*scale, centerY/7)
-		ctx.lineTo(centerX-A/2*scale+0.15*scale, centerY/7+0.3*scale)
-		ctx.moveTo(centerX-A/2*scale, centerY/7)
-		ctx.lineTo(centerX-A/2*scale-0.15*scale, centerY/7+0.3*scale)
-		ctx.lineTo(centerX-A/2*scale+0.15*scale, centerY/7+0.3*scale)
-		ctx.closePath()
-		ctx.stroke()
+	reCtx.beginPath()
+		reCtx.lineWidth = 4
+		reCtx.moveTo(centerX, centerY)
+		reCtx.moveTo(centerX, centerY/7)
+		reCtx.moveTo(centerX-A/2*scale+0.1*scale, centerY/7)
+		reCtx.lineTo(centerX+(A/2)*scale-0.1*scale, centerY/7)
+		reCtx.moveTo(centerX-A/2*scale, centerY/7)
+		reCtx.lineTo(centerX-A/2*scale+0.15*scale, centerY/7+0.3*scale)
+		reCtx.moveTo(centerX-A/2*scale, centerY/7)
+		reCtx.lineTo(centerX-A/2*scale-0.15*scale, centerY/7+0.3*scale)
+		reCtx.lineTo(centerX-A/2*scale+0.15*scale, centerY/7+0.3*scale)
+		reCtx.closePath()
+		reCtx.stroke()
 
-	ctx.beginPath()
-		ctx.lineWidth = 4
-		ctx.moveTo(centerX+A/2*scale, centerY/7)
-		ctx.lineTo(centerX+A/2*scale, centerY/7+0.3*scale)
-		ctx.closePath()
-		ctx.stroke()
+	reCtx.beginPath()
+		reCtx.lineWidth = 4
+		reCtx.moveTo(centerX+A/2*scale, centerY/7)
+		reCtx.lineTo(centerX+A/2*scale, centerY/7+0.3*scale)
+		reCtx.closePath()
+		reCtx.stroke()
 // ground
-	ctx.beginPath()
-		ctx.lineWidth = 4
-		ctx.moveTo(centerX+A/2*scale, centerY/7+0.3*scale+0.1*scale)
-		ctx.moveTo(centerX+A/2*scale+0.3*scale, centerY/7+0.3*scale+0.1*scale)
-		ctx.lineTo(centerX+A/2*scale-0.3*scale, centerY/7+0.3*scale+0.1*scale)
-		ctx.stroke()
-	ctx.beginPath()
-		ctx.lineWidth = 4
-		ctx.moveTo(centerX-A/2*scale, centerY/7+0.3*scale+0.1*scale)
-		ctx.moveTo(centerX-A/2*scale+0.3*scale, centerY/7+0.3*scale+0.1*scale)
-		ctx.lineTo(centerX-A/2*scale-0.3*scale, centerY/7+0.3*scale+0.1*scale)
-		ctx.stroke()
-	ctx.beginPath()
-		ctx.lineWidth = 4
-		ctx.moveTo(-0.05 * scale + centerX-A/2*scale-0.3*scale+0.1*scale, centerY/7+0.3*scale+0.1*scale)
-		ctx.lineTo(-0.05 * scale + centerX-A/2*scale-0.3*scale+0.1*scale+0.1*scale, centerY/7+0.3*scale+0.1*scale+0.1*scale)
-		ctx.moveTo(-0.05 * scale + centerX-A/2*scale-0.3*scale+0.3*scale, centerY/7+0.3*scale+0.1*scale)
-		ctx.lineTo(-0.05 * scale + centerX-A/2*scale-0.3*scale+0.3*scale+0.1*scale, centerY/7+0.3*scale+0.1*scale+0.1*scale)
-		ctx.moveTo(-0.05 * scale + centerX-A/2*scale-0.3*scale+0.5*scale, centerY/7+0.3*scale+0.1*scale)
-		ctx.lineTo(-0.05 * scale + centerX-A/2*scale-0.3*scale+0.5*scale+0.1*scale, centerY/7+0.3*scale+0.1*scale+0.1*scale)
-		ctx.stroke()
-	ctx.beginPath()
-		ctx.lineWidth = 4
-		ctx.moveTo(-0.05 * scale + centerX+A/2*scale-0.3*scale+0.1*scale, centerY/7+0.3*scale+0.1*scale)
-		ctx.lineTo(-0.05 * scale + centerX+A/2*scale-0.3*scale+0.1*scale+0.1*scale, centerY/7+0.3*scale+0.1*scale+0.1*scale)
-		ctx.moveTo(-0.05 * scale + centerX+A/2*scale-0.3*scale+0.3*scale, centerY/7+0.3*scale+0.1*scale)
-		ctx.lineTo(-0.05 * scale + centerX+A/2*scale-0.3*scale+0.3*scale+0.1*scale, centerY/7+0.3*scale+0.1*scale+0.1*scale)
-		ctx.moveTo(-0.05 * scale + centerX+A/2*scale-0.3*scale+0.5*scale, centerY/7+0.3*scale+0.1*scale)
-		ctx.lineTo(-0.05 * scale + centerX+A/2*scale-0.3*scale+0.5*scale+0.1*scale, centerY/7+0.3*scale+0.1*scale+0.1*scale)
-		ctx.stroke()
+	reCtx.beginPath()
+		reCtx.lineWidth = 4
+		reCtx.moveTo(centerX+A/2*scale, centerY/7+0.3*scale+0.1*scale)
+		reCtx.moveTo(centerX+A/2*scale+0.3*scale, centerY/7+0.3*scale+0.1*scale)
+		reCtx.lineTo(centerX+A/2*scale-0.3*scale, centerY/7+0.3*scale+0.1*scale)
+		reCtx.stroke()
+	reCtx.beginPath()
+		reCtx.lineWidth = 4
+		reCtx.moveTo(centerX-A/2*scale, centerY/7+0.3*scale+0.1*scale)
+		reCtx.moveTo(centerX-A/2*scale+0.3*scale, centerY/7+0.3*scale+0.1*scale)
+		reCtx.lineTo(centerX-A/2*scale-0.3*scale, centerY/7+0.3*scale+0.1*scale)
+		reCtx.stroke()
+	reCtx.beginPath()
+		reCtx.lineWidth = 4
+		reCtx.moveTo(-0.05 * scale + centerX-A/2*scale-0.3*scale+0.1*scale, centerY/7+0.3*scale+0.1*scale)
+		reCtx.lineTo(-0.05 * scale + centerX-A/2*scale-0.3*scale+0.1*scale+0.1*scale, centerY/7+0.3*scale+0.1*scale+0.1*scale)
+		reCtx.moveTo(-0.05 * scale + centerX-A/2*scale-0.3*scale+0.3*scale, centerY/7+0.3*scale+0.1*scale)
+		reCtx.lineTo(-0.05 * scale + centerX-A/2*scale-0.3*scale+0.3*scale+0.1*scale, centerY/7+0.3*scale+0.1*scale+0.1*scale)
+		reCtx.moveTo(-0.05 * scale + centerX-A/2*scale-0.3*scale+0.5*scale, centerY/7+0.3*scale+0.1*scale)
+		reCtx.lineTo(-0.05 * scale + centerX-A/2*scale-0.3*scale+0.5*scale+0.1*scale, centerY/7+0.3*scale+0.1*scale+0.1*scale)
+		reCtx.stroke()
+	reCtx.beginPath()
+		reCtx.lineWidth = 4
+		reCtx.moveTo(-0.05 * scale + centerX+A/2*scale-0.3*scale+0.1*scale, centerY/7+0.3*scale+0.1*scale)
+		reCtx.lineTo(-0.05 * scale + centerX+A/2*scale-0.3*scale+0.1*scale+0.1*scale, centerY/7+0.3*scale+0.1*scale+0.1*scale)
+		reCtx.moveTo(-0.05 * scale + centerX+A/2*scale-0.3*scale+0.3*scale, centerY/7+0.3*scale+0.1*scale)
+		reCtx.lineTo(-0.05 * scale + centerX+A/2*scale-0.3*scale+0.3*scale+0.1*scale, centerY/7+0.3*scale+0.1*scale+0.1*scale)
+		reCtx.moveTo(-0.05 * scale + centerX+A/2*scale-0.3*scale+0.5*scale, centerY/7+0.3*scale+0.1*scale)
+		reCtx.lineTo(-0.05 * scale + centerX+A/2*scale-0.3*scale+0.5*scale+0.1*scale, centerY/7+0.3*scale+0.1*scale+0.1*scale)
+		reCtx.stroke()
 // ramalines
-	ctx.beginPath()
-		ctx.lineWidth = 2.5
-		ctx.moveTo(centerX+A/2*scale, centerY/7+0.3*scale)
-		ctx.lineTo(centerX+A/2*scale, centerY/7+4*scale)
-		ctx.closePath()
-		ctx.stroke()
-	ctx.beginPath()
-		ctx.lineWidth = 2.5
-		ctx.moveTo(centerX-A/2*scale, centerY/7+0.3*scale)
-		ctx.lineTo(centerX-A/2*scale, centerY/7+4*scale)
-		ctx.closePath()
-		ctx.stroke()
-	ctx.beginPath()
-		ctx.lineWidth = 4
-		ctx.moveTo(centerX-A/2*scale, centerY/7+1.5*scale)
-		ctx.lineTo(centerX+(A/2)*scale, centerY/7+1.5*scale)
-		ctx.closePath()
-		ctx.stroke()
-	ctx.beginPath()
-		ctx.lineWidth = 2
-		ctx.moveTo(centerX-A/2*scale, centerY/7+1*scale)
-		ctx.lineTo(centerX+(A/2)*scale, centerY/7+1*scale)
-		ctx.closePath()
-		ctx.stroke()
-    ctx.beginPath()
-        ctx.font = 'bold 24px GOST A';
-        ctx.fillStyle = 'black';
-        ctx.textAlign = 'center';
-        ctx.fillText('Q', centerX-A/2*scale-0.2*scale, centerY/7+4*scale)
-        ctx.fillText('M', centerX-A/2*scale-0.2*scale, centerY/7+1.5*scale)
+	reCtx.beginPath()
+		reCtx.lineWidth = 2.5
+		reCtx.moveTo(centerX+A/2*scale, centerY/7+0.3*scale)
+		reCtx.lineTo(centerX+A/2*scale, centerY/7+4*scale)
+		reCtx.closePath()
+		reCtx.stroke()
+	reCtx.beginPath()
+		reCtx.lineWidth = 2.5
+		reCtx.moveTo(centerX-A/2*scale, centerY/7+0.3*scale)
+		reCtx.lineTo(centerX-A/2*scale, centerY/7+4*scale)
+		reCtx.closePath()
+		reCtx.stroke()
+	reCtx.beginPath()
+		reCtx.lineWidth = 4
+		reCtx.moveTo(centerX-A/2*scale, centerY/7+1.5*scale)
+		reCtx.lineTo(centerX+(A/2)*scale, centerY/7+1.5*scale)
+		reCtx.closePath()
+		reCtx.stroke()
+	reCtx.beginPath()
+		reCtx.lineWidth = 2
+		reCtx.moveTo(centerX-A/2*scale, centerY/7+1*scale)
+		reCtx.lineTo(centerX+(A/2)*scale, centerY/7+1*scale)
+		reCtx.closePath()
+		reCtx.stroke()
+    reCtx.beginPath()
+        reCtx.font = 'bold 24px GOST A';
+        reCtx.fillStyle = 'black';
+        reCtx.textAlign = 'center';
+        reCtx.fillText('Q', centerX-A/2*scale-0.2*scale, centerY/7+4*scale)
+        reCtx.fillText('M', centerX-A/2*scale-0.2*scale, centerY/7+1.5*scale)
 
-        ctx.stroke()
+        reCtx.stroke()
 //size_arrows
-	ctx.beginPath()
-		ctx.lineWidth = 2
-		ctx.moveTo(centerX-A/2*scale, centerY/7+1*scale)
-		ctx.lineTo(centerX-A/2*scale+0.1*scale, centerY/7+1*scale+0.1*scale)
-		ctx.moveTo(centerX-A/2*scale, centerY/7+1*scale)
-		ctx.lineTo(centerX-A/2*scale+0.1*scale, centerY/7+1*scale-0.1*scale)
-		ctx.closePath()
-		ctx.stroke()
-	ctx.beginPath()
-		ctx.lineWidth = 2
-		ctx.moveTo(centerX+A/2*scale, centerY/7+1*scale)
-		ctx.lineTo(centerX+A/2*scale-0.1*scale, centerY/7+1*scale-0.1*scale)
-		ctx.moveTo(centerX+A/2*scale, centerY/7+1*scale)
-		ctx.lineTo(centerX+A/2*scale-0.1*scale, centerY/7+1*scale+0.1*scale)
-		ctx.closePath()
-		ctx.stroke()
+	reCtx.beginPath()
+		reCtx.lineWidth = 2
+		reCtx.moveTo(centerX-A/2*scale, centerY/7+1*scale)
+		reCtx.lineTo(centerX-A/2*scale+0.1*scale, centerY/7+1*scale+0.1*scale)
+		reCtx.moveTo(centerX-A/2*scale, centerY/7+1*scale)
+		reCtx.lineTo(centerX-A/2*scale+0.1*scale, centerY/7+1*scale-0.1*scale)
+		reCtx.closePath()
+		reCtx.stroke()
+	reCtx.beginPath()
+		reCtx.lineWidth = 2
+		reCtx.moveTo(centerX+A/2*scale, centerY/7+1*scale)
+		reCtx.lineTo(centerX+A/2*scale-0.1*scale, centerY/7+1*scale-0.1*scale)
+		reCtx.moveTo(centerX+A/2*scale, centerY/7+1*scale)
+		reCtx.lineTo(centerX+A/2*scale-0.1*scale, centerY/7+1*scale+0.1*scale)
+		reCtx.closePath()
+		reCtx.stroke()
 // 2m
-	ctx.beginPath()
-		ctx.lineWidth = 2
-		ctx.font = 'bold 22px GOST A';
-		ctx.fillStyle = 'black';
-		ctx.textAlign = 'center';
-		ctx.fillText(String(A).replaceAll('.', ',')+' м', centerX, centerY/7+1*scale-0.05*scale)
-		ctx.stroke()
-		ctx.closePath()
-		ctx.stroke()
+	reCtx.beginPath()
+		reCtx.lineWidth = 2
+		reCtx.font = 'bold 22px GOST A';
+		reCtx.fillStyle = 'black';
+		reCtx.textAlign = 'center';
+		reCtx.fillText(String(A).replaceAll('.', ',')+' м', centerX, centerY/7+1*scale-0.05*scale)
+		reCtx.stroke()
+		reCtx.closePath()
+		reCtx.stroke()
 // load_arrows
-	ctx.beginPath()
-		ctx.lineWidth = 2
-		// ctx.moveTo(centerX-2*scale, centerY/7-0.4*scale)
-		// ctx.lineTo(centerX+(2)*scale, centerY/7-0.4*scale)
+	reCtx.beginPath()
+		reCtx.lineWidth = 2
+		// reCtx.moveTo(centerX-2*scale, centerY/7-0.4*scale)
+		// reCtx.lineTo(centerX+(2)*scale, centerY/7-0.4*scale)
 		for (let cvb = 1; cvb <= A/varus1A-1; cvb++) {
-			ctx.moveTo(centerX-A/2*scale + cvb*varus1A*scale, centerY/7-0.7*scale)
-			ctx.lineTo(centerX-A/2*scale + cvb*varus1A*scale, centerY/7)
-			ctx.moveTo(centerX-A/2*scale + cvb*varus1A*scale, centerY/7)
-			ctx.lineTo(centerX-A/2*scale + cvb*varus1A*scale-0.08*scale, centerY/7-0.08*scale)
-			ctx.moveTo(centerX-A/2*scale + cvb*varus1A*scale, centerY/7)
-			ctx.lineTo(centerX-A/2*scale + cvb*varus1A*scale+0.08*scale, centerY/7-0.08*scale)
-			ctx.font = 'bold 22px GOST A';
-			ctx.fillStyle = 'black';
-			ctx.textAlign = 'center';
-			ctx.fillText('F', centerX-A/2*scale + cvb*varus1A*scale-0.2*scale, centerY/7-0.4*scale)
+			reCtx.moveTo(centerX-A/2*scale + cvb*varus1A*scale, centerY/7-0.7*scale)
+			reCtx.lineTo(centerX-A/2*scale + cvb*varus1A*scale, centerY/7)
+			reCtx.moveTo(centerX-A/2*scale + cvb*varus1A*scale, centerY/7)
+			reCtx.lineTo(centerX-A/2*scale + cvb*varus1A*scale-0.08*scale, centerY/7-0.08*scale)
+			reCtx.moveTo(centerX-A/2*scale + cvb*varus1A*scale, centerY/7)
+			reCtx.lineTo(centerX-A/2*scale + cvb*varus1A*scale+0.08*scale, centerY/7-0.08*scale)
+			reCtx.font = 'bold 22px GOST A';
+			reCtx.fillStyle = 'black';
+			reCtx.textAlign = 'center';
+			reCtx.fillText('F', centerX-A/2*scale + cvb*varus1A*scale-0.2*scale, centerY/7-0.4*scale)
 		}
 		
 
-		ctx.closePath()
-		ctx.stroke()
+		reCtx.closePath()
+		reCtx.stroke()
 // circles
-	ctx.beginPath()
-		ctx.arc(centerX-A/2*scale+0.15*scale, centerY/7+0.3*scale, 0.1*scale, 0, 2 * Math.PI, false);
-		ctx.fillStyle = "white"
-		ctx.fill()
-		ctx.lineWidth = 4
-		ctx.strokeStyle = 'black';
-		ctx.stroke()
-	ctx.beginPath()
-		ctx.arc(centerX-A/2*scale-0.15*scale, centerY/7+0.3*scale, 0.1*scale, 0, 2 * Math.PI, false);
-		ctx.fillStyle = "white"
-		ctx.fill()
-		ctx.lineWidth = 4
-		ctx.strokeStyle = 'black';
-		ctx.stroke()
-	ctx.beginPath()
-		ctx.arc(centerX-A/2*scale, centerY/7, 0.1*scale, 0, 2 * Math.PI, false);
-		ctx.fillStyle = "white"
-		ctx.fill()
-		ctx.lineWidth = 4
-		ctx.strokeStyle = 'black';
-		ctx.stroke()
-	ctx.beginPath()
-		ctx.arc(centerX+A/2*scale, centerY/7, 0.1*scale, 0, 2 * Math.PI, false);
-		ctx.fillStyle = "white"
-		ctx.fill()
-		ctx.lineWidth = 4
-		ctx.strokeStyle = 'black';
-		ctx.stroke()
-	ctx.beginPath()
-		ctx.arc(centerX-A/2*scale+0.3*scale, centerY/7+0.3*scale, 0, 2 * Math.PI, false);
-		ctx.fillStyle = "white"
-		ctx.fill()
-		ctx.lineWidth = 4
-		ctx.strokeStyle = 'black';
-		ctx.stroke()
-	ctx.beginPath()
-		ctx.arc(centerX+A/2*scale, centerY/7+0.3*scale, 0.1*scale, 0, 2 * Math.PI, false);
-		ctx.fillStyle = "white"
-		ctx.fill()
-		ctx.lineWidth = 4
-		ctx.strokeStyle = 'black';
-		ctx.stroke()
+	reCtx.beginPath()
+		reCtx.arc(centerX-A/2*scale+0.15*scale, centerY/7+0.3*scale, 0.1*scale, 0, 2 * Math.PI, false);
+		reCtx.fillStyle = "white"
+		reCtx.fill()
+		reCtx.lineWidth = 4
+		reCtx.strokeStyle = 'black';
+		reCtx.stroke()
+	reCtx.beginPath()
+		reCtx.arc(centerX-A/2*scale-0.15*scale, centerY/7+0.3*scale, 0.1*scale, 0, 2 * Math.PI, false);
+		reCtx.fillStyle = "white"
+		reCtx.fill()
+		reCtx.lineWidth = 4
+		reCtx.strokeStyle = 'black';
+		reCtx.stroke()
+	reCtx.beginPath()
+		reCtx.arc(centerX-A/2*scale, centerY/7, 0.1*scale, 0, 2 * Math.PI, false);
+		reCtx.fillStyle = "white"
+		reCtx.fill()
+		reCtx.lineWidth = 4
+		reCtx.strokeStyle = 'black';
+		reCtx.stroke()
+	reCtx.beginPath()
+		reCtx.arc(centerX+A/2*scale, centerY/7, 0.1*scale, 0, 2 * Math.PI, false);
+		reCtx.fillStyle = "white"
+		reCtx.fill()
+		reCtx.lineWidth = 4
+		reCtx.strokeStyle = 'black';
+		reCtx.stroke()
+	reCtx.beginPath()
+		reCtx.arc(centerX-A/2*scale+0.3*scale, centerY/7+0.3*scale, 0, 2 * Math.PI, false);
+		reCtx.fillStyle = "white"
+		reCtx.fill()
+		reCtx.lineWidth = 4
+		reCtx.strokeStyle = 'black';
+		reCtx.stroke()
+	reCtx.beginPath()
+		reCtx.arc(centerX+A/2*scale, centerY/7+0.3*scale, 0.1*scale, 0, 2 * Math.PI, false);
+		reCtx.fillStyle = "white"
+		reCtx.fill()
+		reCtx.lineWidth = 4
+		reCtx.strokeStyle = 'black';
+		reCtx.stroke()
 // Q epure
-    ctx.beginPath()
-    ctx.lineWidth = 4
-    ctx.moveTo(centerX-A/2*scale,                           centerY/7+ 4*scale)
-    ctx.lineTo(centerX-A/2*scale,                           centerY/7+ 4*scale-re()/Qscaler*scale)
-    ctx.stroke()
+    reCtx.beginPath()
+    reCtx.lineWidth = 4
+    reCtx.moveTo(centerX-A/2*scale,                           centerY/7+ 4*scale)
+    reCtx.lineTo(centerX-A/2*scale,                           centerY/7+ 4*scale-re()/Qscaler*scale)
+    reCtx.stroke()
     for (let i = 0; i <= kof()-1; i++) {
-        ctx.beginPath()
-        ctx.lineWidth = 4
-        ctx.moveTo(centerX-A/2*scale+varus1A*scale*i,                  centerY/7+ 4*scale-re()/Qscaler*scale+i*F/Qscaler*scale)
-        ctx.lineTo(centerX-(A/2)*scale+varus1A*scale+varus1A*scale*i,  centerY/7+ 4*scale-re()/Qscaler*scale+i*F/Qscaler*scale)
+        reCtx.beginPath()
+        reCtx.lineWidth = 4
+        reCtx.moveTo(centerX-A/2*scale+varus1A*scale*i,                  centerY/7+ 4*scale-re()/Qscaler*scale+i*F/Qscaler*scale)
+        reCtx.lineTo(centerX-(A/2)*scale+varus1A*scale+varus1A*scale*i,  centerY/7+ 4*scale-re()/Qscaler*scale+i*F/Qscaler*scale)
 
-        ctx.font = 'bold 14px GOST A';
-        ctx.fillStyle = 'black';
-        ctx.textAlign = 'center';
-        ctx.fillText(String(Math.ceil((re()-i*F)*1000)/1000).replace('.',',')+'кН', centerX-(A/2)*scale+varus1A*scale/2+varus1A*scale*i, centerY/7+ 4*scale-re()/Qscaler*scale+i*F/Qscaler*scale-10)
+        reCtx.font = 'bold 14px GOST A';
+        reCtx.fillStyle = 'black';
+        reCtx.textAlign = 'center';
+        reCtx.fillText(String(Math.ceil((re()-i*F)*1000)/1000).replace('.',',')+'кН', centerX-(A/2)*scale+varus1A*scale/2+varus1A*scale*i, centerY/7+ 4*scale-re()/Qscaler*scale+i*F/Qscaler*scale-10)
 
-        ctx.moveTo(centerX-A/2*scale+varus1A*scale+varus1A*scale*i,    centerY/7+ 4*scale-re()/Qscaler*scale+i*F/Qscaler*scale)
-        ctx.lineTo(centerX-A/2*scale+varus1A*scale+varus1A*scale*i,    centerY/7+ 4*scale-re()/Qscaler*scale+(i+1)*F/Qscaler*scale)
-        ctx.closePath()
-        ctx.stroke()
+        reCtx.moveTo(centerX-A/2*scale+varus1A*scale+varus1A*scale*i,    centerY/7+ 4*scale-re()/Qscaler*scale+i*F/Qscaler*scale)
+        reCtx.lineTo(centerX-A/2*scale+varus1A*scale+varus1A*scale*i,    centerY/7+ 4*scale-re()/Qscaler*scale+(i+1)*F/Qscaler*scale)
+        reCtx.closePath()
+        reCtx.stroke()
 
         for (let ino = 0; ino < 5; ino++) {
-            ctx.beginPath()
-            ctx.lineWidth = 2
-            ctx.moveTo(centerX-A/2*scale+varus1A*scale*i+ino*varus1A/5*scale,    centerY/7+ 4*scale-re()/Qscaler*scale+i*F/Qscaler*scale)
-            ctx.lineTo(centerX-A/2*scale+varus1A*scale*i+ino*varus1A/5*scale,    centerY/7+ 4*scale)
-            ctx.closePath()
-            ctx.stroke()
+            reCtx.beginPath()
+            reCtx.lineWidth = 2
+            reCtx.moveTo(centerX-A/2*scale+varus1A*scale*i+ino*varus1A/5*scale,    centerY/7+ 4*scale-re()/Qscaler*scale+i*F/Qscaler*scale)
+            reCtx.lineTo(centerX-A/2*scale+varus1A*scale*i+ino*varus1A/5*scale,    centerY/7+ 4*scale)
+            reCtx.closePath()
+            reCtx.stroke()
         }
 
         for (let ino = 0; ino < 5; ino++) {
-            ctx.beginPath()
-            ctx.lineWidth = 2
-            ctx.moveTo(centerX+A/2*scale-varus1A*scale*(i+1)+ino*varus1A/5*scale,    centerY/7+ 4*scale+re()/Qscaler*scale-i*F/Qscaler*scale)
-            ctx.lineTo(centerX+A/2*scale-varus1A*scale*(i+1)+ino*varus1A/5*scale,    centerY/7+ 4*scale)
-            ctx.closePath()
-            ctx.stroke()
+            reCtx.beginPath()
+            reCtx.lineWidth = 2
+            reCtx.moveTo(centerX+A/2*scale-varus1A*scale*(i+1)+ino*varus1A/5*scale,    centerY/7+ 4*scale+re()/Qscaler*scale-i*F/Qscaler*scale)
+            reCtx.lineTo(centerX+A/2*scale-varus1A*scale*(i+1)+ino*varus1A/5*scale,    centerY/7+ 4*scale)
+            reCtx.closePath()
+            reCtx.stroke()
         }
-        ctx.beginPath()
-        ctx.lineWidth = 4
-        ctx.moveTo(centerX+A/2*scale-varus1A*scale*i,                       centerY/7+ 4*scale+re()/Qscaler*scale-i*F/Qscaler*scale)
-        ctx.lineTo(centerX+(A/2)*scale-varus1A*scale-varus1A*scale*i,       centerY/7+ 4*scale+re()/Qscaler*scale-i*F/Qscaler*scale)
+        reCtx.beginPath()
+        reCtx.lineWidth = 4
+        reCtx.moveTo(centerX+A/2*scale-varus1A*scale*i,                       centerY/7+ 4*scale+re()/Qscaler*scale-i*F/Qscaler*scale)
+        reCtx.lineTo(centerX+(A/2)*scale-varus1A*scale-varus1A*scale*i,       centerY/7+ 4*scale+re()/Qscaler*scale-i*F/Qscaler*scale)
 
-        ctx.font = 'bold 14px GOST A';
-        ctx.fillStyle = 'black';
-        ctx.textAlign = 'center';
-        ctx.fillText('-'+String(Math.ceil((re()-i*F)*1000)/1000).replace('.',',')+'кН', centerX+(A/2)*scale-varus1A*scale/2-varus1A*scale*i, centerY/7+ 4*scale+re()/Qscaler*scale-i*F/Qscaler*scale+25)
-        ctx.moveTo(centerX+(A/2)*scale-varus1A*scale-varus1A*scale*i,       centerY/7+ 4*scale+re()/Qscaler*scale-i*F/Qscaler*scale)
-        ctx.lineTo(centerX+A/2*scale-varus1A*scale*(i+1),                   centerY/7+ 4*scale+re()/Qscaler*scale-(i+1)*F/Qscaler*scale)
-        ctx.closePath()
-        ctx.stroke()
+        reCtx.font = 'bold 14px GOST A';
+        reCtx.fillStyle = 'black';
+        reCtx.textAlign = 'center';
+        reCtx.fillText('-'+String(Math.ceil((re()-i*F)*1000)/1000).replace('.',',')+'кН', centerX+(A/2)*scale-varus1A*scale/2-varus1A*scale*i, centerY/7+ 4*scale+re()/Qscaler*scale-i*F/Qscaler*scale+25)
+        reCtx.moveTo(centerX+(A/2)*scale-varus1A*scale-varus1A*scale*i,       centerY/7+ 4*scale+re()/Qscaler*scale-i*F/Qscaler*scale)
+        reCtx.lineTo(centerX+A/2*scale-varus1A*scale*(i+1),                   centerY/7+ 4*scale+re()/Qscaler*scale-(i+1)*F/Qscaler*scale)
+        reCtx.closePath()
+        reCtx.stroke()
     }
-    ctx.beginPath()
-    ctx.moveTo(centerX+A/2*scale,       centerY/7+ 4*scale)
-    ctx.lineTo(centerX+A/2*scale,       centerY/7+ 4*scale+re()/Qscaler*scale)
-    ctx.moveTo(centerX-A/2*scale,       centerY/7+4*scale)
-    ctx.lineTo(centerX+(A/2)*scale,     centerY/7+4*scale)
-    ctx.closePath()
-    ctx.stroke()
+    reCtx.beginPath()
+    reCtx.moveTo(centerX+A/2*scale,       centerY/7+ 4*scale)
+    reCtx.lineTo(centerX+A/2*scale,       centerY/7+ 4*scale+re()/Qscaler*scale)
+    reCtx.moveTo(centerX-A/2*scale,       centerY/7+4*scale)
+    reCtx.lineTo(centerX+(A/2)*scale,     centerY/7+4*scale)
+    reCtx.closePath()
+    reCtx.stroke()
 // M epure
     if ((A/varus1A) % 2 != 0) {
         for (let iw = 0; iw <= 2*kof(); iw++) {
-            ctx.beginPath()
-            ctx.lineWidth = 4
-            ctx.moveTo(centerX-A/2*scale+varus1A*scale*iw,                  centerY/7+ 1.5*scale+Mcalc(iw)/Mscaler*scale)
-            ctx.lineTo(centerX-(A/2)*scale+varus1A*scale+varus1A*scale*iw+1,  centerY/7+ 1.5*scale+Mcalc(iw+1)/Mscaler*scale)
-            ctx.font = 'bold 14px GOST A';
-            ctx.fillStyle = 'black';
-            ctx.textAlign = 'center';
+            reCtx.beginPath()
+            reCtx.lineWidth = 4
+            reCtx.moveTo(centerX-A/2*scale+varus1A*scale*iw,                  centerY/7+ 1.5*scale+Mcalc(iw)/Mscaler*scale)
+            reCtx.lineTo(centerX-(A/2)*scale+varus1A*scale+varus1A*scale*iw+1,  centerY/7+ 1.5*scale+Mcalc(iw+1)/Mscaler*scale)
+            reCtx.font = 'bold 14px GOST A';
+            reCtx.fillStyle = 'black';
+            reCtx.textAlign = 'center';
             if (iw != 0) {
-                ctx.fillText(String(Math.ceil(Mcalc(iw)*1000)/1000).replace('.',',')+'кН', centerX-(A/2)*scale+varus1A*scale*iw, centerY/7+ 1.5*scale+Mcalc(iw)/Mscaler*scale+25)
-                ctx.arc(centerX-(A/2)*scale+varus1A*scale*iw, centerY/7+ 1.5*scale+Mcalc(iw)/Mscaler*scale, 0.04*scale, 0, 2 * Math.PI, false);
+                reCtx.fillText(String(Math.ceil(Mcalc(iw)*1000)/1000).replace('.',',')+'кН', centerX-(A/2)*scale+varus1A*scale*iw, centerY/7+ 1.5*scale+Mcalc(iw)/Mscaler*scale+25)
+                reCtx.arc(centerX-(A/2)*scale+varus1A*scale*iw, centerY/7+ 1.5*scale+Mcalc(iw)/Mscaler*scale, 0.04*scale, 0, 2 * Math.PI, false);
             }
 
-            ctx.stroke()
+            reCtx.stroke()
             for (let ivi = 0; ivi < 5; ivi++) {
-                ctx.beginPath()
-                ctx.lineWidth = 2
-                ctx.moveTo(centerX-A/2*scale+varus1A*scale*iw + varus1A/5*ivi*scale, centerY/7+ 1.5*scale)
-                ctx.lineTo(centerX-A/2*scale+varus1A*scale*iw + varus1A/5*ivi*scale,  centerY/7+ 1.5*scale+Mcalc(iw)/Mscaler*scale+(Mcalc(iw+1)-Mcalc(iw))/5/Mscaler*scale*ivi)
-                ctx.stroke()
+                reCtx.beginPath()
+                reCtx.lineWidth = 2
+                reCtx.moveTo(centerX-A/2*scale+varus1A*scale*iw + varus1A/5*ivi*scale, centerY/7+ 1.5*scale)
+                reCtx.lineTo(centerX-A/2*scale+varus1A*scale*iw + varus1A/5*ivi*scale,  centerY/7+ 1.5*scale+Mcalc(iw)/Mscaler*scale+(Mcalc(iw+1)-Mcalc(iw))/5/Mscaler*scale*ivi)
+                reCtx.stroke()
             }
         }
     } else {
         for (let iw = 0; iw <= 2*kof()-1; iw++) {
             if (iw != 0) {
-                ctx.beginPath()
-                ctx.fillText(String(Math.ceil(Mcalc(iw)*1000)/1000).replace('.',',')+'кН', centerX-(A/2)*scale+varus1A*scale*iw, centerY/7+ 1.5*scale+Mcalc(iw)/Mscaler*scale+25)
-                ctx.arc(centerX-(A/2)*scale+varus1A*scale*iw, centerY/7+ 1.5*scale+Mcalc(iw)/Mscaler*scale, 0.04*scale, 0, 2 * Math.PI, false);
-                ctx.stroke()
+                reCtx.beginPath()
+                reCtx.fillText(String(Math.ceil(Mcalc(iw)*1000)/1000).replace('.',',')+'кН', centerX-(A/2)*scale+varus1A*scale*iw, centerY/7+ 1.5*scale+Mcalc(iw)/Mscaler*scale+25)
+                reCtx.arc(centerX-(A/2)*scale+varus1A*scale*iw, centerY/7+ 1.5*scale+Mcalc(iw)/Mscaler*scale, 0.04*scale, 0, 2 * Math.PI, false);
+                reCtx.stroke()
 
             }
             for (let ivi = 0; ivi < 5; ivi++) {
-                ctx.beginPath()
-                ctx.lineWidth = 2
-                ctx.moveTo(centerX-A/2*scale+varus1A*scale*iw + varus1A/5*ivi*scale, centerY/7+ 1.5*scale)
-                ctx.lineTo(centerX-A/2*scale+varus1A*scale*iw + varus1A/5*ivi*scale,  centerY/7+ 1.5*scale+Mcalc(iw)/Mscaler*scale+(Mcalc(iw+1)-Mcalc(iw))/5/Mscaler*scale*ivi)
-                ctx.stroke()
+                reCtx.beginPath()
+                reCtx.lineWidth = 2
+                reCtx.moveTo(centerX-A/2*scale+varus1A*scale*iw + varus1A/5*ivi*scale, centerY/7+ 1.5*scale)
+                reCtx.lineTo(centerX-A/2*scale+varus1A*scale*iw + varus1A/5*ivi*scale,  centerY/7+ 1.5*scale+Mcalc(iw)/Mscaler*scale+(Mcalc(iw+1)-Mcalc(iw))/5/Mscaler*scale*ivi)
+                reCtx.stroke()
             }
-            ctx.beginPath()
-            ctx.lineWidth = 4
-            ctx.moveTo(centerX-A/2*scale+varus1A*scale*iw,                  centerY/7+ 1.5*scale+Mcalc(iw)/Mscaler*scale)
-            ctx.lineTo(centerX-(A/2)*scale+varus1A*scale+varus1A*scale*iw+1,  centerY/7+ 1.5*scale+Mcalc(iw+1)/Mscaler*scale)
-            ctx.font = 'bold 14px GOST A';
-            ctx.fillStyle = 'black';
-            ctx.textAlign = 'center';
-            ctx.stroke()
+            reCtx.beginPath()
+            reCtx.lineWidth = 4
+            reCtx.moveTo(centerX-A/2*scale+varus1A*scale*iw,                  centerY/7+ 1.5*scale+Mcalc(iw)/Mscaler*scale)
+            reCtx.lineTo(centerX-(A/2)*scale+varus1A*scale+varus1A*scale*iw+1,  centerY/7+ 1.5*scale+Mcalc(iw+1)/Mscaler*scale)
+            reCtx.font = 'bold 14px GOST A';
+            reCtx.fillStyle = 'black';
+            reCtx.textAlign = 'center';
+            reCtx.stroke()
         }
     }
 }
@@ -411,13 +411,13 @@ document.getElementById('sec_epure_sw').addEventListener("click", () => {
 
 function exportSecEpure() {
     const a = document.createElement("a");
-    a.href = canvas.toDataURL("image/jpg");
+    a.href = seCanvas.toDataURL("image/jpg");
     a.download = "secondary_beam_epure.jpg";
     a.click();
 }
 
 function pushRoofEpure() {
-    dataUrl = canvas.toDataURL("image/png");
+    dataUrl = seCanvas.toDataURL("image/png");
     snapshot = dataURLtoUint8Array(dataUrl).data;
 }
 

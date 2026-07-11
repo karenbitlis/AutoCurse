@@ -1,24 +1,12 @@
-const docxLib = window.docx;
-const { Document, Packer, ImageRun, LineRuleType, XmlComponent, Paragraph, ommlXmlText, BorderStyle, TextRun, AlignmentType, Table, TableRow, TableCell, WidthType, PageBreak, textParagraphs } = docxLib;
-let usefullLoad = 30
-let roofType = 1
-let roofTable
-let deck_thickness = 14
-let varus1A = 1
-let varus1B = 2
-
-
 let secChildren = []
 
-let deck_load = 7850*deck_thickness/1000*10/1000
-let deck_load_real = deck_load*1.05
-let mainest_beam = usefullLoad * 1.05 + 1.33 * 1.3 + deck_load_real
-let mainest_beam2 = (usefullLoad * 1.05) + (0.7 * 1.3) + deck_load_real
-let maine_beam = usefullLoad + 1.33 + deck_load
-let maine_beam2 = usefullLoad + 0.7 + deck_load
+let sBzoom = 1
+let sBscale = 35
+let sBmove = 3*B*sBscale/2
+let secBeamTable
+let secvaro = 1
 
-let maine 
-let mainest
+
 if (roofType == 1) {
 	maine = maine_beam
 	mainest = mainest_beam
@@ -26,7 +14,31 @@ if (roofType == 1) {
 	maine = maine_beam2
 	mainest = mainest_beam2
 }
-let roofye = Math.ceil(selectBeamByNumber(14).weight/varus1A/100*1000)/1000
+
+
+varus1A = parseFloat(vargen.shadowRoot.getElementById('variant1A').value);
+varus1B = parseFloat(vargen.shadowRoot.getElementById('variant1B').value);
+varus2A = parseFloat(vargen.shadowRoot.getElementById('variant2A').value);
+varus2B = parseFloat(vargen.shadowRoot.getElementById('variant2B').value);
+varus3A = parseFloat(vargen.shadowRoot.getElementById('variant3A').value);
+varus3B = parseFloat(vargen.shadowRoot.getElementById('variant3B').value);
+
+if (secvaro == 1) {
+	aVar = varus1A
+	bVar = varus1B
+	dist = -3*B*sBscale/2
+} else if (secvaro == 2) {
+	aVar = varus2A
+	bVar = varus2B
+	dist = -3*B*sBscale/2
+} else if (secvaro == 3) {
+	aVar = varus3A
+	bVar = varus3B
+	dist = -3*B*sBscale/2
+}
+
+let roof_beam_num = rEpure.shadowRoot.getElementById('rEpure-result').innerText
+let roofye = Math.ceil(selectBeamByNumber(roof_beam_num.slice(-2)).weight/aVar/100*1000)/1000
 let seco_beam = maine + roofye
 let sest_beam = mainest + Math.ceil(roofye*1000*1.05)/1000
 
@@ -41,115 +53,175 @@ roofye = Math.ceil(roofye*1000)/1000
 seco_beam = Math.ceil(seco_beam*1000)/1000
 sest_beam = Math.ceil(sest_beam*1000)/1000
 
-const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d");
+const sec_beam1 = document.getElementById('sec-beam1')
+let sece_varo = sec_beam1.shadowRoot.getElementById('sece_varo')
 
-const ctnr = document.getElementById("canvas-container");
+const sBcanvas = sec_beam1.shadowRoot.getElementById("canvas");
+const sBctx = sBcanvas.getContext("2d");
+const sBctnr = sec_beam1.shadowRoot.getElementById("canvas-container");
+const sBcssWidth = sBctnr.offsetWidth-8; const sBcssHeight = 340; const sBdpi = 10;
 
-const cssWidth = ctnr.offsetWidth-8;
-const cssHeight = 340;
-const dpi = 10;
+sBcanvas.width = sBcssWidth * sBdpi;
+sBcanvas.height = sBcssHeight * sBdpi;
+sBcanvas.style.width = sBcssWidth + "px";
+sBcanvas.style.height = sBcssHeight + "px";
+sBctx.scale(sBdpi, sBdpi);
 
-canvas.width = cssWidth * dpi;
-canvas.height = cssHeight * dpi;
+let sBdataUrl = sBcanvas.toDataURL("image/png");
+let { sBdata } = dataURLtoUint8Array(sBdataUrl);
+let sBsnapshot
 
-canvas.style.width = cssWidth + "px";
-canvas.style.height = cssHeight + "px";
+let qab = mFormula(
+    mGroup(
+        mText("F"),
+        mEq(),
+        mText("q"),
+        mMul(),
+        mText("a"),
+        mMul(),
+        mText("b"),
+        mEq(),
+        mText(String(sest_beam).replace('.',',')),
+        mMul(),
+        mText(String(aVar).replace('.',',')),
+        mMul(),
+        mText(String(bVar).replace('.',',')),
+        mEq(),
+        mText(String(Math.ceil(sest_beam*aVar*bVar*1000)/1000).replace('.',',')),
+        mText("кН")
+    )
+)
 
-ctx.scale(dpi, dpi);
+let q_nab = mFormula(
+    mGroup(
+        mSub("F","н"),
+        mEq(),
+        mText(),
+        mSub("q", "н"),
+        mMul(),
+        mText("a"),
+        mMul(),
+        mText("b"),
+        mEq(),
+        mText(String(seco_beam).replace('.',',')),
+        mMul(),
+        mText(String(aVar).replace('.',',')),
+        mMul(),
+        mText(String(bVar).replace('.',',')),
+        mEq(),
+        mText(String(Math.ceil(seco_beam*aVar*bVar*1000)/1000).replace('.',',')),
+        mText("кН")
+    )
+)
 
-let zoom = 1
-let A = 5
-let B = 10
-let scale = 35
-const move = 3*B*scale/2
-// Общий стиль для границ таблицы (тонкая черная рамка)
-const tableBorders = {
-    top: { style: BorderStyle.SINGLE, size: 4, color: "000000" },
-    bottom: { style: BorderStyle.SINGLE, size: 4, color: "000000" },
-    left: { style: BorderStyle.SINGLE, size: 4, color: "000000" },
-    right: { style: BorderStyle.SINGLE, size: 4, color: "000000" },
-    insideHorizontal: { style: BorderStyle.SINGLE, size: 4, color: "000000" },
-    insideVertical: { style: BorderStyle.SINGLE, size: 4, color: "000000" },
-};
+drawEveryVarSecBeam(1)
 
-function createCell(textContent, alignment = AlignmentType.CENTER, columnSpan = 1) {
-    // Если передан массив (для сложных формул в шапке), создаем TextRun для каждой строки
-    const children = Array.isArray(textContent) 
-        ? textContent.map(t => new Paragraph({ children: [t], alignment }))
-        : [new Paragraph({ text: textContent, alignment })];
+sec_beam1.shadowRoot.getElementById('roof_beam').innerText = 'Выделенная площадь воспринимает ' + String(Math.ceil(sest_beam*aVar*bVar*1000)/1000).replace('.',',') + ' кН.'  
 
-    return new TableCell({
-        children: children,
-        columnSpan: columnSpan,
-        margins: { top: 100, bottom: 100, left: 150, right: 150 }, // внутренние отступы
-    });
-}
 
-const oMath = new XmlComponent("m:oMath");
-oMath.root.push(createMathSub("q", "n"));
-oMath.root.push(createMathRun(", "));
-const numerator = createMathRun("кН");
-const denominator = createMathSup("м", "2");
-const fraction = createMathFraction(numerator, denominator);
-oMath.root.push(fraction);
 
-const oMatho = new XmlComponent("m:oMath");
-oMatho.root.push(createMathRun("q"));
-oMatho.root.push(createMathRun(", "));
-oMatho.root.push(fraction);
+function doingSecVar() {
+	if (secvaro == 1) {
+		aVar = varus1A
+		bVar = varus1B
+		dist = -3*B*sBscale/2
+	} else if (secvaro == 2) {
+		aVar = varus2A
+		bVar = varus2B
+		dist = -3*B*sBscale/2
+	} else if (secvaro == 3) {
+		aVar = varus3A
+		bVar = varus3B
+		dist = -3*B*sBscale/2
+	}
 
-const gammaF = new XmlComponent("m:oMath")
-gammaF.root.push(createMathSub("γ", "f"));
-
-function createMathRun(text) {
-    const r = new XmlComponent("m:r");
-    const t = new XmlComponent("m:t");
-    t.root.push(text);
-    r.root.push(t);
-    return r;
-}
-function createMathSup(baseText, supText) {
-    const sSup = new XmlComponent("m:sSup");
-    const e = new XmlComponent("m:e");    // База
-    const j = new XmlComponent("m:sup");  // То, что сверху
-    
-    e.root.push(createMathRun(baseText));
-    j.root.push(createMathRun(supText));
-    
-    sSup.root.push(e);
-    sSup.root.push(j);
-    return sSup;
-}
-function createMathSub(baseText, subText) {
-    const sSub = new XmlComponent("m:sSub");
-
-    const e = new XmlComponent("m:e");      // Основание
-    const sub = new XmlComponent("m:sub");  // Нижний индекс
-
-    e.root.push(createMathRun(baseText));
-    sub.root.push(createMathRun(subText));
-
-    sSub.root.push(e);
-    sSub.root.push(sub);
-
-    return sSub;
-}
-function createMathFraction(numComponent, denComponent) {
-    const f = new XmlComponent("m:f");
-    const num = new XmlComponent("m:num"); // Числитель
-    const den = new XmlComponent("m:den"); // Знаменатель
-    
-    num.root.push(numComponent);
-    den.root.push(denComponent);
-    
-    f.root.push(num);
-    f.root.push(den);
-    return f;
-}
-function getTheRoof() {
+	sBzoom = 1
+	sBscale = 35
+	sBmove = 3*B*sBscale/2
+	secBeamTable
+	secChildren = []
+	
 	if (roofType == 1) {
-	    floorTable = new Table({
+		maine = maine_beam
+		mainest = mainest_beam
+	} else if (roofType == 2) {
+		maine = maine_beam2
+		mainest = mainest_beam2
+	}
+	
+	roof_beam_num = rEpure.shadowRoot.getElementById('rEpure-result').innerText
+	roofye = Math.ceil(selectBeamByNumber(roof_beam_num.slice(-2)).weight/aVar/100*1000)/1000
+	seco_beam = maine + roofye
+	sest_beam = mainest + Math.ceil(roofye*1000*1.05)/1000
+	
+	deck_load = Math.ceil(deck_load*1000)/1000
+	deck_load_real = Math.ceil(deck_load*1000*1.05)/1000 
+	mainest_beam = Math.ceil(mainest_beam*1000)/1000
+	mainest_beam2 = Math.ceil(mainest_beam2*1000)/1000
+	maine_beam = Math.ceil(maine_beam*1000)/1000
+	maine_beam2 = Math.ceil(maine_beam2*1000)/1000
+	
+	roofye = Math.ceil(roofye*1000)/1000
+	seco_beam = Math.ceil(seco_beam*1000)/1000
+	sest_beam = Math.ceil(sest_beam*1000)/1000
+		
+	sBcanvas.width = sBcssWidth * sBdpi;
+	sBcanvas.height = sBcssHeight * sBdpi;
+	sBcanvas.style.width = sBcssWidth + "px";
+	sBcanvas.style.height = sBcssHeight + "px";
+	sBctx.scale(sBdpi, sBdpi);
+	
+	sBdataUrl = sBcanvas.toDataURL("image/png");
+	({ sBdata } = dataURLtoUint8Array(sBdataUrl))
+	qab = mFormula(
+	    mGroup(
+	        mText("F"),
+	        mEq(),
+	        mText("q"),
+	        mMul(),
+	        mText("a"),
+	        mMul(),
+	        mText("b"),
+	        mEq(),
+	        mText(String(sest_beam).replace('.',',')),
+	        mMul(),
+	        mText(String(aVar).replace('.',',')),
+	        mMul(),
+	        mText(String(bVar).replace('.',',')),
+	        mEq(),
+	        mText(String(Math.ceil(sest_beam*aVar*bVar*1000)/1000).replace('.',',')),
+	        mText("кН")
+	    )
+	)
+	q_nab = mFormula(
+	    mGroup(
+	        mSub("F","н"),
+	        mEq(),
+	        mText(),
+	        mSub("q", "н"),
+	        mMul(),
+	        mText("a"),
+	        mMul(),
+	        mText("b"),
+	        mEq(),
+	        mText(String(seco_beam).replace('.',',')),
+	        mMul(),
+	        mText(String(aVar).replace('.',',')),
+	        mMul(),
+	        mText(String(bVar).replace('.',',')),
+	        mEq(),
+	        mText(String(Math.ceil(seco_beam*aVar*bVar*1000)/1000).replace('.',',')),
+	        mText("кН")
+	    )
+	)
+	
+	drawEveryVarSecBeam(secvaro)
+	sec_beam1.shadowRoot.getElementById('roof_beam').innerText = 'Выделенная площадь воспринимает ' + String(Math.ceil(sest_beam*aVar*bVar*1000)/1000).replace('.',',') + ' кН.'  
+}
+
+function getTheSecBeam() {
+	if (roofType == 1) {
+	    secBeamTable = new Table({
 			borders: tableBorders,
 			width: {
 			    size: 100,
@@ -254,7 +326,7 @@ function getTheRoof() {
 	    	],
 		});
 	} else if (roofType == 2) {
-		floorTable = new Table({
+		secBeamTable = new Table({
 			borders: tableBorders,
 			width: {
 			    size: 100,
@@ -367,7 +439,7 @@ function getTheRoof() {
 	}
 }
 
-function dataURLtoUint8Array(dataurl) {
+function sBdataURLtoUint8Array(dataurl) {
 	const arr = dataurl.split(',');
 	const mime = arr[0].match(/:(.*?);/)[1];
 	const bstr = atob(arr[1]);
@@ -377,69 +449,22 @@ function dataURLtoUint8Array(dataurl) {
 	while (n--) {
 	  u8arr[n] = bstr.charCodeAt(n);
 	}
-	return { data: u8arr, mime };
+	return { sBdata: u8arr, mime };
 }
 
-document.getElementById("second_beam").addEventListener("click", () => {
-	generateRoof()
+sec_beam1.shadowRoot.getElementById("second_beam").addEventListener("click", () => {
+	generateSecBeam()
 })
 
-let dataUrl = canvas.toDataURL("image/png");
-let { data } = dataURLtoUint8Array(dataUrl);
-let snapshot
-
-let qab = mFormula(
-    mGroup(
-        mText("F"),
-        mEq(),
-        mText("q"),
-        mMul(),
-        mText("a"),
-        mMul(),
-        mText("b"),
-        mEq(),
-        mText(String(sest_beam).replace('.',',')),
-        mMul(),
-        mText(String(varus1A).replace('.',',')),
-        mMul(),
-        mText(String(varus1B).replace('.',',')),
-        mEq(),
-        mText(String(Math.ceil(sest_beam*varus1A*varus1B*1000)/1000).replace('.',',')),
-        mText("кН")
-    )
-)
-
-let q_nab = mFormula(
-    mGroup(
-        mSub("F","н"),
-        mEq(),
-        mText(),
-        mSub("q", "н"),
-        mMul(),
-        mText("a"),
-        mMul(),
-        mText("b"),
-        mEq(),
-        mText(String(seco_beam).replace('.',',')),
-        mMul(),
-        mText(String(varus1A).replace('.',',')),
-        mMul(),
-        mText(String(varus1B).replace('.',',')),
-        mEq(),
-        mText(String(Math.ceil(seco_beam*varus1A*varus1B*1000)/1000).replace('.',',')),
-        mText("кН")
-    )
-)
-
-function pushRoof() {
-	dataUrl = canvas.toDataURL("image/png");
-	snapshot = dataURLtoUint8Array(dataUrl).data;
+function pushSecBeam() {
+	sBdataUrl = sBcanvas.toDataURL("image/png");
+	sBsnapshot = sBdataURLtoUint8Array(sBdataUrl).sBdata;
 	secChildren.push(
 		new Paragraph({
 			alignment: AlignmentType.CENTER,
 			children: [
 				new ImageRun({
-					data: snapshot,
+					data: sBsnapshot,
 				 	transformation: {
 						width: 450, // Ширина в пикселях в документе
 						height: 270, // Высота в пикселях в документе
@@ -451,7 +476,7 @@ function pushRoof() {
 	)
 }
 
-function createRoof() {
+function createSecBeam() {
 	secChildren = []
 	secChildren.push(
 		new Paragraph({
@@ -461,7 +486,7 @@ function createRoof() {
         	},
         	children: [
         		new TextRun({
-        			text: "1.1.3 Расчёт второстепенной балки",
+        			text: "1."+secvaro+".3 Расчёт второстепенной балки",
         			bold: true,
         			size: 28,
         			font: "Times New Roman" 
@@ -483,21 +508,53 @@ function createRoof() {
         	]
         }),
         new Paragraph({ text: "" }), // пустая строка перед таблицей
-        floorTable,
+        secBeamTable,
 	)
-	pushRoof()
+	pushSecBeam()
+	if (secvaro == 1) {
+		secChildren.push(
+			new Paragraph({
+				alignment: AlignmentType.CENTER,
+				spacing: { 
+					after: 60
+				},
+				children: [
+					new TextRun({
+						text: 'Рис.5 - Грузовая площадь уча второстепенной балки (В1)'
+					}),
+				]
+			}),
+		);
+	} else if (secvaro == 2) {
+		secChildren.push(
+			new Paragraph({
+				alignment: AlignmentType.CENTER,
+				spacing: { 
+					after: 60
+				},
+				children: [
+					new TextRun({
+						text: 'Рис.11 - Грузовая площадь уча второстепенной балки (В2)'
+					}),
+				]
+			}),
+		);
+	} else if (secvaro == 3) {
+		secChildren.push(
+			new Paragraph({
+				alignment: AlignmentType.CENTER,
+				spacing: { 
+					after: 60
+				},
+				children: [
+					new TextRun({
+						text: 'Рис.17 - Грузовая площадь уча второстепенной балки (В3)'
+					}),
+				]
+			}),
+		);
+	}
 	secChildren.push(
-		new Paragraph({
-        	alignment: AlignmentType.CENTER,
-        	spacing: { 
-        		after: 60
-        	},
-        	children: [
-        		new TextRun({
-            		text: 'Рис.5 - Грузовая площадь балки настила'
-        		}),
-        	]
-		}),
 		new Paragraph({}),
 		new Paragraph({
     		alignment: AlignmentType.JUSTIFIED,
@@ -572,9 +629,9 @@ function createRoof() {
 		}),
 	)
 }
-function generateRoof() {
-	getTheRoof()
-	createRoof()
+function generateSecBeam() {
+	getTheSecBeam()
+	createSecBeam()
     const doc = new Document({
         styles: {
             paragraphStyles: [
@@ -611,207 +668,225 @@ function generateRoof() {
         alert("Произошла ошибка, детали в консоли.");
     });
 }
-drawEveryVar(1)
 
-function drawEveryVar(num) {
-	ctx.shadowColor = 'transparent';
-	ctx.strokeStyle = 'black';
-	variant1A = 1
-	variant1B = 2
-	variant2A = 1.25
-	variant2B = 2
-	variant3A = 1
-	variant3B = 2.5
+
+function drawEveryVarSecBeam(num) {
+	sBctx.fillStyle = "white";
+	sBctx.fillRect(0, 0, reCanvas.width, reCanvas.height);
+
+	sBctx.shadowColor = 'transparent';
+	sBctx.strokeStyle = 'black';
+	varus1A = parseFloat(vargen.shadowRoot.getElementById('variant1A').value);
+	varus1B = parseFloat(vargen.shadowRoot.getElementById('variant1B').value);
+	varus2A = parseFloat(vargen.shadowRoot.getElementById('variant2A').value);
+	varus2B = parseFloat(vargen.shadowRoot.getElementById('variant2B').value);
+	varus3A = parseFloat(vargen.shadowRoot.getElementById('variant3A').value);
+	varus3B = parseFloat(vargen.shadowRoot.getElementById('variant3B').value);
 
 	if (num == 1) {
-		aVar = variant1A
-		bVar = variant1B
-		dist = -3*B*scale/2
+		aVar = varus1A
+		bVar = varus1B
+		dist = -3*B*sBscale/2
 	} else if (num == 2) {
-		aVar = variant2A
-		bVar = variant2B
-		dist = 0
+		aVar = varus2A
+		bVar = varus2B
+		dist = -3*B*sBscale/2
 	} else if (num == 3) {
-		aVar = variant3A
-		bVar = variant3B
-		dist = 3*B*scale/2
+		aVar = varus3A
+		bVar = varus3B
+		dist = -3*B*sBscale/2
 	}
 
-	let centerX = canvas.width / (2*dpi) + scale + dist + move;
-	let centerY = canvas.height / (2*dpi) + scale;
+	let centerX = sBcanvas.width / (2*sBdpi) + sBscale + dist + sBmove;
+	let centerY = sBcanvas.height / (2*sBdpi) + sBscale;
 	
 
-	if (zoom == 1) {
-		centerX = canvas.width / (2*dpi) + scale + dist + move
-		centerY = canvas.height / (2*dpi) + scale
+	if (sBzoom == 1) {
+		centerX = sBcanvas.width / (2*sBdpi) + sBscale + dist + sBmove
+		centerY = sBcanvas.height / (2*sBdpi) + sBscale
 	}
 
-	ctx.lineWidth = 3;
-	ctx.strokeRect(centerX-(B/2)*scale, centerY-(A/2)*scale, B*scale, A*scale)
+	sBctx.lineWidth = 3;
+	sBctx.strokeRect(centerX-(B/2)*sBscale, centerY-(A/2)*sBscale, B*sBscale, A*sBscale)
 
 	let nA2 = parseInt(A/aVar)
 	let nB2 = parseInt(B/bVar)
 
 	for (var i = 0; i < nA2; i++) {
 		for (var q = 0; q < nB2; q++) {
-			ctx.strokeRect(centerX-((B/2)-(q*bVar))*scale, centerY-((A/2)-(i*aVar))*scale, bVar*scale, aVar*scale)
+			sBctx.strokeRect(centerX-((B/2)-(q*bVar))*sBscale, centerY-((A/2)-(i*aVar))*sBscale, bVar*sBscale, aVar*sBscale)
 		}
 	}
 
-	ctx.lineWidth = 2
+	sBctx.lineWidth = 2
 	
-	ctx.strokeRect(centerX-((B/2)*scale)-5, centerY-((A/2)*scale)-5, 10, 10)
-	ctx.strokeRect(centerX+((B/2)*scale)-5, centerY+((A/2)*scale)-5, 10, 10)
-	ctx.strokeRect(centerX+((B/2)*scale)-5, centerY-((A/2)*scale)-5, 10, 10)
-	ctx.strokeRect(centerX-((B/2)*scale)-5, centerY+((A/2)*scale)-5, 10, 10)
+	sBctx.strokeRect(centerX-((B/2)*sBscale)-5, centerY-((A/2)*sBscale)-5, 10, 10)
+	sBctx.strokeRect(centerX+((B/2)*sBscale)-5, centerY+((A/2)*sBscale)-5, 10, 10)
+	sBctx.strokeRect(centerX+((B/2)*sBscale)-5, centerY-((A/2)*sBscale)-5, 10, 10)
+	sBctx.strokeRect(centerX-((B/2)*sBscale)-5, centerY+((A/2)*sBscale)-5, 10, 10)
 
-	if (zoom == 1) {
-		ctx.beginPath()
+	if (sBzoom == 1) {
+		sBctx.beginPath()
 		for (var w = 0; w < nB2; w++) {
-		ctx.lineWidth = 1
-		ctx.moveTo((w * bVar * scale) + centerX-((B/2)*scale), centerY-((A/2)*scale))
-		ctx.lineTo((w * bVar * scale) + centerX-((B/2)*scale), centerY-((A/2)*scale) - 25)
-		ctx.lineTo((w * bVar * scale) + centerX-((B/2)*scale) + bVar*scale, centerY-((A/2)*scale) - 25)
-		ctx.lineTo((w * bVar * scale) + centerX-((B/2)*scale) + bVar*scale, centerY-((A/2)*scale))
-		ctx.moveTo((w * bVar * scale) + centerX-((B/2)*scale), centerY-((A/2)*scale) - 25)
-		ctx.lineTo((w * bVar * scale) + centerX-((B/2)*scale) + 5, centerY-((A/2)*scale) - 30)
-		ctx.lineTo((w * bVar * scale) + centerX-((B/2)*scale) - 5, centerY-((A/2)*scale) - 20)
-		ctx.moveTo((w * bVar * scale) + centerX-((B/2)*scale), centerY-((A/2)*scale) - 25)
-		ctx.lineTo((w * bVar * scale) + centerX-((B/2)*scale), centerY-((A/2)*scale) - 30)
-		ctx.moveTo((w * bVar * scale) + centerX-((B/2)*scale), centerY-((A/2)*scale) - 25)
-		ctx.lineTo((w * bVar * scale) + centerX-((B/2)*scale) - 5, centerY-((A/2)*scale) - 25)
-		ctx.moveTo((w * bVar * scale) + centerX-((B/2)*scale) + bVar*scale, centerY-((A/2)*scale) - 25)
-		ctx.lineTo((w * bVar * scale) + centerX-((B/2)*scale) + bVar*scale + 5, centerY-((A/2)*scale) - 30)
-		ctx.lineTo((w * bVar * scale) + centerX-((B/2)*scale) + bVar*scale - 5, centerY-((A/2)*scale) - 20)
-		ctx.moveTo((w * bVar * scale) + centerX-((B/2)*scale) + bVar*scale, centerY-((A/2)*scale) - 25)
-		ctx.lineTo((w * bVar * scale) + centerX-((B/2)*scale) + bVar*scale, centerY-((A/2)*scale) - 30)
-		ctx.moveTo((w * bVar * scale) + centerX-((B/2)*scale) + bVar*scale, centerY-((A/2)*scale) - 25)
-		ctx.lineTo((w * bVar * scale) + centerX-((B/2)*scale) + bVar*scale + 5, centerY-((A/2)*scale) - 25)
-		ctx.moveTo((w * bVar * scale) + centerX-((B/2)*scale) + bVar*scale/2, centerY-((A/2)*scale) - 25)
-		ctx.font = 'bold 12px GOST A';
-		ctx.fillStyle = 'black';
-		ctx.textAlign = 'center';
-		ctx.fillText('b=' +  String(bVar).replaceAll('.', ','), (w * bVar * scale) + centerX-((B/2)*scale) + bVar*scale/2, centerY-((A/2)*scale) - 35)
-		ctx.stroke()
+		sBctx.lineWidth = 1
+		sBctx.moveTo((w * bVar * sBscale) + centerX-((B/2)*sBscale), centerY-((A/2)*sBscale))
+		sBctx.lineTo((w * bVar * sBscale) + centerX-((B/2)*sBscale), centerY-((A/2)*sBscale) - 25)
+		sBctx.lineTo((w * bVar * sBscale) + centerX-((B/2)*sBscale) + bVar*sBscale, centerY-((A/2)*sBscale) - 25)
+		sBctx.lineTo((w * bVar * sBscale) + centerX-((B/2)*sBscale) + bVar*sBscale, centerY-((A/2)*sBscale))
+		sBctx.moveTo((w * bVar * sBscale) + centerX-((B/2)*sBscale), centerY-((A/2)*sBscale) - 25)
+		sBctx.lineTo((w * bVar * sBscale) + centerX-((B/2)*sBscale) + 5, centerY-((A/2)*sBscale) - 30)
+		sBctx.lineTo((w * bVar * sBscale) + centerX-((B/2)*sBscale) - 5, centerY-((A/2)*sBscale) - 20)
+		sBctx.moveTo((w * bVar * sBscale) + centerX-((B/2)*sBscale), centerY-((A/2)*sBscale) - 25)
+		sBctx.lineTo((w * bVar * sBscale) + centerX-((B/2)*sBscale), centerY-((A/2)*sBscale) - 30)
+		sBctx.moveTo((w * bVar * sBscale) + centerX-((B/2)*sBscale), centerY-((A/2)*sBscale) - 25)
+		sBctx.lineTo((w * bVar * sBscale) + centerX-((B/2)*sBscale) - 5, centerY-((A/2)*sBscale) - 25)
+		sBctx.moveTo((w * bVar * sBscale) + centerX-((B/2)*sBscale) + bVar*sBscale, centerY-((A/2)*sBscale) - 25)
+		sBctx.lineTo((w * bVar * sBscale) + centerX-((B/2)*sBscale) + bVar*sBscale + 5, centerY-((A/2)*sBscale) - 30)
+		sBctx.lineTo((w * bVar * sBscale) + centerX-((B/2)*sBscale) + bVar*sBscale - 5, centerY-((A/2)*sBscale) - 20)
+		sBctx.moveTo((w * bVar * sBscale) + centerX-((B/2)*sBscale) + bVar*sBscale, centerY-((A/2)*sBscale) - 25)
+		sBctx.lineTo((w * bVar * sBscale) + centerX-((B/2)*sBscale) + bVar*sBscale, centerY-((A/2)*sBscale) - 30)
+		sBctx.moveTo((w * bVar * sBscale) + centerX-((B/2)*sBscale) + bVar*sBscale, centerY-((A/2)*sBscale) - 25)
+		sBctx.lineTo((w * bVar * sBscale) + centerX-((B/2)*sBscale) + bVar*sBscale + 5, centerY-((A/2)*sBscale) - 25)
+		sBctx.moveTo((w * bVar * sBscale) + centerX-((B/2)*sBscale) + bVar*sBscale/2, centerY-((A/2)*sBscale) - 25)
+		sBctx.font = 'bold 12px GOST A';
+		sBctx.fillStyle = 'black';
+		sBctx.textAlign = 'center';
+		sBctx.fillText('b=' +  String(bVar).replaceAll('.', ','), (w * bVar * sBscale) + centerX-((B/2)*sBscale) + bVar*sBscale/2, centerY-((A/2)*sBscale) - 35)
+		sBctx.stroke()
 		}
 	
 		for (var r = 0; r < nA2; r++) {
-			ctx.moveTo(centerX-((B/2)*scale), (r * aVar * scale) + centerY-((A/2)*scale))
-			ctx.lineTo(centerX-((B/2)*scale) - 25, (r * aVar * scale) + centerY-((A/2)*scale))
-			ctx.lineTo(centerX-((B/2)*scale) - 25, (r * aVar * scale) + centerY-((A/2)*scale) + aVar*scale)
-			ctx.lineTo(centerX-((B/2)*scale), (r * aVar * scale) + centerY-((A/2)*scale) + aVar*scale)
-			ctx.moveTo(centerX-((B/2)*scale) - 25, (r * aVar * scale) + centerY-((A/2)*scale))
-			ctx.lineTo(centerX-((B/2)*scale) - 20, (r * aVar * scale) + centerY-((A/2)*scale) + 5)
-			ctx.lineTo(centerX-((B/2)*scale) - 30, (r * aVar * scale) + centerY-((A/2)*scale) -5)
-			ctx.moveTo(centerX-((B/2)*scale) - 25, (r * aVar * scale) + centerY-((A/2)*scale))
-			ctx.lineTo(centerX-((B/2)*scale) - 25, (r * aVar * scale) + centerY-((A/2)*scale) - 5)
-			ctx.moveTo(centerX-((B/2)*scale) - 25, (r * aVar * scale) + centerY-((A/2)*scale) + aVar*scale)
-			ctx.lineTo(centerX-((B/2)*scale) - 20, (r * aVar * scale) + centerY-((A/2)*scale) + aVar*scale + 5)
-			ctx.lineTo(centerX-((B/2)*scale) - 30, (r * aVar * scale) + centerY-((A/2)*scale) + aVar*scale - 5)
-			ctx.moveTo(centerX-((B/2)*scale) - 25, (r * aVar * scale) + centerY-((A/2)*scale) + aVar*scale)
-			ctx.lineTo(centerX-((B/2)*scale) - 25, (r * aVar * scale) + centerY-((A/2)*scale) + aVar*scale + 5)
-			ctx.save();
-			ctx.font = 'bold 12px GOST A';
-			ctx.textAlign = 'right';
-			ctx.textBaseline = 'middle';
-			ctx.translate(centerX-((B/2)*scale) - 30, (r * aVar * scale) + centerY-((A/2)*scale) + aVar*scale/2);
-			ctx.rotate(0 * Math.PI / 180);
-			ctx.fillText('a=' + String(aVar).replaceAll('.', ','), 0, 0);
-			ctx.restore();
-			ctx.stroke()
+			sBctx.moveTo(centerX-((B/2)*sBscale), (r * aVar * sBscale) + centerY-((A/2)*sBscale))
+			sBctx.lineTo(centerX-((B/2)*sBscale) - 25, (r * aVar * sBscale) + centerY-((A/2)*sBscale))
+			sBctx.lineTo(centerX-((B/2)*sBscale) - 25, (r * aVar * sBscale) + centerY-((A/2)*sBscale) + aVar*sBscale)
+			sBctx.lineTo(centerX-((B/2)*sBscale), (r * aVar * sBscale) + centerY-((A/2)*sBscale) + aVar*sBscale)
+			sBctx.moveTo(centerX-((B/2)*sBscale) - 25, (r * aVar * sBscale) + centerY-((A/2)*sBscale))
+			sBctx.lineTo(centerX-((B/2)*sBscale) - 20, (r * aVar * sBscale) + centerY-((A/2)*sBscale) + 5)
+			sBctx.lineTo(centerX-((B/2)*sBscale) - 30, (r * aVar * sBscale) + centerY-((A/2)*sBscale) -5)
+			sBctx.moveTo(centerX-((B/2)*sBscale) - 25, (r * aVar * sBscale) + centerY-((A/2)*sBscale))
+			sBctx.lineTo(centerX-((B/2)*sBscale) - 25, (r * aVar * sBscale) + centerY-((A/2)*sBscale) - 5)
+			sBctx.moveTo(centerX-((B/2)*sBscale) - 25, (r * aVar * sBscale) + centerY-((A/2)*sBscale) + aVar*sBscale)
+			sBctx.lineTo(centerX-((B/2)*sBscale) - 20, (r * aVar * sBscale) + centerY-((A/2)*sBscale) + aVar*sBscale + 5)
+			sBctx.lineTo(centerX-((B/2)*sBscale) - 30, (r * aVar * sBscale) + centerY-((A/2)*sBscale) + aVar*sBscale - 5)
+			sBctx.moveTo(centerX-((B/2)*sBscale) - 25, (r * aVar * sBscale) + centerY-((A/2)*sBscale) + aVar*sBscale)
+			sBctx.lineTo(centerX-((B/2)*sBscale) - 25, (r * aVar * sBscale) + centerY-((A/2)*sBscale) + aVar*sBscale + 5)
+			sBctx.save();
+			sBctx.font = 'bold 12px GOST A';
+			sBctx.textAlign = 'right';
+			sBctx.textBaseline = 'middle';
+			sBctx.translate(centerX-((B/2)*sBscale) - 30, (r * aVar * sBscale) + centerY-((A/2)*sBscale) + aVar*sBscale/2);
+			sBctx.rotate(0 * Math.PI / 180);
+			sBctx.fillText('a=' + String(aVar).replaceAll('.', ','), 0, 0);
+			sBctx.restore();
+			sBctx.stroke()
 		}
 	
-		ctx.lineWidth = 1
-		ctx.moveTo(centerX-((B/2)*scale), centerY-((A/2)*scale))
-		ctx.lineTo(centerX-((B/2)*scale) - 65, centerY-((A/2)*scale))
-		ctx.lineTo(centerX-((B/2)*scale) - 65, centerY-((A/2)*scale) + A*scale)
-		ctx.lineTo(centerX-((B/2)*scale), centerY-((A/2)*scale) + A*scale)
-		ctx.moveTo(centerX-((B/2)*scale) - 65, + centerY-((A/2)*scale))
-		ctx.lineTo(centerX-((B/2)*scale) - 60, + centerY-((A/2)*scale) + 5)
-		ctx.lineTo(centerX-((B/2)*scale) - 70, + centerY-((A/2)*scale) -5)
-		ctx.moveTo(centerX-((B/2)*scale) - 65, + centerY-((A/2)*scale))
-		ctx.lineTo(centerX-((B/2)*scale) - 65, + centerY-((A/2)*scale) - 5)
-		ctx.moveTo(centerX-((B/2)*scale) - 65, + centerY-((A/2)*scale) + A*scale)
-		ctx.lineTo(centerX-((B/2)*scale) - 60, + centerY-((A/2)*scale) + A*scale + 5)
-		ctx.lineTo(centerX-((B/2)*scale) - 70, + centerY-((A/2)*scale) + A*scale - 5)
-		ctx.moveTo(centerX-((B/2)*scale) - 65, + centerY-((A/2)*scale) + A*scale)
-		ctx.lineTo(centerX-((B/2)*scale) - 65, + centerY-((A/2)*scale) + A*scale + 5)
-		ctx.save();
-		ctx.font = 'bold 14px GOST A';
-		ctx.textAlign = 'right';
-		ctx.textBaseline = 'middle';
-		ctx.translate(centerX-((B/2)*scale) - 70, centerY-((A/2)*scale) + A*scale/2);
-		// ctx.rotate(270 * Math.PI / 180);
-		ctx.fillText('l=' + String(A).replaceAll('.', ','), 0, 0);
-		ctx.restore();
-		ctx.stroke()
+		sBctx.lineWidth = 1
+		sBctx.moveTo(centerX-((B/2)*sBscale), centerY-((A/2)*sBscale))
+		sBctx.lineTo(centerX-((B/2)*sBscale) - 65, centerY-((A/2)*sBscale))
+		sBctx.lineTo(centerX-((B/2)*sBscale) - 65, centerY-((A/2)*sBscale) + A*sBscale)
+		sBctx.lineTo(centerX-((B/2)*sBscale), centerY-((A/2)*sBscale) + A*sBscale)
+		sBctx.moveTo(centerX-((B/2)*sBscale) - 65, + centerY-((A/2)*sBscale))
+		sBctx.lineTo(centerX-((B/2)*sBscale) - 60, + centerY-((A/2)*sBscale) + 5)
+		sBctx.lineTo(centerX-((B/2)*sBscale) - 70, + centerY-((A/2)*sBscale) -5)
+		sBctx.moveTo(centerX-((B/2)*sBscale) - 65, + centerY-((A/2)*sBscale))
+		sBctx.lineTo(centerX-((B/2)*sBscale) - 65, + centerY-((A/2)*sBscale) - 5)
+		sBctx.moveTo(centerX-((B/2)*sBscale) - 65, + centerY-((A/2)*sBscale) + A*sBscale)
+		sBctx.lineTo(centerX-((B/2)*sBscale) - 60, + centerY-((A/2)*sBscale) + A*sBscale + 5)
+		sBctx.lineTo(centerX-((B/2)*sBscale) - 70, + centerY-((A/2)*sBscale) + A*sBscale - 5)
+		sBctx.moveTo(centerX-((B/2)*sBscale) - 65, + centerY-((A/2)*sBscale) + A*sBscale)
+		sBctx.lineTo(centerX-((B/2)*sBscale) - 65, + centerY-((A/2)*sBscale) + A*sBscale + 5)
+		sBctx.save();
+		sBctx.font = 'bold 14px GOST A';
+		sBctx.textAlign = 'right';
+		sBctx.textBaseline = 'middle';
+		sBctx.translate(centerX-((B/2)*sBscale) - 70, centerY-((A/2)*sBscale) + A*sBscale/2);
+		// sBctx.rotate(270 * Math.PI / 180);
+		sBctx.fillText('l=' + String(A).replaceAll('.', ','), 0, 0);
+		sBctx.restore();
+		sBctx.stroke()
 	
-		ctx.moveTo(centerX-((B/2)*scale), centerY-((A/2)*scale))
-		ctx.lineTo(centerX-((B/2)*scale), centerY-((A/2)*scale) - 55)
-		ctx.lineTo(centerX-((B/2)*scale) + B*scale, centerY-((A/2)*scale) - 55)
-		ctx.lineTo(centerX-((B/2)*scale) + B*scale, centerY-((A/2)*scale))
-		ctx.moveTo(centerX-((B/2)*scale), centerY-((A/2)*scale) - 55)
-		ctx.lineTo(centerX-((B/2)*scale) + 5, centerY-((A/2)*scale) - 60)
-		ctx.lineTo(centerX-((B/2)*scale) - 5, centerY-((A/2)*scale) - 50)
-		ctx.moveTo(centerX-((B/2)*scale), centerY-((A/2)*scale) - 55)
-		ctx.lineTo(centerX-((B/2)*scale), centerY-((A/2)*scale) - 60)
-		ctx.moveTo(centerX-((B/2)*scale), centerY-((A/2)*scale) - 55)
-		ctx.lineTo(centerX-((B/2)*scale) - 5, centerY-((A/2)*scale) - 55)
-		ctx.moveTo(centerX-((B/2)*scale) + B*scale, centerY-((A/2)*scale) - 55)
-		ctx.lineTo(centerX-((B/2)*scale) + B*scale + 5, centerY-((A/2)*scale) - 60)
-		ctx.lineTo(centerX-((B/2)*scale) + B*scale - 5, centerY-((A/2)*scale) - 50)
-		ctx.moveTo(centerX-((B/2)*scale) + B*scale, centerY-((A/2)*scale) - 55)
-		ctx.lineTo(centerX-((B/2)*scale) + B*scale, centerY-((A/2)*scale) - 60)
-		ctx.moveTo(centerX-((B/2)*scale) + B*scale, centerY-((A/2)*scale) - 55)
-		ctx.lineTo(centerX-((B/2)*scale) + B*scale + 5, centerY-((A/2)*scale) - 55)
-		ctx.moveTo(centerX-((B/2)*scale) + B*scale/2, centerY-((A/2)*scale) - 55)
-		ctx.font = 'bold 14px GOST A';
-		ctx.fillStyle = 'black';
-		ctx.textAlign = 'center';
-		ctx.fillText('L=' +  String(B).replaceAll('.', ','), centerX-((B/2)*scale) + B*scale/2, centerY-((A/2)*scale) - 60)
+		sBctx.moveTo(centerX-((B/2)*sBscale), centerY-((A/2)*sBscale))
+		sBctx.lineTo(centerX-((B/2)*sBscale), centerY-((A/2)*sBscale) - 55)
+		sBctx.lineTo(centerX-((B/2)*sBscale) + B*sBscale, centerY-((A/2)*sBscale) - 55)
+		sBctx.lineTo(centerX-((B/2)*sBscale) + B*sBscale, centerY-((A/2)*sBscale))
+		sBctx.moveTo(centerX-((B/2)*sBscale), centerY-((A/2)*sBscale) - 55)
+		sBctx.lineTo(centerX-((B/2)*sBscale) + 5, centerY-((A/2)*sBscale) - 60)
+		sBctx.lineTo(centerX-((B/2)*sBscale) - 5, centerY-((A/2)*sBscale) - 50)
+		sBctx.moveTo(centerX-((B/2)*sBscale), centerY-((A/2)*sBscale) - 55)
+		sBctx.lineTo(centerX-((B/2)*sBscale), centerY-((A/2)*sBscale) - 60)
+		sBctx.moveTo(centerX-((B/2)*sBscale), centerY-((A/2)*sBscale) - 55)
+		sBctx.lineTo(centerX-((B/2)*sBscale) - 5, centerY-((A/2)*sBscale) - 55)
+		sBctx.moveTo(centerX-((B/2)*sBscale) + B*sBscale, centerY-((A/2)*sBscale) - 55)
+		sBctx.lineTo(centerX-((B/2)*sBscale) + B*sBscale + 5, centerY-((A/2)*sBscale) - 60)
+		sBctx.lineTo(centerX-((B/2)*sBscale) + B*sBscale - 5, centerY-((A/2)*sBscale) - 50)
+		sBctx.moveTo(centerX-((B/2)*sBscale) + B*sBscale, centerY-((A/2)*sBscale) - 55)
+		sBctx.lineTo(centerX-((B/2)*sBscale) + B*sBscale, centerY-((A/2)*sBscale) - 60)
+		sBctx.moveTo(centerX-((B/2)*sBscale) + B*sBscale, centerY-((A/2)*sBscale) - 55)
+		sBctx.lineTo(centerX-((B/2)*sBscale) + B*sBscale + 5, centerY-((A/2)*sBscale) - 55)
+		sBctx.moveTo(centerX-((B/2)*sBscale) + B*sBscale/2, centerY-((A/2)*sBscale) - 55)
+		sBctx.font = 'bold 14px GOST A';
+		sBctx.fillStyle = 'black';
+		sBctx.textAlign = 'center';
+		sBctx.fillText('L=' +  String(B).replaceAll('.', ','), centerX-((B/2)*sBscale) + B*sBscale/2, centerY-((A/2)*sBscale) - 60)
 
-		ctx.stroke()
-		ctx.lineWidth = 2
+		sBctx.stroke()
+		sBctx.lineWidth = 2
 		
-		let nB1 = B/variant1B
-		let nA1 = A/variant1A
+		let nB1 = B/bVar
+		let nA1 = A/aVar
 
-		let wo = variant1B * scale;
-		let h = variant1A * scale;
-		let x = centerX - (B / 2) * scale + (variant1B / 2 * scale);
-		let y = centerY - (A / 2) * scale + (variant1A / 2 * scale);
+		let wo = bVar * sBscale;
+		let h = aVar * sBscale;
+		let x = centerX - (B / 2) * sBscale + (bVar / 2 * sBscale);
+		let y = centerY - (A / 2) * sBscale + (aVar / 2 * sBscale);
 		if (nB1 % 2 == 0) {
-			x = centerX - variant1B/2*scale
+			x = centerX - bVar/2*sBscale
 		} else {
-			x = centerX - variant1B*scale
+			x = centerX - bVar*sBscale
 		}
 		if (nA1 % 2 == 0) {
-			y = centerY - variant1A/2*scale
+			y = centerY - aVar/2*sBscale
 		} else {
-			y = centerY - variant1A*scale
+			y = centerY - aVar*sBscale
 		}
 		const step = 10; // Расстояние между линиями штриховки в пикселях
-		ctx.save(); // Сохраняем состояние холста
-		ctx.strokeRect(x, y, wo, h)
+		sBctx.save(); // Сохраняем состояние холста
+		sBctx.strokeRect(x, y, wo, h)
 
 		// 2. Создаем маску по форме вашего прямоугольника
-		ctx.beginPath();
-		ctx.rect(x, y, wo, h);
-		ctx.clip();
+		sBctx.beginPath();
+		sBctx.rect(x, y, wo, h);
+		sBctx.clip();
 		
 		// 3. Рисуем штриховку внутри маски
-		ctx.strokeStyle = '#000000'; // Цвет штриховки
-		ctx.lineWidth = 1;           // Толщина линий штриховки
-		ctx.beginPath();
+		sBctx.strokeStyle = '#000000'; // Цвет штриховки
+		sBctx.lineWidth = 1;           // Толщина линий штриховки
+		sBctx.beginPath();
 		
 		for (let i = -h; i < wo; i += step) {
-		    ctx.moveTo(x + i, y);
-		    ctx.lineTo(x + i + h, y + h);
+		    sBctx.moveTo(x + i, y);
+		    sBctx.lineTo(x + i + h, y + h);
 		}
-		ctx.stroke();
+		sBctx.stroke();
 		
-		ctx.restore();
+		sBctx.restore();
 	}
 }
 
-document.getElementById('roof_beam').innerText = 'Выделенная площадь второстепенной балки воспринимает ' + String(Math.ceil(sest_beam*varus1A*varus1B*1000)/1000).replace('.',',') + ' кН.'  
+function changeSecBeamVar() {
+	if (sece_varo.value == 1) {
+		secvaro = 1
+		doingSecVar()
+	} else if (sece_varo.value == 2) {
+		secvaro = 2
+		doingSecVar()
+	} else if (sece_varo.value == 3) {
+		secvaro = 3
+		doingSecVar()
+	}
+}
+
+sece_varo.addEventListener("click", () => {
+    changeSecBeamVar()
+});

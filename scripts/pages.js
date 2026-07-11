@@ -1227,22 +1227,21 @@ class RoofEpure extends HTMLElement {
                     font-size: 25px
                 }
                 select {
-                    font-size: 40px;
-                    align-items: center
+                    font-size: 30px;
+                    margin: 35px;
                 }
             </style>
             <div class="container" id="withCanvas">
                 <h2>Эпюры балки настила</h2>
                 <div class="form-row">
+                    <h1 id="rEpure-result"></h1>
                     <h3>
-                        <br>
                         <select id="roofe_varo">
                             <option value="1"><h1>Вариант 1</h1></option>
                             <option value="2"><h1>Вариант 2</h1></option>
                             <option value="3"><h1>Вариант 3</h1></option>
                         </select>
                     </h3>
-                    <h1 id="rEpure-result">kjk</h1>
                 </div>
                 <div class="form-container" id="canvas-container">
                     <canvas id="canvas"></canvas>
@@ -1254,6 +1253,151 @@ class RoofEpure extends HTMLElement {
             </div>
         `;}}
 customElements.define('roof-epure', RoofEpure);
+
+class SecBeam extends HTMLElement {
+    connectedCallback() {
+        // Сюда пишем весь HTML, который должен появиться на месте тега
+        const sha = this.attachShadow({ mode: 'open' });
+        sha.innerHTML = `
+            <style>
+                body {
+                    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                    background-color: #f0f2f5;
+                    margin: 0;
+                    padding: 20px;
+                    display: flex;
+                    align-items: flex-start;
+                    padding: 20px 0;
+                    justify-content: center;
+                    min-height: 100vh;
+                    box-sizing: border-box;
+                }
+                .container {
+                    background: white;
+                    padding: 30px;
+                    border-radius: 10px;
+                    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+                    width: 100%;
+                    max-width: 550px;
+                }
+                h2 {
+                    color: #2c3e50;
+                    margin: 0 0 20px 0;
+                    text-align: center;
+                    font-size: 18px;
+                    border-bottom: 2px solid #3498db;
+                    padding-bottom: 8px;
+                }
+                h3 {
+                    color: #34495e;
+                    font-size: 13px;
+                    margin: 15px 0 8px 0;
+                    text-transform: uppercase;
+                    letter-spacing: 0.5px;
+                    border-left: 3px solid #3498db;
+                    padding-left: 8px;
+                }
+                .form-container {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 12px;
+                    margin-bottom: 25px;
+                }
+                .form-group {
+                    display: flex;
+                    flex-direction: column;
+                }
+                .form-r {
+                    display: grid;
+                    grid-template-columns: 1fr;
+                    gap: 12px;
+                }
+                .form-row {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 12px;
+                }
+                .form-row-triple {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr 1fr;
+                    gap: 10px;
+                }
+                label {
+                    margin-bottom: 4px;
+                    font-weight: 600;
+                    color: #4a5568;
+                    font-size: 11px;
+                }
+                input, textarea {
+                    width: 100%;
+                    padding: 8px 12px;
+                    border: 1px solid #cbd5e1;
+                    border-radius: 4px;
+                    box-sizing: border-box;
+                    font-size: 13px;
+                    color: #334155;
+                    transition: border-color 0.2s, box-shadow 0.2s;
+                }
+                input:focus, textarea:focus {
+                    outline: none;
+                    border-color: #3498db;
+                    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.15);
+                }
+                button {
+                    width: 100%;
+                    padding: 10px;
+                    background-color: #3498db;
+                    color: white;
+                    border: none;
+                    border-radius: 4px;
+                    font-size: 14px;
+                    cursor: pointer;
+                    font-weight: bold;
+                    transition: background 0.2s;
+                }
+                button:hover {
+                    background-color: #2980b9;
+                }
+                #picDeck {
+                    width: 100%;
+                }
+                #canvas {
+                    border: 5px solid #3498db;
+                    border-radius: 8px;
+                }
+                #withCanvas {
+                    max-width: 550px;
+                    padding-bottom: 10px;
+                }
+                option {
+                    font-size: 25px
+                }
+                #sece_varo {
+                    font-size: 25px
+                }
+            </style>
+            <div class="container">
+                <h2>Второстепенная балка</h2>
+                <div class="form-row">
+                    <img src="img/secondary_beam.jpg" id="picDeck">
+                    <div>
+                        <h1 id="roof_beam"></h1>
+                        <h3>
+                            <select id="sece_varo">
+                                <option value="1"><h1>Вариант 1</h1></option>
+                                <option value="2"><h1>Вариант 2</h1></option>
+                                <option value="3"><h1>Вариант 3</h1></option>
+                            </select>
+                        </h3>
+                    </div>
+                </div><br>
+                <div class="form-container" id="canvas-container">
+                    <canvas id="canvas"></canvas>
+                </div>
+                <button id="second_beam">Скачать расчет</button>
+            </div>
+        `;}}
+customElements.define('sec-beam', SecBeam);
 
 class Literature extends HTMLElement {
     connectedCallback() {
