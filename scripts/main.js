@@ -1,3 +1,5 @@
+let currentIndex = 0;
+
 document.addEventListener("DOMContentLoaded", () => {
     const pages = document.querySelectorAll(".page");
     const prevBtn = document.getElementById("prevBtn");
@@ -5,7 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const collectBtn = document.getElementById("collectDataBtn");
     const progressBar = document.getElementById("progressBar");
     
-    let currentIndex = 0;
+    
 
     function updateSlider() {
         // printVar()
@@ -20,7 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         // Линия прогресса
-        const progressPercent = ((currentIndex + 1) / pages.length) * 100;
+        const progressPercent = ((currentIndex) / (pages.length - 1)) * 100;
         progressBar.style.width = `${progressPercent}%`;
 
         // Доступность стрелок
@@ -43,10 +45,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
     prevBtn.addEventListener("click", () => {
         if (currentIndex > 0) { currentIndex--; updateSlider(); }
+        if (currentIndex > 4) {
+            floor.shadowRoot.getElementById('floorExplanation').innerText = 'Ранее вы выбрали тип ' + floorType
+        }
+        init.shadowRoot.getElementById('floorType').value = floorType
+        usefullLoad = parseFloat(init.shadowRoot.getElementById('payload').value)
     });
     // Инициализация при старте
     updateSlider();
 })
+
 let documento = []
 function generateDocx() {
     documento = []
@@ -69,52 +77,65 @@ function generateDocx() {
         roof_varo.value = 1
         roofe_varo.value = 1
         sece_varo.value = 1
+        secep_varo.value = 1
         changeDeckVar()
         changeRoofVar()
         changerEpureVar()
         changeSecBeamVar()
+        changeSecEpureVar()
         createDeck()
         createRoof()
         createRoofEpure()
         createSecBeam()
+        createSecEpure()
         documento.push(...dkChildren)
         documento.push(...roofChildren)
         documento.push(...reBeamChildren)
         documento.push(...secChildren)
+        documento.push(...secondaryBeamChildren)
+        
         
         decking_varo.value = 2
         roof_varo.value = 2
         roofe_varo.value = 2
         sece_varo.value = 2
+        secep_varo.value = 2
         changeDeckVar()
         changeRoofVar()
         changerEpureVar()
         changeSecBeamVar()
+        changeSecEpureVar()
         createDeck()
         createRoof()
         createRoofEpure()
         createSecBeam()
+        createSecEpure()
         documento.push(...dkChildren)
         documento.push(...roofChildren)
         documento.push(...reBeamChildren)
         documento.push(...secChildren)
+        documento.push(...secondaryBeamChildren)
         
         decking_varo.value = 3
         roof_varo.value = 3
         roofe_varo.value = 3
         sece_varo.value = 3
+        secep_varo.value = 3
         changeDeckVar()
         changeRoofVar()
         changerEpureVar()
         changeSecBeamVar()
+        changeSecEpureVar()
         createDeck()
         createRoof()
         createRoofEpure()
         createSecBeam()
+        createSecEpure()
         documento.push(...dkChildren)
         documento.push(...roofChildren)
         documento.push(...reBeamChildren)
         documento.push(...secChildren)
+        documento.push(...secondaryBeamChildren)
 
     documento.push(...litChildren)
     
@@ -172,3 +193,50 @@ function generateDocx() {
         alert("Ошибка сохранения структуры таблиц.");
     });
 }
+
+
+const allShadowRoots = Array.from(document.querySelectorAll('*'))
+  .filter(el => el.shadowRoot)
+  .map(el => el.shadowRoot);
+// Теперь у тебя в allShadowRoots — массив всех shadowRoot
+allShadowRoots.forEach(root => {
+  root.querySelectorAll('select').forEach(select => {
+    select.addEventListener('change', e => {
+      if (e.target.value === '1') {
+        decking_varo.value = 1
+        roof_varo.value = 1
+        roofe_varo.value = 1
+        sece_varo.value = 1
+        secep_varo.value = 1
+        changeDeckVar()
+        changeRoofVar()
+        changerEpureVar()
+        changeSecBeamVar()
+        changeSecEpureVar()
+        
+      } else if (e.target.value === '2'){
+        decking_varo.value = 2
+        roof_varo.value = 2
+        roofe_varo.value = 2
+        sece_varo.value = 2
+        secep_varo.value = 2
+        changeDeckVar()
+        changeRoofVar()
+        changerEpureVar()
+        changeSecBeamVar()
+        changeSecEpureVar()
+      } else if (e.target.value === '3'){
+        decking_varo.value = 3
+        roof_varo.value = 3
+        roofe_varo.value = 3
+        sece_varo.value = 3
+        secep_varo.value = 3
+        changeDeckVar()
+        changeRoofVar()
+        changerEpureVar()
+        changeSecBeamVar()
+        changeSecEpureVar()
+      }
+    });
+  });
+});

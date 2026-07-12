@@ -171,8 +171,6 @@ function doingSecVar() {
 	sBcanvas.style.height = sBcssHeight + "px";
 	sBctx.scale(sBdpi, sBdpi);
 	
-	sBdataUrl = sBcanvas.toDataURL("image/png");
-	({ sBdata } = dataURLtoUint8Array(sBdataUrl))
 	qab = mFormula(
 	    mGroup(
 	        mText("F"),
@@ -458,6 +456,7 @@ sec_beam1.shadowRoot.getElementById("second_beam").addEventListener("click", () 
 
 function pushSecBeam() {
 	sBdataUrl = sBcanvas.toDataURL("image/png");
+	({ sBdata } = dataURLtoUint8Array(sBdataUrl))
 	sBsnapshot = sBdataURLtoUint8Array(sBdataUrl).sBdata;
 	secChildren.push(
 		new Paragraph({
@@ -475,7 +474,6 @@ function pushSecBeam() {
 		})
 	)
 }
-
 function createSecBeam() {
 	secChildren = []
 	secChildren.push(
@@ -890,3 +888,30 @@ function changeSecBeamVar() {
 sece_varo.addEventListener("click", () => {
     changeSecBeamVar()
 });
+
+init.shadowRoot.addEventListener('input', (event) => {
+	doingSecVar()
+});
+floor.shadowRoot.addEventListener('input', (event) => {
+	doingSecVar();
+});
+vargen.shadowRoot.addEventListener('input', (event) => {
+	doingSecVar();
+});
+vargen.shadowRoot.getElementById('varGen').addEventListener("click", () => {
+	doingSecVar();
+});
+
+
+function changeSecBeamVar() {
+	if (sece_varo.value == 1) {
+		secvaro = 1
+		doingSecVar()
+	} else if (sece_varo.value == 2) {
+		secvaro = 2
+		doingSecVar()
+	} else if (sece_varo.value == 3) {
+		secvaro = 3
+		doingSecVar()
+	}
+}

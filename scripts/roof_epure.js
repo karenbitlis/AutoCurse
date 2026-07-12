@@ -41,6 +41,8 @@ let reRoofDeflectionFormula
 let reRoofDeflectionAnsw 
 let reRoofDeflectionCalc
 
+let reQscale = 240
+
 function doingEpures() {
 	reBeamChildren = [];
 	varus1A = parseFloat(vargen.shadowRoot.getElementById('variant1A').value);
@@ -88,15 +90,11 @@ function doingEpures() {
 	reQNormal = maine * aVarRb
 	reQReal = mainest * aVarRb
 	
-	reQNormalLinear = reQNormal * reVarus1A
-	reQRealLinear = reQReal * reVarus1A
+	reQNormalLinear = reQNormal
+	reQRealLinear = reQReal
 	
 	reMMax = reQRealLinear * (reVarus1B ** 2) / 8;
 	reBiQ = reQRealLinear * reVarus1B / 2;
-	
-	reDataUrl = reCanvas.toDataURL("image/png");
-	reSnapshot = [];
-	({ data: reInitialData } = reDataURLtoUint8Array(reDataUrl));;
 	
 	reCanvas.width = reCssWidth * reDpi;
 	reCanvas.height = reCssHeight * reDpi;
@@ -109,12 +107,12 @@ function doingEpures() {
 	reCenterX = reCanvas.width / (2 * reDpi);
 	reCenterY = reCanvas.height / (2 * reDpi) + 300;
 	
-	reMscale = 50
+	reMscale = 90
 	
 	if (reVarus1B > 3) {
-	    reMscale = 110;
-	    if (reVarus1B > 4) {
-	        reMscale = 200;
+	    reMscale = 150;
+	    if (reVarus1B >= 4) {
+	        reMscale = 240;
 	    }
 	}
 	
@@ -266,6 +264,10 @@ function doingEpures() {
 }
 
 function pushRoofEpure() {
+	reDataUrl = reCanvas.toDataURL("image/png");
+	reSnapshot = [];
+	({ data: reInitialData } = reDataURLtoUint8Array(reDataUrl));;
+
     reDataUrl = reCanvas.toDataURL("image/png");
     reSnapshot = reDataURLtoUint8Array(reDataUrl).data;
 }
@@ -279,24 +281,12 @@ reEpureOnly.addEventListener("click", () => {
 rEpure.shadowRoot.getElementById('epuring').addEventListener("click", () => {
 		generateRoofEpure();
 	});
-roofe_varo.addEventListener("click", () => {
-    changerEpureVar()
-});
+// roofe_varo.addEventListener("click", () => {
+//     changerEpureVar()
+// });
 
 doingEpures()
 
-function changerEpureVar() {
-	if (roofe_varo.value == 1) {
-		roofvaro = 1
-		doingEpures()
-	} else if (roofe_varo.value == 2) {
-		roofvaro = 2
-		doingEpures()
-	} else if (roofe_varo.value == 3) {
-		roofvaro = 3
-		doingEpures()
-	}
-}
 
 function exportRoof() {
     const a = document.createElement("a");
@@ -877,8 +867,8 @@ function drawRoofBeamEpure() {
 	    reCtx.textAlign = 'center';
 	    reCtx.fillText('Q', reCenterX - reVarus1B / 2 * reScale - 0.2 * reScale, reCenterY / 7 + 4 * reScale);
 	
-	    reCtx.lineTo(reCenterX - reVarus1B / 2 * reScale, reCenterY / 7 + 4 * reScale - reBiQ / 150 * reScale);
-	    reCtx.lineTo(reCenterX + reVarus1B / 2 * reScale, reCenterY / 7 + 4 * reScale + reBiQ / 150 * reScale);
+	    reCtx.lineTo(reCenterX - reVarus1B / 2 * reScale, reCenterY / 7 + 4 * reScale - reBiQ / reQscale * reScale);
+	    reCtx.lineTo(reCenterX + reVarus1B / 2 * reScale, reCenterY / 7 + 4 * reScale + reBiQ / reQscale * reScale);
 	    reCtx.lineTo(reCenterX + reVarus1B / 2 * reScale, reCenterY / 7 + 4 * reScale);
 	    reCtx.closePath();
 	    reCtx.stroke();
@@ -887,8 +877,8 @@ function drawRoofBeamEpure() {
 	    const reRightX = reCenterX + (reVarus1B / 2) * reScale;
 	    
 	    const reBaseY = (reCenterY / 7) + (4 * reScale);
-	    const reTopLeftY = reBaseY - (reBiQ / 150) * reScale;
-	    const reBottomRightY = reBaseY + (reBiQ / 150) * reScale;
+	    const reTopLeftY = reBaseY - (reBiQ / reQscale) * reScale;
+	    const reBottomRightY = reBaseY + (reBiQ / reQscale) * reScale;
 	
 	    const reMinX = reLeftX;
 	    const reMaxX = reRightX;
@@ -936,26 +926,52 @@ function drawRoofBeamEpure() {
 	    reCtx.beginPath();
 	    reCtx.font = 'bold 18px GOST A';
 	    reCtx.fillStyle = 'black';
-	    reCtx.fillText(String('+' + Math.ceil(reBiQ * 1000) / 1000).replace('.', ',') + 'кН', reCenterX - reVarus1B / 2 * reScale + 0.5 * reScale, reCenterY / 7 + 4 * reScale - (reBiQ / 150) * reScale - 0.1 * reScale);
+	    reCtx.fillText(String('+' + Math.ceil(reBiQ * 1000) / 1000).replace('.', ',') + 'кН', reCenterX - reVarus1B / 2 * reScale + 0.5 * reScale, reCenterY / 7 + 4 * reScale - (reBiQ / reQscale) * reScale - 0.1 * reScale);
 	    reCtx.closePath();
 	    reCtx.stroke();
 	
 	    reCtx.beginPath();
 	    reCtx.font = 'bold 18px GOST A';
 	    reCtx.fillStyle = 'black';
-	    reCtx.fillText(String('-' + Math.ceil(reBiQ * 1000) / 1000).replace('.', ',') + 'кН', reCenterX + reVarus1B / 2 * reScale - 0.5 * reScale, reCenterY / 7 + 4 * reScale + (reBiQ / 150) * reScale + 0.3 * reScale);
+	    reCtx.fillText(String('-' + Math.ceil(reBiQ * 1000) / 1000).replace('.', ',') + 'кН', reCenterX + reVarus1B / 2 * reScale - 0.5 * reScale, reCenterY / 7 + 4 * reScale + (reBiQ / reQscale) * reScale + 0.3 * reScale);
 	    reCtx.closePath();
 	    reCtx.stroke();
 	
 	    reCtx.beginPath();
-	    reCtx.arc(reCenterX + reVarus1B / 2 * reScale, reCenterY / 7 + 4 * reScale + (reBiQ / 150) * reScale, 0.02 * reScale, 0, 2 * Math.PI, false);
+	    reCtx.arc(reCenterX + reVarus1B / 2 * reScale, reCenterY / 7 + 4 * reScale + (reBiQ / reQscale) * reScale, 0.02 * reScale, 0, 2 * Math.PI, false);
 	    reCtx.lineWidth = 4;
 	    reCtx.strokeStyle = 'black';
 	    reCtx.stroke();
 	
 	    reCtx.beginPath();
-	    reCtx.arc(reCenterX - reVarus1B / 2 * reScale, reCenterY / 7 + 4 * reScale - (reBiQ / 150) * reScale, 0.02 * reScale, 0, 2 * Math.PI, false);
+	    reCtx.arc(reCenterX - reVarus1B / 2 * reScale, reCenterY / 7 + 4 * reScale - (reBiQ / reQscale) * reScale, 0.02 * reScale, 0, 2 * Math.PI, false);
 	    reCtx.lineWidth = 4;
 	    reCtx.strokeStyle = 'black';
 	    reCtx.stroke();
+}
+
+init.shadowRoot.addEventListener('input', (event) => {
+	doingEpures();
+});
+floor.shadowRoot.addEventListener('input', (event) => {
+	doingEpures();
+});
+vargen.shadowRoot.addEventListener('input', (event) => {
+	doingEpures();
+});
+vargen.shadowRoot.getElementById('varGen').addEventListener("click", () => {
+	doingEpures();
+});
+
+function changerEpureVar() {
+	if (roofe_varo.value == 1) {
+		roofvaro = 1
+		doingEpures()
+	} else if (roofe_varo.value == 2) {
+		roofvaro = 2
+		doingEpures()
+	} else if (roofe_varo.value == 3) {
+		roofvaro = 3
+		doingEpures()
+	}
 }

@@ -715,18 +715,15 @@ function dkDrawEveryVar(num) {
 }
 
 init.shadowRoot.addEventListener('input', (event) => {
-    dkDrawEveryVar(numvaro);
-    calcThikness()
     changeDeckVar()
 });
 floor.shadowRoot.addEventListener('input', (event) => {
-    dkDrawEveryVar(numvaro);
-    calcThikness()
     changeDeckVar()
 });
 vargen.shadowRoot.addEventListener('input', (event) => {
-    dkDrawEveryVar(numvaro);
-    calcThikness()
+    changeDeckVar()
+});
+vargen.shadowRoot.getElementById('varGen').addEventListener("click", () => {
     changeDeckVar()
 });
 
@@ -734,25 +731,18 @@ dkDrawEveryVar(numvaro);
 
 // let decking_varo = decker.shadowRoot.getElementById('decking_varo')
 
-decking_varo.addEventListener("click", () => {
-    changeDeckVar()
-});
-
 function changeDeckVar() {
     if (decking_varo.value == 1) {
         numvaro = 1
         dkDrawEveryVar(numvaro);
-
         calcThikness()
     } else if (decking_varo.value == 2) {
         numvaro = 2
         dkDrawEveryVar(numvaro);
-
         calcThikness()
     } else if (decking_varo.value == 3) {
         numvaro = 3
         dkDrawEveryVar(numvaro);
-
         calcThikness()
     }
 }

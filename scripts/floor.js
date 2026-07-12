@@ -405,15 +405,10 @@ nextBtn.addEventListener("click", () => {
 	} else if (floorType == 2) {
 		floor.shadowRoot.getElementById("floorChoice2").checked = true
 	}
-    floor.shadowRoot.getElementById('floorExplanation').innerText = 'Ранее вы выбрали тип ' + floorType
+	updateFloorChoice()
+    usefullLoad = parseFloat(init.shadowRoot.getElementById('payload').value)
+});
 
-    usefullLoad = parseFloat(init.shadowRoot.getElementById('payload').value)
-});
-prevBtn.addEventListener("click", () => {
-    floor.shadowRoot.getElementById('floorExplanation').innerText = 'Ранее вы выбрали тип ' + floorType
-    init.shadowRoot.getElementById('floorType').value = floorType
-    usefullLoad = parseFloat(init.shadowRoot.getElementById('payload').value)
-});
 
 function generateFloor() {
 	getTheFloor()

@@ -1,425 +1,62 @@
 let secondaryBeamChildren = []
 
-const docxLib = window.docx;
-const { Document, Packer, ImageRun, LineRuleType, XmlComponent, Paragraph, ommlXmlText, BorderStyle, TextRun, AlignmentType, Table, TableRow, TableCell, WidthType, PageBreak, textParagraphs } = docxLib;
-let usefullLoad = 30
-let roofType = 1
-let roofTable
-let deck_thickness = 14
-let varus1A = 1
-let varus1B = 2
-let A = 5
-let scale = 65
-let F = 69.054
-let F_n = 65.133
+let sescale = 65
+let F = sest_beam*aVar*bVar
+let F_n = seco_beam*aVar*bVar
 let normality = 0
 
-let q_normal = 32.429
-let q_real = 34.383
-
-let q_normal_linear = q_normal*varus1A
-let q_real_linear = q_real*varus1A
-
-let M_max = q_real_linear*(A**2)/8
+let M_max = Mcalc(kof())
 let biQ = q_real_linear * A / 2
 
-const seCanvas = document.getElementById("canvas");
-const reCtx = seCanvas.getContext("2d");
-
-let dataUrl = seCanvas.toDataURL("image/png");
-let snapshot = []
-let { data } = dataURLtoUint8Array(dataUrl);
-
-const ctnr = document.getElementById("seCanvas-container");
-
-const cssWidth = ctnr.offsetWidth-8;
-const cssHeight = 450;
-const dpi = 10;
-
-seCanvas.width = cssWidth * dpi;
-seCanvas.height = cssHeight * dpi;
-
-seCanvas.style.width = cssWidth + "px";
-seCanvas.style.height = cssHeight + "px";
-
-reCtx.scale(dpi, dpi);
-
-let centerX = seCanvas.width / (2*dpi);
-let centerY = seCanvas.height / (2*dpi) + 250;
-
-let Mscaler = 300
-let Qscaler = 200
-
-if (A > 5) {
-    Mscaler = 400
-    Qscaler = 300
+if (secvaro == 1) {
+	aVar = varus1A
+	bVar = varus1B
+	dist = -3*B*sBscale/2
+} else if (secvaro == 2) {
+	aVar = varus2A
+	bVar = varus2B
+	dist = -3*B*sBscale/2
+} else if (secvaro == 3) {
+	aVar = varus3A
+	bVar = varus3B
+	dist = -3*B*sBscale/2
 }
-function dataURLtoUint8Array(dataurl) {
-    const arr = dataurl.split(',');
-    const mime = arr[0].match(/:(.*?);/)[1];
-    const bstr = atob(arr[1]);
-    let n = bstr.length;
-    const u8arr = new Uint8Array(n);
-    
-    while (n--) {
-      u8arr[n] = bstr.charCodeAt(n);
-    }
-    return { data: u8arr, mime };
+
+const rEpuro = document.getElementById('sec-epure1')
+
+const seCanvas = rEpuro.shadowRoot.getElementById("canvas");
+const seCtx = seCanvas.getContext("2d");
+
+let sedataUrl = seCanvas.toDataURL("image/png");
+let sesnapshot = [];
+({ sepdata } = sedataURLtoUint8Array(sedataUrl))
+
+const sectnr = rEpuro.shadowRoot.getElementById("canvas-container");
+
+const secssWidth = sectnr.offsetWidth-8;
+const secssHeight = 450;
+const sedpi = 10;
+
+seCanvas.width = secssWidth * sedpi;
+seCanvas.height = secssHeight * sedpi;
+
+seCanvas.style.width = secssWidth + "px";
+seCanvas.style.height = secssHeight + "px";
+
+seCtx.scale(sedpi, sedpi);
+
+let centerX = seCanvas.width / (2*sedpi);
+let centerY = seCanvas.height / (2*sedpi) + 250;
+
+let Msescaler = 700
+let Qsescaler = 300
+
+if (A >= 5) {
+    Msescaler = 800
+    Qsescaler = 600
 }
 
 drawSocondBeamEpure()
-function tr(a) {
-    let triangle = 0
-    for (let i = 1; i <= a; i++) {
-        triangle += i
-    }
-    return triangle
-}
-function re() {
-    let f = A/varus1A - 1
-    let R = f*F/2
-    return R
-}
-function kof() {
-    let x = A/varus1A
-    let n
-    if (x % 2 == 0) {
-        n = x/2
-    } else {
-        n = (x-1)/2
-    }
-    return n
-}
-function Mcalc(i) {
-    let M_o
-    M_o = (re()*i*varus1A) - (tr(i-1)*F*varus1A)
-    return M_o
-}
-
-function drawSocondBeamEpure() {
-    reCtx.fillStyle = "white"
-    reCtx.fillRect(0, 0, seCanvas.width, seCanvas.height)
-//beam
-	reCtx.beginPath()
-		reCtx.lineWidth = 4
-		reCtx.moveTo(centerX, centerY)
-		reCtx.moveTo(centerX, centerY/7)
-		reCtx.moveTo(centerX-A/2*scale+0.1*scale, centerY/7)
-		reCtx.lineTo(centerX+(A/2)*scale-0.1*scale, centerY/7)
-		reCtx.moveTo(centerX-A/2*scale, centerY/7)
-		reCtx.lineTo(centerX-A/2*scale+0.15*scale, centerY/7+0.3*scale)
-		reCtx.moveTo(centerX-A/2*scale, centerY/7)
-		reCtx.lineTo(centerX-A/2*scale-0.15*scale, centerY/7+0.3*scale)
-		reCtx.lineTo(centerX-A/2*scale+0.15*scale, centerY/7+0.3*scale)
-		reCtx.closePath()
-		reCtx.stroke()
-
-	reCtx.beginPath()
-		reCtx.lineWidth = 4
-		reCtx.moveTo(centerX+A/2*scale, centerY/7)
-		reCtx.lineTo(centerX+A/2*scale, centerY/7+0.3*scale)
-		reCtx.closePath()
-		reCtx.stroke()
-// ground
-	reCtx.beginPath()
-		reCtx.lineWidth = 4
-		reCtx.moveTo(centerX+A/2*scale, centerY/7+0.3*scale+0.1*scale)
-		reCtx.moveTo(centerX+A/2*scale+0.3*scale, centerY/7+0.3*scale+0.1*scale)
-		reCtx.lineTo(centerX+A/2*scale-0.3*scale, centerY/7+0.3*scale+0.1*scale)
-		reCtx.stroke()
-	reCtx.beginPath()
-		reCtx.lineWidth = 4
-		reCtx.moveTo(centerX-A/2*scale, centerY/7+0.3*scale+0.1*scale)
-		reCtx.moveTo(centerX-A/2*scale+0.3*scale, centerY/7+0.3*scale+0.1*scale)
-		reCtx.lineTo(centerX-A/2*scale-0.3*scale, centerY/7+0.3*scale+0.1*scale)
-		reCtx.stroke()
-	reCtx.beginPath()
-		reCtx.lineWidth = 4
-		reCtx.moveTo(-0.05 * scale + centerX-A/2*scale-0.3*scale+0.1*scale, centerY/7+0.3*scale+0.1*scale)
-		reCtx.lineTo(-0.05 * scale + centerX-A/2*scale-0.3*scale+0.1*scale+0.1*scale, centerY/7+0.3*scale+0.1*scale+0.1*scale)
-		reCtx.moveTo(-0.05 * scale + centerX-A/2*scale-0.3*scale+0.3*scale, centerY/7+0.3*scale+0.1*scale)
-		reCtx.lineTo(-0.05 * scale + centerX-A/2*scale-0.3*scale+0.3*scale+0.1*scale, centerY/7+0.3*scale+0.1*scale+0.1*scale)
-		reCtx.moveTo(-0.05 * scale + centerX-A/2*scale-0.3*scale+0.5*scale, centerY/7+0.3*scale+0.1*scale)
-		reCtx.lineTo(-0.05 * scale + centerX-A/2*scale-0.3*scale+0.5*scale+0.1*scale, centerY/7+0.3*scale+0.1*scale+0.1*scale)
-		reCtx.stroke()
-	reCtx.beginPath()
-		reCtx.lineWidth = 4
-		reCtx.moveTo(-0.05 * scale + centerX+A/2*scale-0.3*scale+0.1*scale, centerY/7+0.3*scale+0.1*scale)
-		reCtx.lineTo(-0.05 * scale + centerX+A/2*scale-0.3*scale+0.1*scale+0.1*scale, centerY/7+0.3*scale+0.1*scale+0.1*scale)
-		reCtx.moveTo(-0.05 * scale + centerX+A/2*scale-0.3*scale+0.3*scale, centerY/7+0.3*scale+0.1*scale)
-		reCtx.lineTo(-0.05 * scale + centerX+A/2*scale-0.3*scale+0.3*scale+0.1*scale, centerY/7+0.3*scale+0.1*scale+0.1*scale)
-		reCtx.moveTo(-0.05 * scale + centerX+A/2*scale-0.3*scale+0.5*scale, centerY/7+0.3*scale+0.1*scale)
-		reCtx.lineTo(-0.05 * scale + centerX+A/2*scale-0.3*scale+0.5*scale+0.1*scale, centerY/7+0.3*scale+0.1*scale+0.1*scale)
-		reCtx.stroke()
-// ramalines
-	reCtx.beginPath()
-		reCtx.lineWidth = 2.5
-		reCtx.moveTo(centerX+A/2*scale, centerY/7+0.3*scale)
-		reCtx.lineTo(centerX+A/2*scale, centerY/7+4*scale)
-		reCtx.closePath()
-		reCtx.stroke()
-	reCtx.beginPath()
-		reCtx.lineWidth = 2.5
-		reCtx.moveTo(centerX-A/2*scale, centerY/7+0.3*scale)
-		reCtx.lineTo(centerX-A/2*scale, centerY/7+4*scale)
-		reCtx.closePath()
-		reCtx.stroke()
-	reCtx.beginPath()
-		reCtx.lineWidth = 4
-		reCtx.moveTo(centerX-A/2*scale, centerY/7+1.5*scale)
-		reCtx.lineTo(centerX+(A/2)*scale, centerY/7+1.5*scale)
-		reCtx.closePath()
-		reCtx.stroke()
-	reCtx.beginPath()
-		reCtx.lineWidth = 2
-		reCtx.moveTo(centerX-A/2*scale, centerY/7+1*scale)
-		reCtx.lineTo(centerX+(A/2)*scale, centerY/7+1*scale)
-		reCtx.closePath()
-		reCtx.stroke()
-    reCtx.beginPath()
-        reCtx.font = 'bold 24px GOST A';
-        reCtx.fillStyle = 'black';
-        reCtx.textAlign = 'center';
-        reCtx.fillText('Q', centerX-A/2*scale-0.2*scale, centerY/7+4*scale)
-        reCtx.fillText('M', centerX-A/2*scale-0.2*scale, centerY/7+1.5*scale)
-
-        reCtx.stroke()
-//size_arrows
-	reCtx.beginPath()
-		reCtx.lineWidth = 2
-		reCtx.moveTo(centerX-A/2*scale, centerY/7+1*scale)
-		reCtx.lineTo(centerX-A/2*scale+0.1*scale, centerY/7+1*scale+0.1*scale)
-		reCtx.moveTo(centerX-A/2*scale, centerY/7+1*scale)
-		reCtx.lineTo(centerX-A/2*scale+0.1*scale, centerY/7+1*scale-0.1*scale)
-		reCtx.closePath()
-		reCtx.stroke()
-	reCtx.beginPath()
-		reCtx.lineWidth = 2
-		reCtx.moveTo(centerX+A/2*scale, centerY/7+1*scale)
-		reCtx.lineTo(centerX+A/2*scale-0.1*scale, centerY/7+1*scale-0.1*scale)
-		reCtx.moveTo(centerX+A/2*scale, centerY/7+1*scale)
-		reCtx.lineTo(centerX+A/2*scale-0.1*scale, centerY/7+1*scale+0.1*scale)
-		reCtx.closePath()
-		reCtx.stroke()
-// 2m
-	reCtx.beginPath()
-		reCtx.lineWidth = 2
-		reCtx.font = 'bold 22px GOST A';
-		reCtx.fillStyle = 'black';
-		reCtx.textAlign = 'center';
-		reCtx.fillText(String(A).replaceAll('.', ',')+' м', centerX, centerY/7+1*scale-0.05*scale)
-		reCtx.stroke()
-		reCtx.closePath()
-		reCtx.stroke()
-// load_arrows
-	reCtx.beginPath()
-		reCtx.lineWidth = 2
-		// reCtx.moveTo(centerX-2*scale, centerY/7-0.4*scale)
-		// reCtx.lineTo(centerX+(2)*scale, centerY/7-0.4*scale)
-		for (let cvb = 1; cvb <= A/varus1A-1; cvb++) {
-			reCtx.moveTo(centerX-A/2*scale + cvb*varus1A*scale, centerY/7-0.7*scale)
-			reCtx.lineTo(centerX-A/2*scale + cvb*varus1A*scale, centerY/7)
-			reCtx.moveTo(centerX-A/2*scale + cvb*varus1A*scale, centerY/7)
-			reCtx.lineTo(centerX-A/2*scale + cvb*varus1A*scale-0.08*scale, centerY/7-0.08*scale)
-			reCtx.moveTo(centerX-A/2*scale + cvb*varus1A*scale, centerY/7)
-			reCtx.lineTo(centerX-A/2*scale + cvb*varus1A*scale+0.08*scale, centerY/7-0.08*scale)
-			reCtx.font = 'bold 22px GOST A';
-			reCtx.fillStyle = 'black';
-			reCtx.textAlign = 'center';
-			reCtx.fillText('F', centerX-A/2*scale + cvb*varus1A*scale-0.2*scale, centerY/7-0.4*scale)
-		}
-		
-
-		reCtx.closePath()
-		reCtx.stroke()
-// circles
-	reCtx.beginPath()
-		reCtx.arc(centerX-A/2*scale+0.15*scale, centerY/7+0.3*scale, 0.1*scale, 0, 2 * Math.PI, false);
-		reCtx.fillStyle = "white"
-		reCtx.fill()
-		reCtx.lineWidth = 4
-		reCtx.strokeStyle = 'black';
-		reCtx.stroke()
-	reCtx.beginPath()
-		reCtx.arc(centerX-A/2*scale-0.15*scale, centerY/7+0.3*scale, 0.1*scale, 0, 2 * Math.PI, false);
-		reCtx.fillStyle = "white"
-		reCtx.fill()
-		reCtx.lineWidth = 4
-		reCtx.strokeStyle = 'black';
-		reCtx.stroke()
-	reCtx.beginPath()
-		reCtx.arc(centerX-A/2*scale, centerY/7, 0.1*scale, 0, 2 * Math.PI, false);
-		reCtx.fillStyle = "white"
-		reCtx.fill()
-		reCtx.lineWidth = 4
-		reCtx.strokeStyle = 'black';
-		reCtx.stroke()
-	reCtx.beginPath()
-		reCtx.arc(centerX+A/2*scale, centerY/7, 0.1*scale, 0, 2 * Math.PI, false);
-		reCtx.fillStyle = "white"
-		reCtx.fill()
-		reCtx.lineWidth = 4
-		reCtx.strokeStyle = 'black';
-		reCtx.stroke()
-	reCtx.beginPath()
-		reCtx.arc(centerX-A/2*scale+0.3*scale, centerY/7+0.3*scale, 0, 2 * Math.PI, false);
-		reCtx.fillStyle = "white"
-		reCtx.fill()
-		reCtx.lineWidth = 4
-		reCtx.strokeStyle = 'black';
-		reCtx.stroke()
-	reCtx.beginPath()
-		reCtx.arc(centerX+A/2*scale, centerY/7+0.3*scale, 0.1*scale, 0, 2 * Math.PI, false);
-		reCtx.fillStyle = "white"
-		reCtx.fill()
-		reCtx.lineWidth = 4
-		reCtx.strokeStyle = 'black';
-		reCtx.stroke()
-// Q epure
-    reCtx.beginPath()
-    reCtx.lineWidth = 4
-    reCtx.moveTo(centerX-A/2*scale,                           centerY/7+ 4*scale)
-    reCtx.lineTo(centerX-A/2*scale,                           centerY/7+ 4*scale-re()/Qscaler*scale)
-    reCtx.stroke()
-    for (let i = 0; i <= kof()-1; i++) {
-        reCtx.beginPath()
-        reCtx.lineWidth = 4
-        reCtx.moveTo(centerX-A/2*scale+varus1A*scale*i,                  centerY/7+ 4*scale-re()/Qscaler*scale+i*F/Qscaler*scale)
-        reCtx.lineTo(centerX-(A/2)*scale+varus1A*scale+varus1A*scale*i,  centerY/7+ 4*scale-re()/Qscaler*scale+i*F/Qscaler*scale)
-
-        reCtx.font = 'bold 14px GOST A';
-        reCtx.fillStyle = 'black';
-        reCtx.textAlign = 'center';
-        reCtx.fillText(String(Math.ceil((re()-i*F)*1000)/1000).replace('.',',')+'кН', centerX-(A/2)*scale+varus1A*scale/2+varus1A*scale*i, centerY/7+ 4*scale-re()/Qscaler*scale+i*F/Qscaler*scale-10)
-
-        reCtx.moveTo(centerX-A/2*scale+varus1A*scale+varus1A*scale*i,    centerY/7+ 4*scale-re()/Qscaler*scale+i*F/Qscaler*scale)
-        reCtx.lineTo(centerX-A/2*scale+varus1A*scale+varus1A*scale*i,    centerY/7+ 4*scale-re()/Qscaler*scale+(i+1)*F/Qscaler*scale)
-        reCtx.closePath()
-        reCtx.stroke()
-
-        for (let ino = 0; ino < 5; ino++) {
-            reCtx.beginPath()
-            reCtx.lineWidth = 2
-            reCtx.moveTo(centerX-A/2*scale+varus1A*scale*i+ino*varus1A/5*scale,    centerY/7+ 4*scale-re()/Qscaler*scale+i*F/Qscaler*scale)
-            reCtx.lineTo(centerX-A/2*scale+varus1A*scale*i+ino*varus1A/5*scale,    centerY/7+ 4*scale)
-            reCtx.closePath()
-            reCtx.stroke()
-        }
-
-        for (let ino = 0; ino < 5; ino++) {
-            reCtx.beginPath()
-            reCtx.lineWidth = 2
-            reCtx.moveTo(centerX+A/2*scale-varus1A*scale*(i+1)+ino*varus1A/5*scale,    centerY/7+ 4*scale+re()/Qscaler*scale-i*F/Qscaler*scale)
-            reCtx.lineTo(centerX+A/2*scale-varus1A*scale*(i+1)+ino*varus1A/5*scale,    centerY/7+ 4*scale)
-            reCtx.closePath()
-            reCtx.stroke()
-        }
-        reCtx.beginPath()
-        reCtx.lineWidth = 4
-        reCtx.moveTo(centerX+A/2*scale-varus1A*scale*i,                       centerY/7+ 4*scale+re()/Qscaler*scale-i*F/Qscaler*scale)
-        reCtx.lineTo(centerX+(A/2)*scale-varus1A*scale-varus1A*scale*i,       centerY/7+ 4*scale+re()/Qscaler*scale-i*F/Qscaler*scale)
-
-        reCtx.font = 'bold 14px GOST A';
-        reCtx.fillStyle = 'black';
-        reCtx.textAlign = 'center';
-        reCtx.fillText('-'+String(Math.ceil((re()-i*F)*1000)/1000).replace('.',',')+'кН', centerX+(A/2)*scale-varus1A*scale/2-varus1A*scale*i, centerY/7+ 4*scale+re()/Qscaler*scale-i*F/Qscaler*scale+25)
-        reCtx.moveTo(centerX+(A/2)*scale-varus1A*scale-varus1A*scale*i,       centerY/7+ 4*scale+re()/Qscaler*scale-i*F/Qscaler*scale)
-        reCtx.lineTo(centerX+A/2*scale-varus1A*scale*(i+1),                   centerY/7+ 4*scale+re()/Qscaler*scale-(i+1)*F/Qscaler*scale)
-        reCtx.closePath()
-        reCtx.stroke()
-    }
-    reCtx.beginPath()
-    reCtx.moveTo(centerX+A/2*scale,       centerY/7+ 4*scale)
-    reCtx.lineTo(centerX+A/2*scale,       centerY/7+ 4*scale+re()/Qscaler*scale)
-    reCtx.moveTo(centerX-A/2*scale,       centerY/7+4*scale)
-    reCtx.lineTo(centerX+(A/2)*scale,     centerY/7+4*scale)
-    reCtx.closePath()
-    reCtx.stroke()
-// M epure
-    if ((A/varus1A) % 2 != 0) {
-        for (let iw = 0; iw <= 2*kof(); iw++) {
-            reCtx.beginPath()
-            reCtx.lineWidth = 4
-            reCtx.moveTo(centerX-A/2*scale+varus1A*scale*iw,                  centerY/7+ 1.5*scale+Mcalc(iw)/Mscaler*scale)
-            reCtx.lineTo(centerX-(A/2)*scale+varus1A*scale+varus1A*scale*iw+1,  centerY/7+ 1.5*scale+Mcalc(iw+1)/Mscaler*scale)
-            reCtx.font = 'bold 14px GOST A';
-            reCtx.fillStyle = 'black';
-            reCtx.textAlign = 'center';
-            if (iw != 0) {
-                reCtx.fillText(String(Math.ceil(Mcalc(iw)*1000)/1000).replace('.',',')+'кН', centerX-(A/2)*scale+varus1A*scale*iw, centerY/7+ 1.5*scale+Mcalc(iw)/Mscaler*scale+25)
-                reCtx.arc(centerX-(A/2)*scale+varus1A*scale*iw, centerY/7+ 1.5*scale+Mcalc(iw)/Mscaler*scale, 0.04*scale, 0, 2 * Math.PI, false);
-            }
-
-            reCtx.stroke()
-            for (let ivi = 0; ivi < 5; ivi++) {
-                reCtx.beginPath()
-                reCtx.lineWidth = 2
-                reCtx.moveTo(centerX-A/2*scale+varus1A*scale*iw + varus1A/5*ivi*scale, centerY/7+ 1.5*scale)
-                reCtx.lineTo(centerX-A/2*scale+varus1A*scale*iw + varus1A/5*ivi*scale,  centerY/7+ 1.5*scale+Mcalc(iw)/Mscaler*scale+(Mcalc(iw+1)-Mcalc(iw))/5/Mscaler*scale*ivi)
-                reCtx.stroke()
-            }
-        }
-    } else {
-        for (let iw = 0; iw <= 2*kof()-1; iw++) {
-            if (iw != 0) {
-                reCtx.beginPath()
-                reCtx.fillText(String(Math.ceil(Mcalc(iw)*1000)/1000).replace('.',',')+'кН', centerX-(A/2)*scale+varus1A*scale*iw, centerY/7+ 1.5*scale+Mcalc(iw)/Mscaler*scale+25)
-                reCtx.arc(centerX-(A/2)*scale+varus1A*scale*iw, centerY/7+ 1.5*scale+Mcalc(iw)/Mscaler*scale, 0.04*scale, 0, 2 * Math.PI, false);
-                reCtx.stroke()
-
-            }
-            for (let ivi = 0; ivi < 5; ivi++) {
-                reCtx.beginPath()
-                reCtx.lineWidth = 2
-                reCtx.moveTo(centerX-A/2*scale+varus1A*scale*iw + varus1A/5*ivi*scale, centerY/7+ 1.5*scale)
-                reCtx.lineTo(centerX-A/2*scale+varus1A*scale*iw + varus1A/5*ivi*scale,  centerY/7+ 1.5*scale+Mcalc(iw)/Mscaler*scale+(Mcalc(iw+1)-Mcalc(iw))/5/Mscaler*scale*ivi)
-                reCtx.stroke()
-            }
-            reCtx.beginPath()
-            reCtx.lineWidth = 4
-            reCtx.moveTo(centerX-A/2*scale+varus1A*scale*iw,                  centerY/7+ 1.5*scale+Mcalc(iw)/Mscaler*scale)
-            reCtx.lineTo(centerX-(A/2)*scale+varus1A*scale+varus1A*scale*iw+1,  centerY/7+ 1.5*scale+Mcalc(iw+1)/Mscaler*scale)
-            reCtx.font = 'bold 14px GOST A';
-            reCtx.fillStyle = 'black';
-            reCtx.textAlign = 'center';
-            reCtx.stroke()
-        }
-    }
-}
-function redrawSocondBeamEpure() {
-	if (normality) {
-		F = 69.054
-		drawSocondBeamEpure()
-		document.getElementById('sec_epure_sw').style.backgroundColor = '#52CC76'
-		document.getElementById('sec_epure_sw').innerText = 'Построить\nнормативные эпюры'
-		normality--
-	} else {
-		F = F_n
-		drawSocondBeamEpure()
-		document.getElementById('sec_epure_sw').style.backgroundColor = '#CC5289'
-		document.getElementById('sec_epure_sw').innerText = 'Построить\nрасчетные эпюры'
-		normality++
-	}
-}
-
-document.getElementById('sec_epuring').addEventListener("click", () => {
-    generateSecEpure()})
-document.getElementById('sec_epure_only').addEventListener("click", () => {
-    exportSecEpure()})
-document.getElementById('sec_epure_sw').addEventListener("click", () => {
-    redrawSocondBeamEpure()})
-
-function exportSecEpure() {
-    const a = document.createElement("a");
-    a.href = seCanvas.toDataURL("image/jpg");
-    a.download = "secondary_beam_epure.jpg";
-    a.click();
-}
-
-function pushRoofEpure() {
-    dataUrl = seCanvas.toDataURL("image/png");
-    snapshot = dataURLtoUint8Array(dataUrl).data;
-}
 
 let Wneed = mFormula(
     // σ = M_max / W  ≤  R_y · γ_c
@@ -537,10 +174,8 @@ let sec_deflection_formula = mFormula(
 
     mSquareParen(mFrac('f', 'l')),);
 
+F = seco_beam*aVar*bVar
 
-// rooffss Aghh...
-
-F = F_n
 let roof_deflection_answ = (5/48)*(Mcalc(kof())*(10**(2))*(A*100))/(2.06*(10**4)*sec_beamchey.Ix)
 let roof_deflection_calc = mFormula(
     mFrac('5', '48'),
@@ -567,10 +202,11 @@ let roof_deflection_calc = mFormula(
 let M_max_eqo = mFormula(
     mSub("M", "max"),
     mEq(),
-    String(Math.ceil(Mcalc(kof())*1000)/1000).replace('.',','),
+    String(Math.ceil(M_max*1000)/1000).replace('.',','),
     " кНм"
 )
-F = 69.054
+
+F = sest_beam*aVar*bVar
 let Hvb = sec_beamchey.R + sec_beamchey.t
 let sec_loc_param1 = mFormula(
     mSub("H", "вб"),
@@ -586,13 +222,11 @@ let sec_loc_param1 = mFormula(
     String(Math.ceil(sec_beamchey.t*100)/1000).replace('.',','),
     mEq(),
     
-    String(Math.ceil(Hvb*100)/1000).replace('.',',') + ' см',
-);
+    String(Math.ceil(Hvb*100)/1000).replace('.',',') + ' см',);
 let sec_loc_param2 = mFormula(
 	mSub("b","вб"),
 	mEq(),
-	String(Math.ceil(sec_beamchey.b*100)/1000).replace('.',',') + ' см',
-)
+	String(Math.ceil(sec_beamchey.b*100)/1000).replace('.',',') + ' см',)
 let Lef = sec_beamchey.b + (2 * Hvb)
 let sec_loc_param3 = mFormula(
     mSub("l", "ef"),
@@ -613,8 +247,7 @@ let sec_loc_param3 = mFormula(
     String(Math.ceil(Hvb*100)/1000).replace('.',','),
     mEq(),
 
-    String(Math.ceil(Lef*100)/1000).replace('.',',') + ' см',
-)
+    String(Math.ceil(Lef*100)/1000).replace('.',',') + ' см',)
 let sec_sigma_loc = F/(sec_beamchey.s/10*Lef/10)
 let sec_loc_check = mFormula(
     mSub("σ", "loc"),
@@ -657,8 +290,7 @@ let sec_loc_check = mFormula(
     " ≤ ",
     '24',
     mText(' '),
-    mFrac('кН', mSup('см', '2'))
-)
+    mFrac('кН', mSup('см', '2')))
 let sec_overall_feat = mFormula(
     mSub(
         mBar("λ"),
@@ -685,8 +317,7 @@ let sec_overall_feat = mFormula(
     mFrac(
         "b",
         mSup('h','*')
-    )
-)
+    ))
 let h_between_twos = sec_beamchey.h - (2*sec_beamchey.t)
 let h_form_count = mFormula(
 	mSup('h','*'),
@@ -703,8 +334,7 @@ let h_form_count = mFormula(
 	mMul(),
 	String(Math.ceil(sec_beamchey.t*100)/1000).replace('.',','),
 	mEq(),
-	String(Math.ceil(h_between_twos*100)/1000).replace('.',',') + ' см'
-)
+	String(Math.ceil(h_between_twos*100)/1000).replace('.',',') + ' см')
 let lambdaUb 	= 0.41 + 0.0052 * 15 + (0.73 - 0.016 * 15) * (sec_beamchey.b / h_between_twos);
 let sec_overall_calc = mFormula(
     mSub(
@@ -731,8 +361,7 @@ let sec_overall_calc = mFormula(
 
     ),
     mEq(),
-    String(Math.ceil(lambdaUb*1000)/1000).replace('.',',')
-)
+    String(Math.ceil(lambdaUb*1000)/1000).replace('.',','))
 let sec_some_sigma_res = Mcalc(kof())*100/sec_beamchey.Wx
 let sec_some_sigma = mFormula(
     "σ",
@@ -765,8 +394,7 @@ let sec_some_sigma = mFormula(
             "см",
             "2"
         )
-    )
-)
+    ))
 let lambdaUbFixed = lambdaUb * Math.sqrt(24 / sec_some_sigma_res);
 let lambdaUber = mFormula(
     mSub(
@@ -793,9 +421,8 @@ let lambdaUber = mFormula(
 
     mEq(),
 
-    String(Math.ceil(lambdaUbFixed*1000)/1000).replace('.',','),
-)
-let lambdaDefault_res = ((varus1A * 100) / (sec_beamchey.b/10)) * Math.sqrt(24 / (2.06 * 10 ** 4));
+    String(Math.ceil(lambdaUbFixed*1000)/1000).replace('.',','),)
+let lambdaDefault_res = ((aVar * 100) / (sec_beamchey.b/10)) * Math.sqrt(24 / (2.06 * 10 ** 4));
 let lambdaDefault = mFormula(
     mSub(
         mBar("λ"),
@@ -814,7 +441,7 @@ let lambdaDefault = mFormula(
     ),
     mEq(),
     mFrac(
-        String(Math.ceil(varus1A*100*1000)/1000).replace('.',','),
+        String(Math.ceil(aVar*100*1000)/1000).replace('.',','),
         String(Math.ceil(sec_beamchey.b*100)/1000).replace('.',','),
     ),
     mSqrt(
@@ -833,9 +460,899 @@ let lambdaDefault = mFormula(
 
     mEq(),
 
-    String(Math.ceil(lambdaDefault_res*1000)/1000).replace('.',',')
-)
+    String(Math.ceil(lambdaDefault_res*1000)/1000).replace('.',','))
+rEpuro.shadowRoot.getElementById('sEpure-result').innerText = 'Назначен двутавр №' + sec_beamchey.number
+
+function doingSecEpures() {
+	sescale = 65
+	F = sest_beam*aVar*bVar
+	F_n = seco_beam*aVar*bVar
+	normality = 0
+	M_max = Mcalc(kof())
+	biQ = q_real_linear * A / 2
+	if (secvaro == 1) {
+		aVar = varus1A
+		bVar = varus1B
+		dist = -3*B*sBscale/2
+	} else if (secvaro == 2) {
+		aVar = varus2A
+		bVar = varus2B
+		dist = -3*B*sBscale/2
+	} else if (secvaro == 3) {
+		aVar = varus3A
+		bVar = varus3B
+		dist = -3*B*sBscale/2
+	}
+	
+	centerX = seCanvas.width / (2*sedpi);
+	centerY = seCanvas.height / (2*sedpi) + 250;
+	Msescaler = 700
+	Qsescaler = 300
+	
+	if (A >= 5) {
+	    Msescaler = 800
+	    Qsescaler = 600
+	}
+	
+	drawSocondBeamEpure()
+	
+	Wneed = mFormula(
+	    // σ = M_max / W  ≤  R_y · γ_c
+	    mText('σ'), mEq(),
+	    mFrac(mSub('M', 'max'), mText('W')),
+	    ' ≤ ',
+	    mGroup(mSub('R', 'y'), mMul(), mSub('γ', 'c')),
+	
+	    // ⇒ W_тр = M_max / (R_y · γ_c)
+	    mText(' ⇒ '),
+	    mSub('W', 'тр'), mEq(),
+	    mFrac(
+	        mSub('M', 'max'),
+	        mGroup(mSub('R', 'y'), mMul(), mSub('γ', 'c'))
+	    ),
+	    // = (36,7717 · 100) / 24 = 153,215 см³
+	    mEq(),
+	    mFrac(
+	        mGroup(String(Math.ceil(M_max*1000)/1000).replace('.',',')),
+	        '0,24'
+	    ),
+	    mEq(),
+	    String(Math.ceil(M_max/0.24*1000)/1000).replace('.',','), mSup('см', '3'));
+	sec_beamchey = sectBeamByWx(Math.ceil(Mcalc(kof())/0.24*1000)/1000);
+	sec_roof_parameters = mFormula(
+	    mSub('I', 'x'), mEq(), String(sec_beamchey.Ix).replace('.',','), mText(' '), mSup('см', '4'),
+	    mText('; '), 
+	    mSub('S', 'x'), mEq(), String(sec_beamchey.Sx).replace('.',','), mText(' '), mSup('см', '3'),
+	    mText('; '),
+	    mText('Масса на 1м'), mEq(), String(sec_beamchey.weight).replace('.',','), mText(' кг'));
+	sec_power_check =  mFormula(
+	    mText('σ'), mEq(),
+	    mFrac(
+	        mSub('M', 'max'),
+	        mText('W')
+	    ),
+	    ' ≤ ',
+	    mGroup(mSub('R', 'y'), mMul(), mSub('γ', 'c')));
+	sec_power_check_сalc = mFormula(
+	    mFrac(
+	        mSub('M', 'max'),
+	        mSub('W', 'x')
+	    ),
+	    mEq(), 
+	    mFrac(
+	        mGroup(String(Math.ceil(Mcalc(kof())*1000)/1000).replace('.',','), mMul(), '100'),
+	        (String(Math.ceil(sec_beamchey.Wx*1000)/1000).replace('.',','))
+	    ),
+	    mEq(), 
+	    String(Math.ceil(Mcalc(kof())*100/sec_beamchey.Wx*1000)/1000).replace('.',','), 
+	    mText(' '),
+	    mFrac(
+	        'кН',
+	        mGroup(mSup('см', '2'))
+	    )
+	);
+	sec_power_check_end = mFormula(
+		String(Math.ceil(Mcalc(kof())*100/sec_beamchey.Wx*1000)/1000).replace('.',','),
+		mText(' '), // Пробел перед единицами
+		mFrac('кН', mSup('см', '2')), // Дробь кН/см²
+		
+		' < ',      // Знак неравенства
+		
+		'24',
+		mText(' '),
+		mFrac('кН', mSup('см', '2')));
+	Wneedsec = mFormula(
+	    mSub("W", "тр"),
+	    mEq(),
+	
+	    mFrac(
+	        mSub("M", "max"),
+	        mGroup(
+	            mSub("R", "y"),
+	            mSub("γ", "c")
+	        )
+	    ),
+	
+	    mEq(),
+	
+	    mFrac(
+	        mGroup(
+	            String(Math.ceil(Mcalc(kof())*1000)/1000).replace('.',','),
+	            mMul(),
+	            "100"
+	        ),
+	        "24"
+	    ),
+	
+	    mEq(),
+	
+	    String(Math.ceil(Mcalc(kof())*1000*100/24)/1000).replace('.',',') +" см³")
+	sec_deflection_formula = mFormula(
+	    mFrac(
+	        mSub('f', 'вб'),
+	        mSub('l', 'вб')
+	    ),
+	    mEq(), 
+	    mFrac('5', '48'),
+	    mMul(),
+	    mFrac(
+	        mGroup(
+	            mSub(mSup('M', 'н'), 'max'), 
+	            mMul(), 
+	            mGroup(mSub('l', 'вб'))
+	        ),
+	        mGroup('E', mMul(), mSub('I', 'x'))
+	    ),
+	    ' ≤ ',
+	
+	    mSquareParen(mFrac('f', 'l')),);
+	F = seco_beam*aVar*bVar
+	roof_deflection_answ = (5/48)*(Mcalc(kof())*(10**(2))*(A*100))/(2.06*(10**4)*sec_beamchey.Ix)
+	roof_deflection_calc = mFormula(
+	    mFrac('5', '48'),
+	    mMul(),
+	    mFrac(
+	        mGroup(
+	            String(Math.ceil(Mcalc(kof())*1000)/1000).replace('.',','),
+	            mText('·'), 
+	            mSup('10','2'),
+	            mText('·'),
+	            mGroup(String(Math.ceil(A*100*1000)/1000).replace('.',','))
+	        ),
+	        mGroup(
+	            '2,06', mText('·'),  mSup('10','4'), // 2,06·10^4
+	            mText('·'),
+	            String(Math.ceil(sec_beamchey.Ix*1000)/1000).replace('.',',')
+	        )
+	    ),
+	    mEq(),
+	    String(Math.ceil(roof_deflection_answ*100000)/100000).replace('.',','),
+	    ' < ',
+	    '0,005');
+	M_max_eqo = mFormula(
+	    mSub("M", "max"),
+	    mEq(),
+	    String(Math.ceil(M_max*1000)/1000).replace('.',','),
+	    " кНм")
+	
+	F = sest_beam*aVar*bVar
+	Hvb = sec_beamchey.R + sec_beamchey.t
+	sec_loc_param1 = mFormula(
+	    mSub("H", "вб"),
+	    mEq(),
+	    "R",
+	    mPlus(),
+	    "t",
+	    mEq(),
+	
+	 	String(Math.ceil(sec_beamchey.R*100)/1000).replace('.',','),
+	    mPlus(),
+	
+	    String(Math.ceil(sec_beamchey.t*100)/1000).replace('.',','),
+	    mEq(),
+	    
+	    String(Math.ceil(Hvb*100)/1000).replace('.',',') + ' см',);
+	sec_loc_param2 = mFormula(
+		mSub("b","вб"),
+		mEq(),
+		String(Math.ceil(sec_beamchey.b*100)/1000).replace('.',',') + ' см',)
+	Lef = sec_beamchey.b + (2 * Hvb)
+	sec_loc_param3 = mFormula(
+	    mSub("l", "ef"),
+	    mEq(),
+	    mSub("b", "бн"),
+	    mPlus(),
+	    "2",
+	    mSub("H", "вб"),
+	    mEq(),
+	
+	    String(Math.ceil(sec_beamchey.b*100)/1000).replace('.',','),
+	
+	    mPlus(),
+	
+	    "2",
+	    mMul(),
+	
+	    String(Math.ceil(Hvb*100)/1000).replace('.',','),
+	    mEq(),
+	
+	    String(Math.ceil(Lef*100)/1000).replace('.',',') + ' см',)
+	sec_sigma_loc = F/(sec_beamchey.s/10*Lef/10)
+	sec_loc_check = mFormula(
+	    mSub("σ", "loc"),
+	    mEq(),
+	
+	    mFrac(
+	        mSub("F", "вб"),
+	        mGroup(
+	            mSub("l", "ef"),
+	            "s"
+	        )
+	    ),
+	
+	    " ≤ ",
+	
+	    mGroup(
+	        mSub("R", "s"),
+	        mSub("γ", "C")
+	    ),
+	
+	    "  ⇒  ",
+	
+	    mSub("σ", "loc"),
+	    mEq(),
+	
+	    mFrac(
+	        String(Math.ceil(F*1000)/1000).replace('.',','),
+	        mGroup(
+	            String(Math.ceil(Lef*100)/1000).replace('.',','),
+	            mMul(),
+	            String(Math.ceil(sec_beamchey.s*100)/1000).replace('.',',')
+	        )
+	    ),
+	
+	    mEq(),
+	
+	    String(Math.ceil(sec_sigma_loc*1000)/1000).replace('.',','),
+	    mFrac('кН', mSup('см', '2')),
+	
+	    " ≤ ",
+	    '24',
+	    mText(' '),
+	    mFrac('кН', mSup('см', '2')))
+	sec_overall_feat = mFormula(
+	    mSub(
+	        mBar("λ"),
+	        "ub"
+	    ),
+	    mEq(),
+	    "0,41",
+	    mPlus(),
+	    "0,0052",
+	    mFrac(
+	        "b",
+	        "t"
+	    ),
+	    mPlus(),
+	    mParen(
+	        "0,73",
+	        mMinus(),
+	        "0,016",
+	        mFrac(
+	            "b",
+	            "t"
+	        )
+	    ),
+	    mFrac(
+	        "b",
+	        mSup('h','*')
+	    ))
+	h_between_twos = sec_beamchey.h - (2*sec_beamchey.t)
+	h_form_count = mFormula(
+		mSup('h','*'),
+		mEq(),
+		'h',
+		mMinus(),
+		'2',
+		mMul(),
+		't',
+		mEq(),
+		String(Math.ceil(sec_beamchey.h*100)/1000).replace('.',','),
+		mMinus(),
+		'2',
+		mMul(),
+		String(Math.ceil(sec_beamchey.t*100)/1000).replace('.',','),
+		mEq(),
+		String(Math.ceil(h_between_twos*100)/1000).replace('.',',') + ' см')
+	lambdaUb 	= 0.41 + 0.0052 * 15 + (0.73 - 0.016 * 15) * (sec_beamchey.b / h_between_twos);
+	sec_overall_calc = mFormula(
+	    mSub(
+	        mBar("λ"),
+	        "ub"
+	    ),
+	    mEq(),
+	    "0,41",
+	    mPlus(),
+	    "0,0052",
+	    mMul(),
+	    "15",
+	    mPlus(),
+	    mParen(
+	        "0,73",
+	        mMinus(),
+	        "0,016",
+	        mMul(),
+	        "15"
+	    ),
+	    mFrac(
+	        String(Math.ceil(sec_beamchey.b*100)/1000).replace('.',','),
+	        String(Math.ceil(h_between_twos*100)/1000).replace('.',',')
+	
+	    ),
+	    mEq(),
+	    String(Math.ceil(lambdaUb*1000)/1000).replace('.',','))
+	sec_some_sigma_res = Mcalc(kof())*100/sec_beamchey.Wx
+	sec_some_sigma = mFormula(
+	    "σ",
+	    mEq(),
+	    mFrac(
+	        mSub("M", "max"),
+	        mGroup(
+	            mSub("W", "x"),
+	            mSub("γ", "c"),
+	        )
+	    ),
+	    mEq(),
+	    mFrac(
+	        mGroup(
+				String(Math.ceil(Mcalc(kof())*1000)/1000).replace('.',','),
+	            mMul(),
+	            "100"
+	        ),
+	        mGroup(
+	            String(Math.ceil(sec_beamchey.Wx*1000)/1000).replace('.',','),
+	            mMul(),
+	            "1"
+	        )
+	    ),
+	    mEq(),
+	    String(Math.ceil(sec_some_sigma_res*1000)/1000).replace('.',','),
+	    mFrac(
+	        "кН",
+	        mSup(
+	            "см",
+	            "2"
+	        )
+	    ))
+	lambdaUbFixed = lambdaUb * Math.sqrt(24 / sec_some_sigma_res);
+	lambdaUber = mFormula(
+	    mSub(
+	        mBar("λ"),
+	        "ub"
+	    ),
+	    mMul(),
+	    mSqrt(
+	        mFrac(
+	            mSub("R", "y"),
+	            "σ"
+	        )
+	    ),
+	    mEq(),
+	    String(Math.ceil(lambdaUb*1000)/1000).replace('.',','),
+	    mMul(),
+	
+	    mSqrt(
+	        mFrac(
+	            "24",
+	            String(Math.ceil(sec_some_sigma_res*1000)/1000).replace('.',','),
+	        )
+	    ),
+	
+	    mEq(),
+	
+	    String(Math.ceil(lambdaUbFixed*1000)/1000).replace('.',','),)
+	lambdaDefault_res = ((aVar * 100) / (sec_beamchey.b/10)) * Math.sqrt(24 / (2.06 * 10 ** 4));
+	lambdaDefault = mFormula(
+	    mSub(
+	        mBar("λ"),
+	        "b"
+	    ),
+	    mEq(),
+	    mFrac(
+	        mBar(mSub("l", "ef")),
+	        "b"
+	    ),
+	    mSqrt(
+	        mFrac(
+	            mSub("R", "y"),
+	            "E"
+	        )
+	    ),
+	    mEq(),
+	    mFrac(
+	        String(Math.ceil(aVar*100*1000)/1000).replace('.',','),
+	        String(Math.ceil(sec_beamchey.b*100)/1000).replace('.',','),
+	    ),
+	    mSqrt(
+	        mFrac(
+	            "24",
+	            mGroup(
+	                "2,06",
+	                mMul(),
+	                mSup(
+	                    "10",
+	                    "4"
+	                )
+	            )
+	        )
+	    ),
+	
+	    mEq(),
+	
+	    String(Math.ceil(lambdaDefault_res*1000)/1000).replace('.',','))
+	rEpuro.shadowRoot.getElementById('sEpure-result').innerText = 'Назначен двутавр №' + sec_beamchey.number
+}
+
+
+function sedataURLtoUint8Array(dataurl) {
+    const arr = dataurl.split(',');
+    const mime = arr[0].match(/:(.*?);/)[1];
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+    return { sepdata: u8arr, mime };
+}
+
+function drawSocondBeamEpure() {
+    seCtx.fillStyle = "white"
+    seCtx.fillRect(0, 0, seCanvas.width, seCanvas.height)
+//beam
+	seCtx.beginPath()
+		seCtx.lineWidth = 4
+		seCtx.moveTo(centerX, centerY)
+		seCtx.moveTo(centerX, centerY/7)
+		seCtx.moveTo(centerX-A/2*sescale+0.1*sescale, centerY/7)
+		seCtx.lineTo(centerX+(A/2)*sescale-0.1*sescale, centerY/7)
+		seCtx.moveTo(centerX-A/2*sescale, centerY/7)
+		seCtx.lineTo(centerX-A/2*sescale+0.15*sescale, centerY/7+0.3*sescale)
+		seCtx.moveTo(centerX-A/2*sescale, centerY/7)
+		seCtx.lineTo(centerX-A/2*sescale-0.15*sescale, centerY/7+0.3*sescale)
+		seCtx.lineTo(centerX-A/2*sescale+0.15*sescale, centerY/7+0.3*sescale)
+		seCtx.closePath()
+		seCtx.stroke()
+
+	seCtx.beginPath()
+		seCtx.lineWidth = 4
+		seCtx.moveTo(centerX+A/2*sescale, centerY/7)
+		seCtx.lineTo(centerX+A/2*sescale, centerY/7+0.3*sescale)
+		seCtx.closePath()
+		seCtx.stroke()
+// ground
+	seCtx.beginPath()
+		seCtx.lineWidth = 4
+		seCtx.moveTo(centerX+A/2*sescale, centerY/7+0.3*sescale+0.1*sescale)
+		seCtx.moveTo(centerX+A/2*sescale+0.3*sescale, centerY/7+0.3*sescale+0.1*sescale)
+		seCtx.lineTo(centerX+A/2*sescale-0.3*sescale, centerY/7+0.3*sescale+0.1*sescale)
+		seCtx.stroke()
+	seCtx.beginPath()
+		seCtx.lineWidth = 4
+		seCtx.moveTo(centerX-A/2*sescale, centerY/7+0.3*sescale+0.1*sescale)
+		seCtx.moveTo(centerX-A/2*sescale+0.3*sescale, centerY/7+0.3*sescale+0.1*sescale)
+		seCtx.lineTo(centerX-A/2*sescale-0.3*sescale, centerY/7+0.3*sescale+0.1*sescale)
+		seCtx.stroke()
+	seCtx.beginPath()
+		seCtx.lineWidth = 4
+		seCtx.moveTo(-0.05 * sescale + centerX-A/2*sescale-0.3*sescale+0.1*sescale, centerY/7+0.3*sescale+0.1*sescale)
+		seCtx.lineTo(-0.05 * sescale + centerX-A/2*sescale-0.3*sescale+0.1*sescale+0.1*sescale, centerY/7+0.3*sescale+0.1*sescale+0.1*sescale)
+		seCtx.moveTo(-0.05 * sescale + centerX-A/2*sescale-0.3*sescale+0.3*sescale, centerY/7+0.3*sescale+0.1*sescale)
+		seCtx.lineTo(-0.05 * sescale + centerX-A/2*sescale-0.3*sescale+0.3*sescale+0.1*sescale, centerY/7+0.3*sescale+0.1*sescale+0.1*sescale)
+		seCtx.moveTo(-0.05 * sescale + centerX-A/2*sescale-0.3*sescale+0.5*sescale, centerY/7+0.3*sescale+0.1*sescale)
+		seCtx.lineTo(-0.05 * sescale + centerX-A/2*sescale-0.3*sescale+0.5*sescale+0.1*sescale, centerY/7+0.3*sescale+0.1*sescale+0.1*sescale)
+		seCtx.stroke()
+	seCtx.beginPath()
+		seCtx.lineWidth = 4
+		seCtx.moveTo(-0.05 * sescale + centerX+A/2*sescale-0.3*sescale+0.1*sescale, centerY/7+0.3*sescale+0.1*sescale)
+		seCtx.lineTo(-0.05 * sescale + centerX+A/2*sescale-0.3*sescale+0.1*sescale+0.1*sescale, centerY/7+0.3*sescale+0.1*sescale+0.1*sescale)
+		seCtx.moveTo(-0.05 * sescale + centerX+A/2*sescale-0.3*sescale+0.3*sescale, centerY/7+0.3*sescale+0.1*sescale)
+		seCtx.lineTo(-0.05 * sescale + centerX+A/2*sescale-0.3*sescale+0.3*sescale+0.1*sescale, centerY/7+0.3*sescale+0.1*sescale+0.1*sescale)
+		seCtx.moveTo(-0.05 * sescale + centerX+A/2*sescale-0.3*sescale+0.5*sescale, centerY/7+0.3*sescale+0.1*sescale)
+		seCtx.lineTo(-0.05 * sescale + centerX+A/2*sescale-0.3*sescale+0.5*sescale+0.1*sescale, centerY/7+0.3*sescale+0.1*sescale+0.1*sescale)
+		seCtx.stroke()
+// ramalines
+	seCtx.beginPath()
+		seCtx.lineWidth = 2.5
+		seCtx.moveTo(centerX+A/2*sescale, centerY/7+0.3*sescale)
+		seCtx.lineTo(centerX+A/2*sescale, centerY/7+4*sescale)
+		seCtx.closePath()
+		seCtx.stroke()
+	seCtx.beginPath()
+		seCtx.lineWidth = 2.5
+		seCtx.moveTo(centerX-A/2*sescale, centerY/7+0.3*sescale)
+		seCtx.lineTo(centerX-A/2*sescale, centerY/7+4*sescale)
+		seCtx.closePath()
+		seCtx.stroke()
+	seCtx.beginPath()
+		seCtx.lineWidth = 4
+		seCtx.moveTo(centerX-A/2*sescale, centerY/7+1.5*sescale)
+		seCtx.lineTo(centerX+(A/2)*sescale, centerY/7+1.5*sescale)
+		seCtx.closePath()
+		seCtx.stroke()
+	seCtx.beginPath()
+		seCtx.lineWidth = 2
+		seCtx.moveTo(centerX-A/2*sescale, centerY/7+1*sescale)
+		seCtx.lineTo(centerX+(A/2)*sescale, centerY/7+1*sescale)
+		seCtx.closePath()
+		seCtx.stroke()
+    seCtx.beginPath()
+        seCtx.font = 'bold 24px GOST A';
+        seCtx.fillStyle = 'black';
+        seCtx.textAlign = 'center';
+        seCtx.fillText('Q', centerX-A/2*sescale-0.2*sescale, centerY/7+4*sescale)
+        seCtx.fillText('M', centerX-A/2*sescale-0.2*sescale, centerY/7+1.5*sescale)
+
+        seCtx.stroke()
+//size_arrows
+	seCtx.beginPath()
+		seCtx.lineWidth = 2
+		seCtx.moveTo(centerX-A/2*sescale, centerY/7+1*sescale)
+		seCtx.lineTo(centerX-A/2*sescale+0.1*sescale, centerY/7+1*sescale+0.1*sescale)
+		seCtx.moveTo(centerX-A/2*sescale, centerY/7+1*sescale)
+		seCtx.lineTo(centerX-A/2*sescale+0.1*sescale, centerY/7+1*sescale-0.1*sescale)
+		seCtx.closePath()
+		seCtx.stroke()
+	seCtx.beginPath()
+		seCtx.lineWidth = 2
+		seCtx.moveTo(centerX+A/2*sescale, centerY/7+1*sescale)
+		seCtx.lineTo(centerX+A/2*sescale-0.1*sescale, centerY/7+1*sescale-0.1*sescale)
+		seCtx.moveTo(centerX+A/2*sescale, centerY/7+1*sescale)
+		seCtx.lineTo(centerX+A/2*sescale-0.1*sescale, centerY/7+1*sescale+0.1*sescale)
+		seCtx.closePath()
+		seCtx.stroke()
+// 2m
+	seCtx.beginPath()
+		seCtx.lineWidth = 2
+		seCtx.font = 'bold 22px GOST A';
+		seCtx.fillStyle = 'black';
+		seCtx.textAlign = 'center';
+		seCtx.fillText(String(A).replaceAll('.', ',')+' м', centerX, centerY/7+1*sescale-0.05*sescale)
+		seCtx.stroke()
+		seCtx.closePath()
+		seCtx.stroke()
+// load_arrows
+	seCtx.beginPath()
+		seCtx.lineWidth = 2
+		// seCtx.moveTo(centerX-2*sescale, centerY/7-0.4*sescale)
+		// seCtx.lineTo(centerX+(2)*sescale, centerY/7-0.4*sescale)
+		for (let cvb = 1; cvb <= A/aVar-1; cvb++) {
+			seCtx.moveTo(centerX-A/2*sescale + cvb*aVar*sescale, centerY/7-0.7*sescale)
+			seCtx.lineTo(centerX-A/2*sescale + cvb*aVar*sescale, centerY/7)
+			seCtx.moveTo(centerX-A/2*sescale + cvb*aVar*sescale, centerY/7)
+			seCtx.lineTo(centerX-A/2*sescale + cvb*aVar*sescale-0.08*sescale, centerY/7-0.08*sescale)
+			seCtx.moveTo(centerX-A/2*sescale + cvb*aVar*sescale, centerY/7)
+			seCtx.lineTo(centerX-A/2*sescale + cvb*aVar*sescale+0.08*sescale, centerY/7-0.08*sescale)
+			seCtx.font = 'bold 22px GOST A';
+			seCtx.fillStyle = 'black';
+			seCtx.textAlign = 'center';
+			seCtx.fillText('F', centerX-A/2*sescale + cvb*aVar*sescale-0.2*sescale, centerY/7-0.4*sescale)
+		}
+		
+
+		seCtx.closePath()
+		seCtx.stroke()
+// circles
+	seCtx.beginPath()
+		seCtx.arc(centerX-A/2*sescale+0.15*sescale, centerY/7+0.3*sescale, 0.1*sescale, 0, 2 * Math.PI, false);
+		seCtx.fillStyle = "white"
+		seCtx.fill()
+		seCtx.lineWidth = 4
+		seCtx.strokeStyle = 'black';
+		seCtx.stroke()
+	seCtx.beginPath()
+		seCtx.arc(centerX-A/2*sescale-0.15*sescale, centerY/7+0.3*sescale, 0.1*sescale, 0, 2 * Math.PI, false);
+		seCtx.fillStyle = "white"
+		seCtx.fill()
+		seCtx.lineWidth = 4
+		seCtx.strokeStyle = 'black';
+		seCtx.stroke()
+	seCtx.beginPath()
+		seCtx.arc(centerX-A/2*sescale, centerY/7, 0.1*sescale, 0, 2 * Math.PI, false);
+		seCtx.fillStyle = "white"
+		seCtx.fill()
+		seCtx.lineWidth = 4
+		seCtx.strokeStyle = 'black';
+		seCtx.stroke()
+	seCtx.beginPath()
+		seCtx.arc(centerX+A/2*sescale, centerY/7, 0.1*sescale, 0, 2 * Math.PI, false);
+		seCtx.fillStyle = "white"
+		seCtx.fill()
+		seCtx.lineWidth = 4
+		seCtx.strokeStyle = 'black';
+		seCtx.stroke()
+	seCtx.beginPath()
+		seCtx.arc(centerX-A/2*sescale+0.3*sescale, centerY/7+0.3*sescale, 0, 2 * Math.PI, false);
+		seCtx.fillStyle = "white"
+		seCtx.fill()
+		seCtx.lineWidth = 4
+		seCtx.strokeStyle = 'black';
+		seCtx.stroke()
+	seCtx.beginPath()
+		seCtx.arc(centerX+A/2*sescale, centerY/7+0.3*sescale, 0.1*sescale, 0, 2 * Math.PI, false);
+		seCtx.fillStyle = "white"
+		seCtx.fill()
+		seCtx.lineWidth = 4
+		seCtx.strokeStyle = 'black';
+		seCtx.stroke()
+// Q epure
+    seCtx.beginPath()
+    seCtx.lineWidth = 4
+    seCtx.moveTo(centerX-A/2*sescale,                           centerY/7+ 4*sescale)
+    seCtx.lineTo(centerX-A/2*sescale,                           centerY/7+ 4*sescale-re()/Qsescaler*sescale)
+    seCtx.stroke()
+    for (let i = 0; i <= kof()-1; i++) {
+        seCtx.beginPath()
+        seCtx.lineWidth = 4
+        seCtx.moveTo(centerX-A/2*sescale+aVar*sescale*i,                  centerY/7+ 4*sescale-re()/Qsescaler*sescale+i*F/Qsescaler*sescale)
+        seCtx.lineTo(centerX-(A/2)*sescale+aVar*sescale+aVar*sescale*i,  centerY/7+ 4*sescale-re()/Qsescaler*sescale+i*F/Qsescaler*sescale)
+
+        seCtx.font = 'bold 12px GOST A';
+        seCtx.fillStyle = 'black';
+        seCtx.textAlign = 'center';
+        seCtx.fillText(String(Math.ceil((re()-i*F)*1000)/1000).replace('.',',')+'кН', centerX-(A/2)*sescale+aVar*sescale/2+aVar*sescale*i, centerY/7+ 4*sescale-re()/Qsescaler*sescale+i*F/Qsescaler*sescale-10)
+
+        seCtx.moveTo(centerX-A/2*sescale+aVar*sescale+aVar*sescale*i,    centerY/7+ 4*sescale-re()/Qsescaler*sescale+i*F/Qsescaler*sescale)
+        seCtx.lineTo(centerX-A/2*sescale+aVar*sescale+aVar*sescale*i,    centerY/7+ 4*sescale-re()/Qsescaler*sescale+(i+1)*F/Qsescaler*sescale)
+        seCtx.closePath()
+        seCtx.stroke()
+
+        for (let ino = 0; ino < 5; ino++) {
+            seCtx.beginPath()
+            seCtx.lineWidth = 2
+            seCtx.moveTo(centerX-A/2*sescale+aVar*sescale*i+ino*aVar/5*sescale,    centerY/7+ 4*sescale-re()/Qsescaler*sescale+i*F/Qsescaler*sescale)
+            seCtx.lineTo(centerX-A/2*sescale+aVar*sescale*i+ino*aVar/5*sescale,    centerY/7+ 4*sescale)
+            seCtx.closePath()
+            seCtx.stroke()
+        }
+
+        for (let ino = 0; ino < 5; ino++) {
+            seCtx.beginPath()
+            seCtx.lineWidth = 2
+            seCtx.moveTo(centerX+A/2*sescale-aVar*sescale*(i+1)+ino*aVar/5*sescale,    centerY/7+ 4*sescale+re()/Qsescaler*sescale-i*F/Qsescaler*sescale)
+            seCtx.lineTo(centerX+A/2*sescale-aVar*sescale*(i+1)+ino*aVar/5*sescale,    centerY/7+ 4*sescale)
+            seCtx.closePath()
+            seCtx.stroke()
+        }
+        seCtx.beginPath()
+        seCtx.lineWidth = 4
+        seCtx.moveTo(centerX+A/2*sescale-aVar*sescale*i,                       centerY/7+ 4*sescale+re()/Qsescaler*sescale-i*F/Qsescaler*sescale)
+        seCtx.lineTo(centerX+(A/2)*sescale-aVar*sescale-aVar*sescale*i,       centerY/7+ 4*sescale+re()/Qsescaler*sescale-i*F/Qsescaler*sescale)
+
+        seCtx.font = 'bold 12px GOST A';
+        seCtx.fillStyle = 'black';
+        seCtx.textAlign = 'center';
+        seCtx.fillText('-'+String(Math.ceil((re()-i*F)*1000)/1000).replace('.',',')+'кН', centerX+(A/2)*sescale-aVar*sescale/2-aVar*sescale*i, centerY/7+ 4*sescale+re()/Qsescaler*sescale-i*F/Qsescaler*sescale+25)
+        seCtx.moveTo(centerX+(A/2)*sescale-aVar*sescale-aVar*sescale*i,       centerY/7+ 4*sescale+re()/Qsescaler*sescale-i*F/Qsescaler*sescale)
+        seCtx.lineTo(centerX+A/2*sescale-aVar*sescale*(i+1),                   centerY/7+ 4*sescale+re()/Qsescaler*sescale-(i+1)*F/Qsescaler*sescale)
+        seCtx.closePath()
+        seCtx.stroke()
+    }
+    seCtx.beginPath()
+    seCtx.moveTo(centerX+A/2*sescale,       centerY/7+ 4*sescale)
+    seCtx.lineTo(centerX+A/2*sescale,       centerY/7+ 4*sescale+re()/Qsescaler*sescale)
+    seCtx.moveTo(centerX-A/2*sescale,       centerY/7+4*sescale)
+    seCtx.lineTo(centerX+(A/2)*sescale,     centerY/7+4*sescale)
+    seCtx.closePath()
+    seCtx.stroke()
+// M epure
+    if ((A/aVar) % 2 != 0) {
+        for (let iw = 0; iw <= 2*kof(); iw++) {
+            seCtx.beginPath()
+            seCtx.lineWidth = 4
+            seCtx.moveTo(centerX-A/2*sescale+aVar*sescale*iw,                  centerY/7+ 1.5*sescale+Mcalc(iw)/Msescaler*sescale)
+            seCtx.lineTo(centerX-(A/2)*sescale+aVar*sescale+aVar*sescale*iw+1,  centerY/7+ 1.5*sescale+Mcalc(iw+1)/Msescaler*sescale)
+            seCtx.font = 'bold 12px GOST A';
+            seCtx.fillStyle = 'black';
+            seCtx.textAlign = 'center';
+            if (iw != 0) {
+                seCtx.fillText(String(Math.ceil(Mcalc(iw)*1000)/1000).replace('.',',')+'кН', centerX-(A/2)*sescale+aVar*sescale*iw, centerY/7+ 1.5*sescale+Mcalc(iw)/Msescaler*sescale+25)
+                seCtx.arc(centerX-(A/2)*sescale+aVar*sescale*iw, centerY/7+ 1.5*sescale+Mcalc(iw)/Msescaler*sescale, 0.04*sescale, 0, 2 * Math.PI, false);
+            }
+
+            seCtx.stroke()
+            for (let ivi = 0; ivi < 5; ivi++) {
+                seCtx.beginPath()
+                seCtx.lineWidth = 2
+                seCtx.moveTo(centerX-A/2*sescale+aVar*sescale*iw + aVar/5*ivi*sescale, centerY/7+ 1.5*sescale)
+                seCtx.lineTo(centerX-A/2*sescale+aVar*sescale*iw + aVar/5*ivi*sescale,  centerY/7+ 1.5*sescale+Mcalc(iw)/Msescaler*sescale+(Mcalc(iw+1)-Mcalc(iw))/5/Msescaler*sescale*ivi)
+                seCtx.stroke()
+            }
+        }
+    } else {
+        for (let iw = 0; iw <= 2*kof()-1; iw++) {
+            if (iw != 0) {
+                seCtx.beginPath()
+                seCtx.fillText(String(Math.ceil(Mcalc(iw)*1000)/1000).replace('.',',')+'кН', centerX-(A/2)*sescale+aVar*sescale*iw, centerY/7+ 1.5*sescale+Mcalc(iw)/Msescaler*sescale+25)
+                seCtx.arc(centerX-(A/2)*sescale+aVar*sescale*iw, centerY/7+ 1.5*sescale+Mcalc(iw)/Msescaler*sescale, 0.04*sescale, 0, 2 * Math.PI, false);
+                seCtx.stroke()
+
+            }
+            for (let ivi = 0; ivi < 5; ivi++) {
+                seCtx.beginPath()
+                seCtx.lineWidth = 2
+                seCtx.moveTo(centerX-A/2*sescale+aVar*sescale*iw + aVar/5*ivi*sescale, centerY/7+ 1.5*sescale)
+                seCtx.lineTo(centerX-A/2*sescale+aVar*sescale*iw + aVar/5*ivi*sescale,  centerY/7+ 1.5*sescale+Mcalc(iw)/Msescaler*sescale+(Mcalc(iw+1)-Mcalc(iw))/5/Msescaler*sescale*ivi)
+                seCtx.stroke()
+            }
+            seCtx.beginPath()
+            seCtx.lineWidth = 4
+            seCtx.moveTo(centerX-A/2*sescale+aVar*sescale*iw,                  centerY/7+ 1.5*sescale+Mcalc(iw)/Msescaler*sescale)
+            seCtx.lineTo(centerX-(A/2)*sescale+aVar*sescale+aVar*sescale*iw+1,  centerY/7+ 1.5*sescale+Mcalc(iw+1)/Msescaler*sescale)
+            seCtx.font = 'bold 12px GOST A';
+            seCtx.fillStyle = 'black';
+            seCtx.textAlign = 'center';
+            seCtx.stroke()
+        }
+    }
+}
+
+function redrawSocondBeamEpure() {
+	if (secvaro == 1) {
+		aVar = varus1A
+		bVar = varus1B
+		dist = -3*B*sBscale/2
+	} else if (secvaro == 2) {
+		aVar = varus2A
+		bVar = varus2B
+		dist = -3*B*sBscale/2
+	} else if (secvaro == 3) {
+		aVar = varus3A
+		bVar = varus3B
+		dist = -3*B*sBscale/2
+	}
+
+
+	if (normality) {
+		F = sest_beam*aVar*bVar
+		drawSocondBeamEpure()
+		rEpuro.shadowRoot.getElementById('sec_epure_sw').style.backgroundColor = '#52CC76'
+		rEpuro.shadowRoot.getElementById('sec_epure_sw').innerText = 'Построить\nнормативные эпюры'
+		normality--
+	} else {
+		F = seco_beam*aVar*bVar
+		drawSocondBeamEpure()
+		rEpuro.shadowRoot.getElementById('sec_epure_sw').style.backgroundColor = '#CC5289'
+		rEpuro.shadowRoot.getElementById('sec_epure_sw').innerText = 'Построить\nрасчетные эпюры'
+		normality++
+	}
+}
+
+rEpuro.shadowRoot.getElementById('sec_epuring').addEventListener("click", () => {
+    generateSecEpure()})
+rEpuro.shadowRoot.getElementById('sec_epure_only').addEventListener("click", () => {
+    exportSecEpure()})
+rEpuro.shadowRoot.getElementById('sec_epure_sw').addEventListener("click", () => {
+    redrawSocondBeamEpure()})
+
+function exportSecEpure() {
+    const a = document.createElement("a");
+    a.href = seCanvas.toDataURL("image/jpg");
+    a.download = "secondary_beam_epure.jpg";
+    a.click();
+}
+
+function pushSecEpure() {
+	sedataUrl = seCanvas.toDataURL("image/png");
+	sesnapshot = [];
+	({ sepdata } = sedataURLtoUint8Array(sedataUrl))
+    sesnapshot = sedataURLtoUint8Array(sedataUrl).sepdata;
+}
+
+
+function tr(a) {
+    let triangle = 0
+    for (let i = 1; i <= a; i++) {
+        triangle += i
+    }
+    return triangle
+}
+function re() {
+    let f = A/aVar - 1
+    let R = f*F/2
+    return R
+}
+function kof() {
+    let x = A/aVar
+    let n
+    if (x % 2 == 0) {
+        n = x/2
+    } else {
+        n = (x-1)/2
+    }
+    return n
+}
+function Mcalc(i) {
+    let M_o
+    M_o = (re()*i*aVar) - (tr(i-1)*F*aVar)
+    return M_o
+}
+
 function createSecEpure() {
+	secondaryBeamChildren = []
+	if (normality) {
+		redrawSocondBeamEpure()
+	}
+    pushSecEpure()
+    secondaryBeamChildren.push(
+        new Paragraph({
+            alignment: AlignmentType.CENTER,
+            children: [
+                new ImageRun({
+                    data: sesnapshot,
+                    transformation: {
+                        width:  550, // Ширина в пикселях в документе
+                        height: 450, // Высота в пикселях в документе
+                    },
+                    size: 28,
+                }),
+            ],
+        })
+    )
+	if (secep_varo.value == 1) {
+		secondaryBeamChildren.push(
+			new Paragraph({
+				alignment: AlignmentType.CENTER,
+				spacing: {
+					line: 360, // Полуторный интервал для ВСЕГО документа
+					before: 0,
+					after: 0,
+				},
+				children: [
+					new TextRun({
+						text: 'Рис.6 - Расчетная схема второстепенной балки (В1)'
+					}),
+				]
+			}),
+			new Paragraph({}),
+		)
+    } else if (secep_varo.value == 2) {
+		secondaryBeamChildren.push(
+			new Paragraph({
+				alignment: AlignmentType.CENTER,
+				spacing: {
+					line: 360, // Полуторный интервал для ВСЕГО документа
+					before: 0,
+					after: 0,
+				},
+				children: [
+					new TextRun({
+						text: 'Рис.12 - Расчетная схема второстепенной балки (В2)'
+					}),
+				]
+			}),
+			new Paragraph({}),
+		)
+	} else if (secep_varo.value == 3) {
+		secondaryBeamChildren.push(
+			new Paragraph({
+				alignment: AlignmentType.CENTER,
+				spacing: {
+					line: 360, // Полуторный интервал для ВСЕГО документа
+					before: 0,
+					after: 0,
+				},
+				children: [
+					new TextRun({
+						text: 'Рис.18 - Расчетная схема второстепенной балки (В3)'
+					}),
+				]
+			}),
+			new Paragraph({}),
+		)
+	}
+    
 	secondaryBeamChildren.push(
         new Paragraph({
             alignment: AlignmentType.JUSTIFIED,
@@ -990,7 +1507,7 @@ function createSecEpure() {
     	String(Math.ceil(Mcalc(kof())*1000)/1000).replace('.',','),
     	" кНм"
 	)
-	pushRoofEpure()
+	pushSecEpure()
 
 	redrawSocondBeamEpure()
 	secondaryBeamChildren.push(
@@ -998,7 +1515,7 @@ function createSecEpure() {
             alignment: AlignmentType.CENTER,
             children: [
                 new ImageRun({
-                    data: snapshot,
+                    data: sesnapshot,
                     transformation: {
                         width:  550, // Ширина в пикселях в документе
                         height: 450, // Высота в пикселях в документе
@@ -1008,22 +1525,59 @@ function createSecEpure() {
             ],
         })
 	)
-	secondaryBeamChildren.push(
-        new Paragraph({
-            alignment: AlignmentType.CENTER,
-            spacing: {
-                line: 360, // Полуторный интервал для ВСЕГО документа
-                before: 0,
-                after: 0,
-            },
-            children: [
-                new TextRun({
-                    text: 'Рис.7 - Нормативная схема балки настила'
-                }),
-            ]
-        }),
-        new Paragraph({}),
-	)
+	if (secep_varo.value == 1) {
+		secondaryBeamChildren.push(
+        	new Paragraph({
+        	    alignment: AlignmentType.CENTER,
+        	    spacing: {
+        	        line: 360, // Полуторный интервал для ВСЕГО документа
+        	        before: 0,
+        	        after: 0,
+        	    },
+        	    children: [
+        	        new TextRun({
+        	            text: 'Рис.7 - Нормативная схема балки настила (В1)'
+        	        }),
+        	    ]
+        	}),
+        	new Paragraph({}),
+		)
+	} else if (secep_varo.value == 2) {
+		secondaryBeamChildren.push(
+        	new Paragraph({
+        	    alignment: AlignmentType.CENTER,
+        	    spacing: {
+        	        line: 360, // Полуторный интервал для ВСЕГО документа
+        	        before: 0,
+        	        after: 0,
+        	    },
+        	    children: [
+        	        new TextRun({
+        	            text: 'Рис.13 - Нормативная схема балки настила (В2)'
+        	        }),
+        	    ]
+        	}),
+        	new Paragraph({}),
+		)
+	} else if (secep_varo.value == 3) {
+		secondaryBeamChildren.push(
+        	new Paragraph({
+        	    alignment: AlignmentType.CENTER,
+        	    spacing: {
+        	        line: 360, // Полуторный интервал для ВСЕГО документа
+        	        before: 0,
+        	        after: 0,
+        	    },
+        	    children: [
+        	        new TextRun({
+        	            text: 'Рис.19 - Нормативная схема балки настила (В3)'
+        	        }),
+        	    ]
+        	}),
+        	new Paragraph({}),
+		)
+	}
+	
 	secondaryBeamChildren.push(
         new Paragraph({
             alignment: AlignmentType.CENTER,
@@ -1556,41 +2110,6 @@ function createSecEpure() {
 }
 
 function generateSecEpure() {
-	if (normality) {
-		redrawSocondBeamEpure()
-	}
-    pushRoofEpure()
-    secondaryBeamChildren.push(
-        new Paragraph({
-            alignment: AlignmentType.CENTER,
-            children: [
-                new ImageRun({
-                    data: snapshot,
-                    transformation: {
-                        width:  550, // Ширина в пикселях в документе
-                        height: 450, // Высота в пикселях в документе
-                    },
-                    size: 28,
-                }),
-            ],
-        })
-    )
-    secondaryBeamChildren.push(
-        new Paragraph({
-            alignment: AlignmentType.CENTER,
-            spacing: {
-                line: 360, // Полуторный интервал для ВСЕГО документа
-                before: 0,
-                after: 0,
-            },
-            children: [
-                new TextRun({
-                    text: 'Рис.6 - Расчетная схема балки настила'
-                }),
-            ]
-        }),
-        new Paragraph({}),
-    )
     createSecEpure()
     const doc = new Document({
         styles: {
@@ -1631,4 +2150,39 @@ function generateSecEpure() {
         saveAs(blob, "Secondary_epure.docx");
     });
     secondaryBeamChildren = []
+}
+
+
+
+const secep_varo = rEpuro.shadowRoot.getElementById('secep_varo')
+// secep_varo.addEventListener("click", () => {
+//     changeSecEpureVar()
+// });
+
+
+init.shadowRoot.addEventListener('input', (event) => {
+	doingSecEpures();
+});
+floor.shadowRoot.addEventListener('input', (event) => {
+	doingSecEpures();
+});
+vargen.shadowRoot.addEventListener('input', (event) => {
+	doingSecEpures();
+});
+vargen.shadowRoot.getElementById('varGen').addEventListener("click", () => {
+	doingSecEpures();
+});
+
+
+function changeSecEpureVar() {
+	if (secep_varo.value == 1) {
+		secvaro = 1
+		doingSecEpures()
+	} else if (secep_varo.value == 2) {
+		secvaro = 2
+		doingSecEpures()
+	} else if (secep_varo.value == 3) {
+		secvaro = 3
+		doingSecEpures()
+	}
 }
