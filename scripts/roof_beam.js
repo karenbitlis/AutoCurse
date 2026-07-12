@@ -476,8 +476,14 @@ function drawEveryVarRoof(num) {
             rbCtx.strokeRect(centerX - ((rbB / 2) - (q * bVarRb)) * rbScale, centerY - ((rbA / 2) - (i * aVarRb)) * rbScale, bVarRb * rbScale, aVarRb * rbScale);
         }
     }
-
+    rbCtx.strokeStyle = 'black';
+    rbCtx.beginPath();
     rbCtx.lineWidth = 2;
+    rbCtx.strokeRect(centerX - ((rbB / 2) * rbScale) - 5, centerY - ((rbA / 2) * rbScale) - 5, 10, 10);
+    rbCtx.strokeRect(centerX + ((rbB / 2) * rbScale) - 5, centerY + ((rbA / 2) * rbScale) - 5, 10, 10);
+    rbCtx.strokeRect(centerX + ((rbB / 2) * rbScale) - 5, centerY - ((rbA / 2) * rbScale) - 5, 10, 10);
+    rbCtx.strokeRect(centerX - ((rbB / 2) * rbScale) - 5, centerY + ((rbA / 2) * rbScale) - 5, 10, 10);
+    rbCtx.stroke()
 
     if (rbZoom == 1) {
         rbCtx.beginPath();

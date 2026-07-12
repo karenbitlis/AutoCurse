@@ -97,11 +97,6 @@ function createLitera() {
             ]
         }));
     });
-    litChildren.push(new Paragraph({
-        children: [
-            new PageBreak(), 
-        ]
-    }));
 }
 function generateLitera() {
     createLitera()

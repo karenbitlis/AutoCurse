@@ -475,6 +475,7 @@ function pushSecBeam() {
 	)
 }
 function createSecBeam() {
+	getTheSecBeam()
 	secChildren = []
 	secChildren.push(
 		new Paragraph({
@@ -628,7 +629,6 @@ function createSecBeam() {
 	)
 }
 function generateSecBeam() {
-	getTheSecBeam()
 	createSecBeam()
     const doc = new Document({
         styles: {

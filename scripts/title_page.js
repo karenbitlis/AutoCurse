@@ -1,6 +1,7 @@
-const docxLib = window.docx;
-const { Document, Packer, ImageRun, XmlComponent, LineRuleType, Paragraph, ommlXmlText, BorderStyle, TextRun, AlignmentType, Table, TableRow, TableCell, WidthType, PageBreak, textParagraphs } = docxLib;
 let titChildren = [];
+
+const docxLib = window.docx;
+const { Document, Packer, ImageRun, XmlComponent, LineRuleType, Paragraph, ommlXmlText, BorderStyle, VerticalAlign, TextRun, AlignmentType, Table, TableRow, TableCell, WidthType, PageBreak, textParagraphs } = docxLib;
 
 const TitlePageBut = document.getElementById('tit').shadowRoot.getElementById('TitlePageBut')
 TitlePageBut.addEventListener("click", () => {
