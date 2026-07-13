@@ -136,6 +136,8 @@ function generateDocx() {
         documento.push(...reBeamChildren)
         documento.push(...secChildren)
         documento.push(...secondaryBeamChildren)
+    createVarFin()
+    documento.push(...varfinChildren)
 
     documento.push(...litChildren)
     
@@ -213,7 +215,6 @@ allShadowRoots.forEach(root => {
         changerEpureVar()
         changeSecBeamVar()
         changeSecEpureVar()
-        
       } else if (e.target.value === '2'){
         decking_varo.value = 2
         roof_varo.value = 2

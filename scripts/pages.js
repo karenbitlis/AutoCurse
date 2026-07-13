@@ -1547,6 +1547,258 @@ class SecEpure extends HTMLElement {
         `;}}
 customElements.define('sec-epure', SecEpure);
 
+class varFin extends HTMLElement {
+    connectedCallback() {
+        // Сюда пишем весь HTML, который должен появиться на месте тега
+        const shgen = this.attachShadow({ mode: 'open' });
+        shgen.innerHTML = `
+            <style>
+                body {
+                    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                    background-color: #f0f2f5;
+                    margin: 0;
+                    padding: 20px;
+                    display: flex;
+                    align-items: flex-start;
+                    padding: 20px 0;
+                    justify-content: center;
+                    min-height: 100vh;
+                    box-sizing: border-box;
+                }
+                .container {
+                    background: white;
+                    padding: 30px;
+                    border-radius: 10px;
+                    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+                    width: 100%;
+                    max-width: 550px;
+                }
+                h2 {
+                    color: #2c3e50;
+                    margin: 0 0 20px 0;
+                    text-align: center;
+                    font-size: 18px;
+                    border-bottom: 2px solid #3498db;
+                    padding-bottom: 8px;
+                }
+                h3 {
+                    color: #34495e;
+                    font-size: 13px;
+                    margin: 15px 0 8px 0;
+                    text-transform: uppercase;
+                    letter-spacing: 0.5px;
+                    border-left: 3px solid #3498db;
+                    padding-left: 8px;
+                }
+                .form-container {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 12px;
+                    margin-bottom: 25px;
+                }
+                .form-group {
+                    display: flex;
+                    flex-direction: column;
+                }
+                .form-r {
+                    display: grid;
+                    grid-template-columns: 1fr;
+                    gap: 12px;
+                }
+                .form-row {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 12px;
+                }
+                .form-row-triple {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr 1fr;
+                    gap: 10px;
+                }
+                label {
+                    margin-bottom: 4px;
+                    font-weight: 600;
+                    color: #4a5568;
+                    font-size: 11px;
+                }
+                input, textarea {
+                    width: 100%;
+                    padding: 8px 12px;
+                    border: 1px solid #cbd5e1;
+                    border-radius: 4px;
+                    box-sizing: border-box;
+                    font-size: 13px;
+                    color: #334155;
+                    transition: border-color 0.2s, box-shadow 0.2s;
+                }
+                input:focus, textarea:focus {
+                    outline: none;
+                    border-color: #3498db;
+                    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.15);
+                }
+                button {
+                    width: 100%;
+                    padding: 10px;
+                    background-color: #3498db;
+                    color: white;
+                    border: none;
+                    border-radius: 4px;
+                    font-size: 14px;
+                    cursor: pointer;
+                    font-weight: bold;
+                    transition: background 0.2s;
+                }
+                button:hover {
+                    background-color: #2980b9;
+                }
+                body {
+                margin: 20px;
+                }
+                table {
+                    font-family: "Times New Roman", Times, serif;
+                    border-collapse: collapse;
+                    width: 100%;
+                    max-width: 900px;
+                    margin: 0 auto;
+                    text-align: center;
+                }
+                th, td {
+                    border: 1px solid black;
+                    padding: 8px;
+                    vertical-align: middle;
+                }
+                th {
+                    font-weight: normal;
+                }
+                .left-align {
+                    text-align: left;
+                }
+                .fraction {
+                    display: inline-block;
+                    text-align: center;
+                    vertical-align: middle;
+                }
+                .fraction > span {
+                    display: block;
+                }
+                .fraction .numerator {
+                    border-bottom: 1px solid black;
+                    padding-bottom: 1px;
+                }
+                .fraction .denominator {
+                    padding-top: 1px;
+                }
+                .radio-card {
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                    padding: 8px 12px;
+                    border: 1px solid #cbd5e1;
+                    border-radius: 4px;
+                    cursor: pointer;
+                    background-color: #f8fafc;
+                    font-size: 13px;
+                    color: #334155;
+                    transition: background-color 0.2s, border-color 0.2s;
+                }
+                
+                .radio-card:hover {
+                    border-color: #3498db;
+                    background-color: #f0f7fc;
+                }
+                
+                .radio-card input[type="radio"] {
+                    width: auto; /* Сбрасывает width: 100% из основного стиля для input */
+                    margin: 0;
+                    accent-color: #3498db; /* Красит саму точку в синий цвет */
+                    cursor: pointer;
+                }
+                .bestvar {
+                    color:  purple;
+                    border: 3px solid purple;
+                    border-radius: 15px;
+                    padding: 3px;
+                    margin-left: 30px;
+                }
+            </style>
+            <div class="container">
+                <h2>Таблица сравнения вариантов балочной клетки</h2>
+                <table id="varFinTable">
+                    <thead>
+                        <tr>
+                            <th rowspan="2" class="left-align" style="width: 25%;">Наименование элементов</th>
+                            <th colspan="2" style="width: 25%;">1-й вариант</th>
+                            <th colspan="2" style="width: 25%;">2-й вариант</th>
+                            <th colspan="2" style="width: 25%;">3-й вариант</th>
+                        </tr>
+                        <tr>
+                            <th>Расход стали<br><div class="fraction"><span class="numerator">кг</span><span class="denominator">м²</span>      </div></th>
+                            <th>Кол-во балок, шт.</th>
+                            <th>Расход стали<br><div class="fraction"><span class="numerator">кг</span><span class="denominator">м²</span>      </div></th>
+                            <th>Кол-во балок, шт.</th>
+                            <th>Расход стали<br><div class="fraction"><span class="numerator">кг</span><span class="denominator">м²</span>      </div></th>
+                            <th>Кол-во балок, шт.</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="left-align">Стальной настил</td>
+                            <td id="deck_f1">1</td>
+                            <td>-</td>
+                            <td id="deck_f2">2</td>
+                            <td>-</td>
+                            <td id="deck_f3">3</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td class="left-align">Балка настила</td>
+                            <td id="roof_f1">23,33</td>
+                            <td id="roof_num1">12</td>
+                            <td id="roof_f2">21,2</td>
+                            <td id="roof_num2">20</td>
+                            <td id="roof_f3">18,2</td>
+                            <td id="roof_num3">6</td>
+                        </tr>
+                        <tr>
+                            <td class="left-align">Вспомогательные балки</td>
+                            <td id="sec_f1">22,16</td>
+                            <td id="sec_num1">4</td>
+                            <td id="sec_f2">25,33</td>
+                            <td id="sec_num2">5</td>
+                            <td id="sec_f3">22,16</td>
+                            <td id="sec_num3">4</td>
+                        </tr>
+                        <tr>
+                            <td class="left-align"><strong>Итого:</strong></td>
+                            <td><strong id="fin_f1">139,69</strong></td>
+                            <td></td>
+                            <td><strong id="fin_f2">125,03</strong></td>
+                            <td></td>
+                            <td><strong id="fin_f3">197,36</strong></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table><br>
+
+                <div class="form-r">
+                    <label class="radio-card" id="radio-card1">
+                        <input type="radio" name="delivery_method" value="courier" id="floorChoice1">
+                        <h3>Вариант 1</h3>
+                    </label>
+                    <label class="radio-card" id="radio-card2">
+                        <input type="radio" name="delivery_method" value="pickup" id="floorChoice2">
+                        <h3>Вариант 2</h3>
+                    </label>
+                    <label class="radio-card" id="radio-card3">
+                        <input type="radio" name="delivery_method" value="pickup" id="floorChoice3">
+                        <h3>Вариант 3</h3>
+                    </label>
+                    <button id="varfining">Скачать таблицу с отчетом</button>
+                </div>
+            </div>        
+        `;}}
+customElements.define('var-fin', varFin);
+
 class Literature extends HTMLElement {
     connectedCallback() {
         // Сюда пишем весь HTML, который должен появиться на месте тега

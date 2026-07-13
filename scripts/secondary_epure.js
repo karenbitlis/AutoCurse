@@ -418,9 +418,7 @@ let lambdaUber = mFormula(
             String(Math.ceil(sec_some_sigma_res*1000)/1000).replace('.',','),
         )
     ),
-
     mEq(),
-
     String(Math.ceil(lambdaUbFixed*1000)/1000).replace('.',','),)
 let lambdaDefault_res = ((aVar * 100) / (sec_beamchey.b/10)) * Math.sqrt(24 / (2.06 * 10 ** 4));
 let lambdaDefault = mFormula(
@@ -457,10 +455,8 @@ let lambdaDefault = mFormula(
             )
         )
     ),
-
     mEq(),
-
-    String(Math.ceil(lambdaDefault_res*1000)/1000).replace('.',','))
+	String(Math.ceil(lambdaDefault_res*1000)/1000).replace('.',','))
 rEpuro.shadowRoot.getElementById('sEpure-result').innerText = 'Назначен двутавр №' + sec_beamchey.number
 
 function doingSecEpures() {

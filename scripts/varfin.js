@@ -1,111 +1,130 @@
 let varfinChildren = []
 
-const docxLib = window.docx;
-const { Document, Packer, ImageRun, XmlComponent, LineRuleType, Paragraph, ommlXmlText, BorderStyle, VerticalAlign, TextRun, AlignmentType, Table, TableRow, TableCell, WidthType, PageBreak, textParagraphs } = docxLib;
+let varfino = document.getElementById('varfin')
+let deck_weight_list =[]
+let roof_beam_list = []
+let sec_beam_list = []
 
+    decking_varo.value = 1
+    roof_varo.value = 1
+    roofe_varo.value = 1
+    sece_varo.value = 1
+    secep_varo.value = 1
+    changeDeckVar()
+    changeRoofVar()
+    changerEpureVar()
+    changeSecBeamVar()
+    changeSecEpureVar()
 
-let varus1A = 1
-let varus1B = 2
+deck_weight_list.push(deck_load*100)
+roof_beam_list.push(roof_beam_num.slice(-2))
+sec_beam_list.push(sec_beamchey.number)
 
-let varus2A = 1.25
-let varus2B = 2
+    decking_varo.value = 2
+    roof_varo.value = 2
+    roofe_varo.value = 2
+    sece_varo.value = 2
+    secep_varo.value = 2
+    changeDeckVar()
+    changeRoofVar()
+    changerEpureVar()
+    changeSecBeamVar()
+    changeSecEpureVar()
 
-let varus3A = 1
-let varus3B = 2.5
+deck_weight_list.push(deck_load*100)
+roof_beam_list.push(roof_beam_num.slice(-2))
+sec_beam_list.push(sec_beamchey.number)
 
-let A = 5
-let B = 10
+    decking_varo.value = 3
+    roof_varo.value = 3
+    roofe_varo.value = 3
+    sece_varo.value = 3
+    secep_varo.value = 3
+    changeDeckVar()
+    changeRoofVar()
+    changerEpureVar()
+    changeSecBeamVar()
+    changeSecEpureVar()
 
+deck_weight_list.push(deck_load*100)
+roof_beam_list.push(roof_beam_num.slice(-2))
+sec_beam_list.push(sec_beamchey.number)
 
 
 let varusA_list = [varus1A, varus2A, varus3A]
-
-let deck_weight_list = [1.099*100, 0.785*100, 1.099*100]
-
-
-let roof_beam_list = [14, 16, 18]
 let roof_weight_list = []
 for (var i = 0; i < roof_beam_list.length; i++) {
     roof_weight_list.push(selectBeamByNumber(roof_beam_list[i]).weight/varusA_list[i])
 }
 
 let varusB_list = [varus1B, varus2B, varus3B]
-let sec_beam_list = ['40Б2', '40Б2', '45Б1']
 let sec_weight_list = []
 for (var i = 0; i < sec_beam_list.length; i++) {
     sec_weight_list.push(sectBeamByNumber(sec_beam_list[i]).weight/varusB_list[i])
-    console.log(varusB_list[i])
 }
 
 let roof_numeros = []
 for (var i = 0; i < roof_beam_list.length; i++) {
     roof_numeros.push(
-        (A/varusA_list[i]-1)*(B/varusB_list[i])
+        (dkA/varusA_list[i]-1)*(dkB/varusB_list[i])
     )
 }
 
 let sec_numeros = []
 for (var i = 0; i < roof_beam_list.length; i++) {
     sec_numeros.push(
-        (B/varusB_list[i])+1
+        (dkB/varusB_list[i])+1
     )
 }
 
-document.getElementById('deck_f1').innerText = parToSrtingo(parToSumble(deck_weight_list[0]))
-document.getElementById('deck_f2').innerText = parToSrtingo(parToSumble(deck_weight_list[1]))
-document.getElementById('deck_f3').innerText = parToSrtingo(parToSumble(deck_weight_list[2]))
+varfino.shadowRoot.getElementById('deck_f1').innerText = parToSrtingo(parToSumble(deck_weight_list[0]))
+varfino.shadowRoot.getElementById('deck_f2').innerText = parToSrtingo(parToSumble(deck_weight_list[1]))
+varfino.shadowRoot.getElementById('deck_f3').innerText = parToSrtingo(parToSumble(deck_weight_list[2]))
 
-document.getElementById('roof_f1').innerText = parToSrtingo(parToSumble(roof_weight_list[0]))
-document.getElementById('roof_f2').innerText = parToSrtingo(parToSumble(roof_weight_list[1]))
-document.getElementById('roof_f3').innerText = parToSrtingo(parToSumble(roof_weight_list[2]))
+varfino.shadowRoot.getElementById('roof_f1').innerText = parToSrtingo(parToSumble(roof_weight_list[0]))
+varfino.shadowRoot.getElementById('roof_f2').innerText = parToSrtingo(parToSumble(roof_weight_list[1]))
+varfino.shadowRoot.getElementById('roof_f3').innerText = parToSrtingo(parToSumble(roof_weight_list[2]))
 
-document.getElementById('roof_num1').innerText = parToSrtingo(parToSumble(roof_numeros[0]))
-document.getElementById('roof_num2').innerText = parToSrtingo(parToSumble(roof_numeros[1]))
-document.getElementById('roof_num3').innerText = parToSrtingo(parToSumble(roof_numeros[2]))
+varfino.shadowRoot.getElementById('roof_num1').innerText = parToSrtingo(parToSumble(roof_numeros[0]))
+varfino.shadowRoot.getElementById('roof_num2').innerText = parToSrtingo(parToSumble(roof_numeros[1]))
+varfino.shadowRoot.getElementById('roof_num3').innerText = parToSrtingo(parToSumble(roof_numeros[2]))
 
-document.getElementById('sec_f1').innerText = parToSrtingo(parToSumble(sec_weight_list[0]))
-document.getElementById('sec_f2').innerText = parToSrtingo(parToSumble(sec_weight_list[1]))
-document.getElementById('sec_f3').innerText = parToSrtingo(parToSumble(sec_weight_list[2]))
+varfino.shadowRoot.getElementById('sec_f1').innerText = parToSrtingo(parToSumble(sec_weight_list[0]))
+varfino.shadowRoot.getElementById('sec_f2').innerText = parToSrtingo(parToSumble(sec_weight_list[1]))
+varfino.shadowRoot.getElementById('sec_f3').innerText = parToSrtingo(parToSumble(sec_weight_list[2]))
 
-document.getElementById('sec_num1').innerText = parToSrtingo(parToSumble(sec_numeros[0]))
-document.getElementById('sec_num2').innerText = parToSrtingo(parToSumble(sec_numeros[1]))
-document.getElementById('sec_num3').innerText = parToSrtingo(parToSumble(sec_numeros[2]))
+varfino.shadowRoot.getElementById('sec_num1').innerText = parToSrtingo(parToSumble(sec_numeros[0]))
+varfino.shadowRoot.getElementById('sec_num2').innerText = parToSrtingo(parToSumble(sec_numeros[1]))
+varfino.shadowRoot.getElementById('sec_num3').innerText = parToSrtingo(parToSumble(sec_numeros[2]))
 
 
-let deck_f1 = document.getElementById('deck_f1').innerText
-let deck_f2 = document.getElementById('deck_f2').innerText
-let deck_f3 = document.getElementById('deck_f3').innerText
+let deck_f1 = varfino.shadowRoot.getElementById('deck_f1').innerText
+let deck_f2 = varfino.shadowRoot.getElementById('deck_f2').innerText
+let deck_f3 = varfino.shadowRoot.getElementById('deck_f3').innerText
 
 deck_f1 = parToSumble(deck_f1)
 deck_f2 = parToSumble(deck_f2)
 deck_f3 = parToSumble(deck_f3)
 
-let roof_f1 = document.getElementById('roof_f1').innerText
-let roof_f2 = document.getElementById('roof_f2').innerText
-let roof_f3 = document.getElementById('roof_f3').innerText
+let roof_f1 = varfino.shadowRoot.getElementById('roof_f1').innerText
+let roof_f2 = varfino.shadowRoot.getElementById('roof_f2').innerText
+let roof_f3 = varfino.shadowRoot.getElementById('roof_f3').innerText
 
 roof_f1 = parToSumble(roof_f1)
 roof_f2 = parToSumble(roof_f2)
 roof_f3 = parToSumble(roof_f3)
 
-let sec_f1 = document.getElementById('sec_f1').innerText
-let sec_f2 = document.getElementById('sec_f2').innerText
-let sec_f3 = document.getElementById('sec_f3').innerText
+let sec_f1 = varfino.shadowRoot.getElementById('sec_f1').innerText
+let sec_f2 = varfino.shadowRoot.getElementById('sec_f2').innerText
+let sec_f3 = varfino.shadowRoot.getElementById('sec_f3').innerText
 
 sec_f1 = parToSumble(sec_f1)
 sec_f2 = parToSumble(sec_f2)
 sec_f3 = parToSumble(sec_f3)
 
-let fin_f1 = document.getElementById('fin_f1')
-let fin_f2 = document.getElementById('fin_f2')
-let fin_f3 = document.getElementById('fin_f3')
-
-function parToSumble(stringo) {
-    return Math.ceil(parseFloat(String(stringo).replace(',','.'))*100)/100
-}
-function parToSrtingo(matho) {
-    return String(matho).replace('.',',')
-}
+let fin_f1 = varfino.shadowRoot.getElementById('fin_f1')
+let fin_f2 = varfino.shadowRoot.getElementById('fin_f2')
+let fin_f3 = varfino.shadowRoot.getElementById('fin_f3')
 
 fin_f1.innerText = parToSrtingo(parToSumble(parToSumble(deck_f1) + parToSumble(roof_f1) + parToSumble(sec_f1)))
 fin_f2.innerText = parToSrtingo(parToSumble(parToSumble(deck_f2) + parToSumble(roof_f2) + parToSumble(sec_f2)))
@@ -116,19 +135,439 @@ fin_f2_res = parToSumble(fin_f2.innerText)
 fin_f3_res = parToSumble(fin_f3.innerText)
 
 if (Math.min(fin_f1_res, fin_f2_res, fin_f3_res) == fin_f1_res) {
-    document.getElementById('radio-card1').innerHTML += '<h4 class="bestvar">Лучший по расходу стали</h4>'
-    document.getElementById('floorChoice1').checked = true
+    decking_varo.value = 1
+    roof_varo.value = 1
+    roofe_varo.value = 1
+    sece_varo.value = 1
+    secep_varo.value = 1
+    changeDeckVar()
+    changeRoofVar()
+    changerEpureVar()
+    changeSecBeamVar()
+    changeSecEpureVar()
+    varfino.shadowRoot.getElementById('radio-card1').innerHTML += '<h4 class="bestvar">Лучший по расходу стали</h4>'
+    varfino.shadowRoot.getElementById('floorChoice1').checked = true
 } else if (Math.min(fin_f1_res, fin_f2_res, fin_f3_res) == fin_f2_res) {
-    document.getElementById('radio-card2').innerHTML += '<h4 class="bestvar">Лучший по расходу стали</h4>'
-    document.getElementById('floorChoice2').checked = true
+    decking_varo.value = 2
+    roof_varo.value = 2
+    roofe_varo.value = 2
+    sece_varo.value = 2
+    secep_varo.value = 2
+    changeDeckVar()
+    changeRoofVar()
+    changerEpureVar()
+    changeSecBeamVar()
+    changeSecEpureVar()
+    varfino.shadowRoot.getElementById('radio-card2').innerHTML += '<h4 class="bestvar">Лучший по расходу стали</h4>'
+    varfino.shadowRoot.getElementById('floorChoice2').checked = true
 } else if (Math.min(fin_f1_res, fin_f2_res, fin_f3_res) == fin_f3_res) {
-    document.getElementById('radio-card3').innerHTML += '<h4 class="bestvar">Лучший по расходу стали</h4>'
-    document.getElementById('floorChoice3').checked = true
+    decking_varo.value = 3
+    roof_varo.value = 3
+    roofe_varo.value = 3
+    sece_varo.value = 3
+    secep_varo.value = 3
+    changeDeckVar()
+    changeRoofVar()
+    changerEpureVar()
+    changeSecBeamVar()
+    changeSecEpureVar()
+    varfino.shadowRoot.getElementById('radio-card3').innerHTML += '<h4 class="bestvar">Лучший по расходу стали</h4>'
+    varfino.shadowRoot.getElementById('floorChoice3').checked = true
+}
+let varFinFormula1 = mFormula(
+    mFrac(
+        mGroup(
+            parToSrtingo(selectBeamByNumber(roof_beam_list[0]).weight)+" ",
+            mSquareParen("кг/м"),
+            " (масса прогонного метра)"
+        ),
+        mGroup(
+            parToSrtingo(varus1A)+" ",
+            mSquareParen("м"),
+            " (шаг балок настила)"
+        )
+    ),
+    mEq(),
+    parToSrtingo(roof_f1)+" кг/м²"
+);
+
+let varFinFormula2 = mFormula(
+    mFrac(
+        mGroup(
+            parToSrtingo(selectBeamByNumber(roof_beam_list[1]).weight)+" ",
+            mSquareParen(
+                mFrac(
+                    "кг",
+                    "м"
+                )
+            )
+        ),
+        mGroup(
+            parToSrtingo(varus2A)+" ",
+            mSquareParen("м")
+        )
+    ),
+    mGroup(
+        "="+parToSrtingo(roof_f2)+" ",
+        "кг/м²"
+    )
+);
+let varFinFormula3 = mFormula(
+    mFrac(
+        mGroup(
+            parToSrtingo(selectBeamByNumber(roof_beam_list[2]).weight)+" ",
+            mSquareParen(
+                mFrac(
+                    "кг",
+                    "м"
+                )
+            )
+        ),
+        mGroup(
+            parToSrtingo(varus3A)+" ",
+            mSquareParen("м")
+        )
+    ),
+    mGroup(
+        "="+parToSrtingo(roof_f3)+" ",
+        "кг/м²"
+    )
+);
+let varFinFormula4 = mFormula(
+    mFrac(
+        mGroup(
+            parToSrtingo(sectBeamByNumber(sec_beam_list[0]).weight)+" ",
+            mSquareParen("кг/м"),
+            " (масса прогонного метра)"
+        ),
+        mGroup(
+            parToSrtingo(varus1B)+" ",
+            mSquareParen("м"),
+            " (шаг вспомогательных балок)"
+        )
+    ),
+    mEq(),
+    parToSrtingo(sec_f1)+" кг/м²"
+);
+let varFinFormula5 = mFormula(
+    mFrac(
+        mGroup(
+            parToSrtingo(sectBeamByNumber(sec_beam_list[1]).weight)+" ",
+            mSquareParen(
+                mFrac(
+                    "кг",
+                    "м"
+                )
+            )
+        ),
+        mGroup(
+            parToSrtingo(varus2B)+" ",
+            mSquareParen("м")
+        )
+    ),
+    mGroup(
+        "="+parToSrtingo(sec_f2)+" ",
+        "кг/м²"
+    )
+);
+let varFinFormula6 = mFormula(
+    mFrac(
+        mGroup(
+            parToSrtingo(sectBeamByNumber(sec_beam_list[2]).weight)+" ",
+            mSquareParen(
+                mFrac(
+                    "кг",
+                    "м"
+                )
+            )
+        ),
+        mGroup(
+            parToSrtingo(varus3B)+" ",
+            mSquareParen("м")
+        )
+    ),
+    mGroup(
+        "="+parToSrtingo(sec_f3)+" ",
+        "кг/м²"
+    )
+);
+
+function varfinUpdate() {
+    varfino.shadowRoot.getElementById('radio-card1').innerHTML = '<input type="radio" name="delivery_method" value="courier" id="floorChoice1"><h3>Вариант 1</h3>'
+    varfino.shadowRoot.getElementById('radio-card2').innerHTML = '<input type="radio" name="delivery_method" value="courier" id="floorChoice2"><h3>Вариант 2</h3>'
+    varfino.shadowRoot.getElementById('radio-card3').innerHTML = '<input type="radio" name="delivery_method" value="courier" id="floorChoice3"><h3>Вариант 3</h3>'
+    
+    deck_weight_list = []
+    roof_beam_list = []
+    sec_beam_list = []
+        decking_varo.value = 1
+        roof_varo.value = 1
+        roofe_varo.value = 1
+        sece_varo.value = 1
+        secep_varo.value = 1
+        changeDeckVar()
+        changeRoofVar()
+        changerEpureVar()
+        changeSecBeamVar()
+        changeSecEpureVar()
+    deck_weight_list.push(deck_load*100)
+    roof_beam_list.push(roof_beam_num.slice(-2))
+    sec_beam_list.push(sec_beamchey.number)
+        decking_varo.value = 2
+        roof_varo.value = 2
+        roofe_varo.value = 2
+        sece_varo.value = 2
+        secep_varo.value = 2
+        changeDeckVar()
+        changeRoofVar()
+        changerEpureVar()
+        changeSecBeamVar()
+        changeSecEpureVar()
+    deck_weight_list.push(deck_load*100)
+    roof_beam_list.push(roof_beam_num.slice(-2))
+    sec_beam_list.push(sec_beamchey.number)
+        decking_varo.value = 3
+        roof_varo.value = 3
+        roofe_varo.value = 3
+        sece_varo.value = 3
+        secep_varo.value = 3
+        changeDeckVar()
+        changeRoofVar()
+        changerEpureVar()
+        changeSecBeamVar()
+        changeSecEpureVar()
+    deck_weight_list.push(deck_load*100)
+    roof_beam_list.push(roof_beam_num.slice(-2))
+    sec_beam_list.push(sec_beamchey.number)
+
+    decking_varo.value = 1
+    roof_varo.value = 1
+    roofe_varo.value = 1
+    sece_varo.value = 1
+    secep_varo.value = 1
+    changeDeckVar()
+    changeRoofVar()
+    changerEpureVar()
+    changeSecBeamVar()
+    changeSecEpureVar()
+
+    varusA_list = [varus1A, varus2A, varus3A]
+    roof_weight_list = []
+    for (var i = 0; i < roof_beam_list.length; i++) {
+        roof_weight_list.push(selectBeamByNumber(roof_beam_list[i]).weight/varusA_list[i])
+    }
+    varusB_list = [varus1B, varus2B, varus3B]
+    sec_weight_list = []
+    for (var i = 0; i < sec_beam_list.length; i++) {
+        sec_weight_list.push(sectBeamByNumber(sec_beam_list[i]).weight/varusB_list[i])
+    }
+    roof_numeros = []
+    for (var i = 0; i < roof_beam_list.length; i++) {
+        roof_numeros.push(
+            (dkA/varusA_list[i]-1)*(dkB/varusB_list[i])
+        )
+    }
+    sec_numeros = []
+    for (var i = 0; i < roof_beam_list.length; i++) {
+        sec_numeros.push(
+            (dkB/varusB_list[i])+1
+        )
+    }
+    
+    varfino.shadowRoot.getElementById('deck_f1').innerText = parToSrtingo(parToSumble(deck_weight_list[0]))
+    varfino.shadowRoot.getElementById('deck_f2').innerText = parToSrtingo(parToSumble(deck_weight_list[1]))
+    varfino.shadowRoot.getElementById('deck_f3').innerText = parToSrtingo(parToSumble(deck_weight_list[2]))
+    
+    varfino.shadowRoot.getElementById('roof_f1').innerText = parToSrtingo(parToSumble(roof_weight_list[0]))
+    varfino.shadowRoot.getElementById('roof_f2').innerText = parToSrtingo(parToSumble(roof_weight_list[1]))
+    varfino.shadowRoot.getElementById('roof_f3').innerText = parToSrtingo(parToSumble(roof_weight_list[2]))
+    
+    varfino.shadowRoot.getElementById('roof_num1').innerText = parToSrtingo(parToSumble(roof_numeros[0]))
+    varfino.shadowRoot.getElementById('roof_num2').innerText = parToSrtingo(parToSumble(roof_numeros[1]))
+    varfino.shadowRoot.getElementById('roof_num3').innerText = parToSrtingo(parToSumble(roof_numeros[2]))
+    
+    varfino.shadowRoot.getElementById('sec_f1').innerText = parToSrtingo(parToSumble(sec_weight_list[0]))
+    varfino.shadowRoot.getElementById('sec_f2').innerText = parToSrtingo(parToSumble(sec_weight_list[1]))
+    varfino.shadowRoot.getElementById('sec_f3').innerText = parToSrtingo(parToSumble(sec_weight_list[2]))
+    
+    varfino.shadowRoot.getElementById('sec_num1').innerText = parToSrtingo(parToSumble(sec_numeros[0]))
+    varfino.shadowRoot.getElementById('sec_num2').innerText = parToSrtingo(parToSumble(sec_numeros[1]))
+    varfino.shadowRoot.getElementById('sec_num3').innerText = parToSrtingo(parToSumble(sec_numeros[2]))
+    
+    
+    deck_f1 = varfino.shadowRoot.getElementById('deck_f1').innerText
+    deck_f2 = varfino.shadowRoot.getElementById('deck_f2').innerText
+    deck_f3 = varfino.shadowRoot.getElementById('deck_f3').innerText
+    
+    deck_f1 = parToSumble(deck_f1)
+    deck_f2 = parToSumble(deck_f2)
+    deck_f3 = parToSumble(deck_f3)
+    
+    roof_f1 = varfino.shadowRoot.getElementById('roof_f1').innerText
+    roof_f2 = varfino.shadowRoot.getElementById('roof_f2').innerText
+    roof_f3 = varfino.shadowRoot.getElementById('roof_f3').innerText
+    
+    roof_f1 = parToSumble(roof_f1)
+    roof_f2 = parToSumble(roof_f2)
+    roof_f3 = parToSumble(roof_f3)
+    
+    sec_f1 = varfino.shadowRoot.getElementById('sec_f1').innerText
+    sec_f2 = varfino.shadowRoot.getElementById('sec_f2').innerText
+    sec_f3 = varfino.shadowRoot.getElementById('sec_f3').innerText
+    
+    sec_f1 = parToSumble(sec_f1)
+    sec_f2 = parToSumble(sec_f2)
+    sec_f3 = parToSumble(sec_f3)
+    
+    fin_f1 = varfino.shadowRoot.getElementById('fin_f1')
+    fin_f2 = varfino.shadowRoot.getElementById('fin_f2')
+    fin_f3 = varfino.shadowRoot.getElementById('fin_f3')
+    
+    fin_f1.innerText = parToSrtingo(parToSumble(parToSumble(deck_f1) + parToSumble(roof_f1) + parToSumble(sec_f1)))
+    fin_f2.innerText = parToSrtingo(parToSumble(parToSumble(deck_f2) + parToSumble(roof_f2) + parToSumble(sec_f2)))
+    fin_f3.innerText = parToSrtingo(parToSumble(parToSumble(deck_f3) + parToSumble(roof_f3) + parToSumble(sec_f3)))
+    
+    fin_f1_res = parToSumble(fin_f1.innerText)
+    fin_f2_res = parToSumble(fin_f2.innerText)
+    fin_f3_res = parToSumble(fin_f3.innerText)
+    
+    if (Math.min(fin_f1_res, fin_f2_res, fin_f3_res) == fin_f1_res) {
+        varfino.shadowRoot.getElementById('radio-card1').innerHTML += '<h4 class="bestvar">Лучший по расходу стали</h4>'
+        varfino.shadowRoot.getElementById('floorChoice1').checked = true
+    } else if (Math.min(fin_f1_res, fin_f2_res, fin_f3_res) == fin_f2_res) {
+        varfino.shadowRoot.getElementById('radio-card2').innerHTML += '<h4 class="bestvar">Лучший по расходу стали</h4>'
+        varfino.shadowRoot.getElementById('floorChoice2').checked = true
+    } else if (Math.min(fin_f1_res, fin_f2_res, fin_f3_res) == fin_f3_res) {
+        varfino.shadowRoot.getElementById('radio-card3').innerHTML += '<h4 class="bestvar">Лучший по расходу стали</h4>'
+        varfino.shadowRoot.getElementById('floorChoice3').checked = true
+    }
+    varFinFormula1 = mFormula(
+        mFrac(
+            mGroup(
+                parToSrtingo(selectBeamByNumber(roof_beam_list[0]).weight)+" ",
+                mSquareParen("кг/м"),
+                " (масса прогонного метра)"
+            ),
+            mGroup(
+                parToSrtingo(varus1A)+" ",
+                mSquareParen("м"),
+                " (шаг балок настила)"
+            )
+        ),
+        mEq(),
+        parToSrtingo(roof_f1)+" кг/м²"
+    );
+    varFinFormula2 = mFormula(
+        mFrac(
+            mGroup(
+                parToSrtingo(selectBeamByNumber(roof_beam_list[1]).weight)+" ",
+                mSquareParen(
+                    mFrac(
+                        "кг",
+                        "м"
+                    )
+                )
+            ),
+            mGroup(
+                parToSrtingo(varus2A)+" ",
+                mSquareParen("м")
+            )
+        ),
+        mGroup(
+            "="+parToSrtingo(roof_f2)+" ",
+            "кг/м²"
+        )
+    );
+    varFinFormula3 = mFormula(
+        mFrac(
+            mGroup(
+                parToSrtingo(selectBeamByNumber(roof_beam_list[2]).weight)+" ",
+                mSquareParen(
+                    mFrac(
+                        "кг",
+                        "м"
+                    )
+                )
+            ),
+            mGroup(
+                parToSrtingo(varus3A)+" ",
+                mSquareParen("м")
+            )
+        ),
+        mGroup(
+            "="+parToSrtingo(roof_f3)+" ",
+            "кг/м²"
+        )
+    );
+    varFinFormula4 = mFormula(
+        mFrac(
+            mGroup(
+                parToSrtingo(sectBeamByNumber(sec_beam_list[0]).weight)+" ",
+                mSquareParen("кг/м"),
+                " (масса прогонного метра)"
+            ),
+            mGroup(
+                parToSrtingo(varus1B)+" ",
+                mSquareParen("м"),
+                " (шаг вспомогательных балок)"
+            )
+        ),
+        mEq(),
+        parToSrtingo(sec_f1)+" кг/м²"
+    );
+    varFinFormula5 = mFormula(
+        mFrac(
+            mGroup(
+                parToSrtingo(sectBeamByNumber(sec_beam_list[1]).weight)+" ",
+                mSquareParen(
+                    mFrac(
+                        "кг",
+                        "м"
+                    )
+                )
+            ),
+            mGroup(
+                parToSrtingo(varus2B)+" ",
+                mSquareParen("м")
+            )
+        ),
+        mGroup(
+            "="+parToSrtingo(sec_f2)+" ",
+            "кг/м²"
+        )
+    );
+    varFinFormula6 = mFormula(
+        mFrac(
+            mGroup(
+                parToSrtingo(sectBeamByNumber(sec_beam_list[2]).weight)+" ",
+                mSquareParen(
+                    mFrac(
+                        "кг",
+                        "м"
+                    )
+                )
+            ),
+            mGroup(
+                parToSrtingo(varus3B)+" ",
+                mSquareParen("м")
+            )
+        ),
+        mGroup(
+            "="+parToSrtingo(sec_f3)+" ",
+            "кг/м²"
+        )
+    );
 }
 
+function parToSumble(stringo) {
+    return Math.ceil(parseFloat(String(stringo).replace(',','.'))*100)/100
+}
+function parToSrtingo(matho) {
+    return String(matho).replace('.',',')
+}
 function createVarFinTable() {
     const getValue = (id) => {
-        const element = document.getElementById(id);
+        const element = varfino.shadowRoot.getElementById(id);
         return element ? element.textContent.trim() : "";
     };
     const createCell = (text, options = {}) => {
@@ -347,126 +786,6 @@ function createVarFinTable() {
         ]
     });
 }
-
-const varFinFormula1 = mFormula(
-    mFrac(
-        mGroup(
-            parToSrtingo(selectBeamByNumber(roof_beam_list[0]).weight)+" ",
-            mSquareParen("кг/м"),
-            " (масса прогонного метра)"
-        ),
-        mGroup(
-            parToSrtingo(varus1A)+" ",
-            mSquareParen("м"),
-            " (шаг балок настила)"
-        )
-    ),
-    mEq(),
-    parToSrtingo(roof_f1)+" кг/м²"
-);
-
-const varFinFormula2 = mFormula(
-    mFrac(
-        mGroup(
-            parToSrtingo(selectBeamByNumber(roof_beam_list[1]).weight)+" ",
-            mSquareParen(
-                mFrac(
-                    "кг",
-                    "м"
-                )
-            )
-        ),
-        mGroup(
-            parToSrtingo(varus2A)+" ",
-            mSquareParen("м")
-        )
-    ),
-    mGroup(
-        "="+parToSrtingo(roof_f2)+" ",
-        "кг/м²"
-    )
-);
-
-const varFinFormula3 = mFormula(
-    mFrac(
-        mGroup(
-            parToSrtingo(selectBeamByNumber(roof_beam_list[2]).weight)+" ",
-            mSquareParen(
-                mFrac(
-                    "кг",
-                    "м"
-                )
-            )
-        ),
-        mGroup(
-            parToSrtingo(varus3A)+" ",
-            mSquareParen("м")
-        )
-    ),
-    mGroup(
-        "="+parToSrtingo(roof_f3)+" ",
-        "кг/м²"
-    )
-);
-const varFinFormula4 = mFormula(
-    mFrac(
-        mGroup(
-            parToSrtingo(sectBeamByNumber(sec_beam_list[0]).weight)+" ",
-            mSquareParen("кг/м"),
-            " (масса прогонного метра)"
-        ),
-        mGroup(
-            parToSrtingo(varus1B)+" ",
-            mSquareParen("м"),
-            " (шаг вспомогательных балок)"
-        )
-    ),
-    mEq(),
-    parToSrtingo(sec_f1)+" кг/м²"
-);
-
-const varFinFormula5 = mFormula(
-    mFrac(
-        mGroup(
-            parToSrtingo(sectBeamByNumber(sec_beam_list[1]).weight)+" ",
-            mSquareParen(
-                mFrac(
-                    "кг",
-                    "м"
-                )
-            )
-        ),
-        mGroup(
-            parToSrtingo(varus2B)+" ",
-            mSquareParen("м")
-        )
-    ),
-    mGroup(
-        "="+parToSrtingo(sec_f2)+" ",
-        "кг/м²"
-    )
-);
-const varFinFormula6 = mFormula(
-    mFrac(
-        mGroup(
-            parToSrtingo(sectBeamByNumber(sec_beam_list[2]).weight)+" ",
-            mSquareParen(
-                mFrac(
-                    "кг",
-                    "м"
-                )
-            )
-        ),
-        mGroup(
-            parToSrtingo(varus3B)+" ",
-            mSquareParen("м")
-        )
-    ),
-    mGroup(
-        "="+parToSrtingo(sec_f3)+" ",
-        "кг/м²"
-    )
-);
 function createVarFin() {
     varfinChildren = []
     varfinChildren.push(
@@ -705,7 +1024,7 @@ function createVarFin() {
         }),
     )
 
-    if (document.getElementById('floorChoice1').checked) {
+    if (varfino.shadowRoot.getElementById('floorChoice1').checked) {
         if (Math.min(fin_f1_res, fin_f2_res, fin_f3_res) == fin_f1_res) {
             varfinChildren.push(
                 new Paragraph({
@@ -742,7 +1061,7 @@ function createVarFin() {
             )
 
         }
-    } else if (document.getElementById('floorChoice2').checked) {
+    } else if (varfino.shadowRoot.getElementById('floorChoice2').checked) {
         if (Math.min(fin_f1_res, fin_f2_res, fin_f3_res) == fin_f2_res) {
             varfinChildren.push(
                 new Paragraph({
@@ -779,7 +1098,7 @@ function createVarFin() {
             )
 
         }
-    } else if (document.getElementById('floorChoice3').checked) {
+    } else if (varfino.shadowRoot.getElementById('floorChoice3').checked) {
         if (Math.min(fin_f1_res, fin_f2_res, fin_f3_res) == fin_f3_res) {
             varfinChildren.push(
                 new Paragraph({
@@ -818,8 +1137,6 @@ function createVarFin() {
         }
     }
 }
-
-
 function generateVafin() {
     createVarFin()
     const doc = new Document({
@@ -862,7 +1179,20 @@ function generateVafin() {
     });
 }
 
-let varfining = document.getElementById('varfining')
+let varfining = varfino.shadowRoot.getElementById('varfining')
 varfining.addEventListener("click", () => {
     generateVafin()
+});
+
+init.shadowRoot.addEventListener('input', (event) => {
+    varfinUpdate()});
+floor.shadowRoot.addEventListener('input', (event) => {
+    varfinUpdate()
+});
+vargen.shadowRoot.addEventListener('input', (event) => {
+    varfinUpdate()
+});
+
+vargen.shadowRoot.getElementById('varGen').addEventListener("click", () => {
+    varfinUpdate()
 });
