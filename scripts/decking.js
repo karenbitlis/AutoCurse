@@ -296,6 +296,7 @@ function createDeck() {
     dkChildren.push(
         new Paragraph({
             alignment: AlignmentType.CENTER,
+            heading: HeadingLevel.HEADING_2,
             spacing: { after: 60 },
             children: [
                 new TextRun({
@@ -311,6 +312,7 @@ function createDeck() {
         new Paragraph({}),
         new Paragraph({
             alignment: AlignmentType.CENTER,
+            heading: HeadingLevel.HEADING_3,
             spacing: { after: 60 },
             children: [
                 new TextRun({
@@ -387,18 +389,6 @@ function createDeck() {
         new Paragraph({
             alignment: AlignmentType.CENTER,
             children: [dkFormula]
-        }),
-        new Paragraph({
-            alignment: AlignmentType.JUSTIFIED,
-            spacing: { before: 0, after: 120, line: 360, lineRule: LineRuleType.AUTO },
-            indent: { firstLine: 709 },
-            children: [
-                new TextRun({
-                    text: "где",
-                    size: 28,
-                    font: "Times New Roman" 
-                }), 
-            ]
         }),
         new Paragraph({
             alignment: AlignmentType.JUSTIFIED,

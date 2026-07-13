@@ -65,9 +65,33 @@ function generateDocx() {
     createFloor()
     createDeck()
     createLitera()
+    documento.push(
+        new Paragraph({
+            alignment: AlignmentType.CENTER,
+            spacing: {
+                line: 360,
+                before: 0,
+                after: 0,
+            },
+            children: [
+                new TextRun({
+                    text: "Оглавление", bold: true, font: "Times New Roman", size: 28 
+                }),
+            ]
+        }),
 
-
-    documento.push(...titChildren)
+        new TableOfContents("Оглавление", {
+            hyperlink: true,
+            headingStyleRange: "1-3", // Диапазон уровней заголовков (с 1 по 3)
+            upperHeadingLevel: 3,
+            lowerHeadingLevel: 1,
+        }),
+        new Paragraph({
+            children: [
+                new PageBreak()
+            ]
+        }),
+    );
     documento.push(...introChildren)
     documento.push(...initChildren)
     documento.push(...vargenChildren)
@@ -147,39 +171,122 @@ function generateDocx() {
     }
     // Сбор данных из полей формы
     const doc = new Document({
-        styles: {
-            paragraphStyles: [
-                {
-                    id: "customItalicStyle",
-                    name: "Custom Italic Style",
-                    basedOn: "Normal",
-                    next: "Normal",
-                    run: {
-                        font: "Times New Roman",
-                        size: 28, // Увеличено до 14pt (28 полупунктов)
-                        italics: true
-
-                    }
-                },
-                {
-                    id: "Normal",
-                    name: "Normal",
-                    run: {
-                        font: "Times New Roman",
-                        size: 28 // Базовый шрифт документа теперь тоже 14pt
-                    }
-                }
-            ]
+        features: {
+            updateFields: true,
         },
-        sections: [{
+        styles: {
+          paragraphStyles: [
+            // Кастомный курсивный стиль (твой)
+            {
+              id: 'customItalicStyle',
+              name: 'Custom Italic Style',
+              basedOn: 'Normal',
+              next: 'Normal',
+              run: {
+                font: 'Times New Roman',
+                size: 28,
+                italics: true,
+              },
+            },
+            // Базовый стиль документа: Times New Roman, 14 pt
+            {
+              id: 'Normal',
+              name: 'Normal',
+              run: {
+                font: 'Times New Roman',
+                size: 28,
+              },
+            },
+            // Заголовок 1: жирный, по центру
+            {
+              id: 'Heading1',
+              name: 'Заголовок 1',
+              basedOn: 'Heading 1',
+              type: 'paragraph',
+              paragraph: {
+                alignment: 'center',
+              },
+              run: {
+                font: 'Times New Roman',
+                size: 28,
+                bold: true,
+              },
+            },
+            // Заголовок 2: жирный, по центру
+            {
+              id: 'Heading2',
+              name: 'Заголовок 2',
+              basedOn: 'Heading 2',
+              type: 'paragraph',
+              paragraph: {
+            alignment: 'center',
+              },
+              run: {
+                font: 'Times New Roman',
+                size: 28,
+                bold: true,
+              },
+            },
+
+            // Заголовок 3: жирный, по центру
+            {
+              id: 'Heading3',
+              name: 'Заголовок 3',
+              basedOn: 'Heading 3',
+              type: 'paragraph',
+              paragraph: {
+                alignment: 'center',
+              },
+              run: {
+                font: 'Times New Roman',
+                size: 28,
+                bold: true,
+              },
+            },
+          ],
+        },
+        sections: [
+            {
             properties: {
                 page: {
                     margin: { top: 1134, bottom: 1134, left: 1700, right: 1700 }
                 }
             },
+            // Передаем в эту секцию только содержимое титульника (например, titChildren)
+            children: titChildren // или те элементы, которые относятся к титулу
+            },
+
+            {
+            properties: {
+                page: {
+                    margin: { top: 1134, bottom: 1134, left: 1700, right: 1700 },
+                    pageNumberStart: 2,
+                    titlePage: true,
+                }
+            },
+            footers: {
+                // Обычный колонтитул (со 2-й страницы и далее): по центру снизу
+                default: new Footer({
+                    children: [
+                        new Paragraph({
+                            alignment: AlignmentType.CENTER, // Выравнивание по центру
+                            children: [
+                                new TextRun({
+                                    children: [PageNumber.CURRENT]
+                                })
+                            ]
+                        })
+                    ]
+                }),
+                // Колонтитул для первой страницы: пустой (без номера)
+                first: new Footer({
+                    children: []
+                })
+            },
             children: documento
         }]
     });
+
     // Конвертация структуры в файл и сохранение
     Packer.toBlob(doc).then(blob => {
         if (saveAsLib) {
@@ -194,6 +301,7 @@ function generateDocx() {
         console.error(err);
         alert("Ошибка сохранения структуры таблиц.");
     });
+    hideLoader()
 }
 
 
@@ -241,3 +349,25 @@ allShadowRoots.forEach(root => {
     });
   });
 });
+
+
+const loader = document.getElementById('fullscreen-loader');
+
+// Показываем лоадер
+function showLoader() {
+    loader.classList.add('visible');
+    setTimeout(() => {
+        generateDocx()
+    }, 200); 
+}
+
+// Скрываем лоадер
+function hideLoader() {
+    loader.classList.remove('visible');
+}
+
+const collectDataBtn = document.getElementById('collectDataBtn')
+
+collectDataBtn.addEventListener("click", () => {
+    showLoader()
+})

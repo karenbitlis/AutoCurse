@@ -16,6 +16,7 @@ function createIntro() {
         new Paragraph({
             alignment: AlignmentType.CENTER,
             spacing: { before: 0, after: 360 }, 
+            heading: HeadingLevel.HEADING_1,
             children: [
                 new TextRun({
                     text: "Введение",

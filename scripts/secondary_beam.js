@@ -480,6 +480,7 @@ function createSecBeam() {
 	secChildren.push(
 		new Paragraph({
         	alignment: AlignmentType.CENTER,
+        	heading: HeadingLevel.HEADING_3,
         	spacing: { 
         		after: 60
         	},
@@ -519,7 +520,7 @@ function createSecBeam() {
 				},
 				children: [
 					new TextRun({
-						text: 'Рис.5 - Грузовая площадь уча второстепенной балки (В1)'
+						text: 'Рис.5 - Грузовая площадь участка второстепенной балки (В1)'
 					}),
 				]
 			}),
@@ -533,7 +534,7 @@ function createSecBeam() {
 				},
 				children: [
 					new TextRun({
-						text: 'Рис.11 - Грузовая площадь уча второстепенной балки (В2)'
+						text: 'Рис.11 - Грузовая площадь участка второстепенной балки (В2)'
 					}),
 				]
 			}),
@@ -547,7 +548,7 @@ function createSecBeam() {
 				},
 				children: [
 					new TextRun({
-						text: 'Рис.17 - Грузовая площадь уча второстепенной балки (В3)'
+						text: 'Рис.17 - Грузовая площадь участка второстепенной балки (В3)'
 					}),
 				]
 			}),

@@ -348,6 +348,7 @@ function createRoof() {
     roofChildren.push(
         new Paragraph({
             alignment: AlignmentType.CENTER,
+            heading: HeadingLevel.HEADING_3,
             spacing: { after: 60 },
             children: [new TextRun({ text: "1."+decking_varo.value+".2 Расчёт балки настила", bold: true, size: 28, font: "Times New Roman" })],
         }),
@@ -360,6 +361,7 @@ function createRoof() {
         }),
         new Paragraph({ text: "" }),
         floorTable,
+        new Paragraph({ text: "" }),
     );
     pushRoof();
     if (decking_varo.value == 1) {

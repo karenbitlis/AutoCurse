@@ -557,6 +557,43 @@ function varfinUpdate() {
             "кг/м²"
         )
     );
+    if (Math.min(fin_f1_res, fin_f2_res, fin_f3_res) == fin_f1_res) {
+        decking_varo.value = 1
+        roof_varo.value = 1
+        roofe_varo.value = 1
+        sece_varo.value = 1
+        secep_varo.value = 1
+        changeDeckVar()
+        changeRoofVar()
+        changerEpureVar()
+        changeSecBeamVar()
+        changeSecEpureVar()
+        varfino.shadowRoot.getElementById('floorChoice1').checked = true
+    } else if (Math.min(fin_f1_res, fin_f2_res, fin_f3_res) == fin_f2_res) {
+        decking_varo.value = 2
+        roof_varo.value = 2
+        roofe_varo.value = 2
+        sece_varo.value = 2
+        secep_varo.value = 2
+        changeDeckVar()
+        changeRoofVar()
+        changerEpureVar()
+        changeSecBeamVar()
+        changeSecEpureVar()
+        varfino.shadowRoot.getElementById('floorChoice2').checked = true
+    } else if (Math.min(fin_f1_res, fin_f2_res, fin_f3_res) == fin_f3_res) {
+        decking_varo.value = 3
+        roof_varo.value = 3
+        roofe_varo.value = 3
+        sece_varo.value = 3
+        secep_varo.value = 3
+        changeDeckVar()
+        changeRoofVar()
+        changerEpureVar()
+        changeSecBeamVar()
+        changeSecEpureVar()
+        varfino.shadowRoot.getElementById('floorChoice3').checked = true
+    }
 }
 
 function parToSumble(stringo) {
@@ -791,6 +828,7 @@ function createVarFin() {
     varfinChildren.push(
         new Paragraph({
             alignment: AlignmentType.CENTER,
+            heading: HeadingLevel.HEADING_2,
             spacing: {
                 line: 360, // Полуторный интервал для ВСЕГО документа
                 before: 0,

@@ -12,7 +12,16 @@ body {
     /*overflow: hidden;*/
     background-color: #f4f6f9;
 }
+#page-loader {
+    position: fixed;
+    inset: 0;
+    background: #fff;
+    z-index: 999999;
+}
 
+body.loaded #page-loader {
+    display: none;
+}
 .slider-container {
     position: relative;
     width: 100vw;
@@ -33,11 +42,6 @@ body {
     opacity: 1;
     pointer-events: auto;
 }
-/*iframe {
-    width: 100%;
-    height: 100%;
-    border: none;
-}*/
 .progress-container {
     position: fixed;
     top: 0;
@@ -55,8 +59,8 @@ body {
 }
 .controls-wrapper {
     position: fixed;
-    bottom: 25px;
     left: 50%;
+    bottom: 10px;
     transform: translateX(-50%);
     display: flex;
     align-items: center;
@@ -67,6 +71,7 @@ body {
     box-shadow: 0 8px 24px rgba(0,0,0,0.15);
     z-index: 1000;
     backdrop-filter: blur(5px);
+    max-width: 550px;
 }
 .control-btn {
     border: none;
@@ -76,8 +81,8 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 40px;
-    width: 250px;
+    height: 35px;
+    width: 300px;
     border-radius: 22px; 
 }
 .arrow-btn { padding: 0 24px; background-color: #2196F3; color: white; font-size: 22px; }
@@ -97,4 +102,37 @@ title-page , intro-moment , init-data , literature-list , var-gen , floor-type ,
     display: flex;
     justify-content: center;
     height: 90%;
+}
+
+.fullscreen-loader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.9);
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  pointer-events: none; /* чтобы клики проходили сквозь лоадер, если нужно */
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+/* Класс для показа лоадера */
+.fullscreen-loader.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+.fullscreen-loader {
+  color: #333;
+  font-family: Arial, sans-serif;
+  text-align: center;
+}
+.container-big {
+    display: flex;
+    align-items: flex-start;
+
 }

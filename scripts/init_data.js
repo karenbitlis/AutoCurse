@@ -36,7 +36,8 @@ function createInit() {
             alignment: AlignmentType.LEFT,
             spacing: { before: 120, after: 280 },
             indent: { left: 800 },
-            children: [new TextRun({ text: "Исходные данные:", bold: true, font: "Times New Roman", size: 28 })]
+            heading: HeadingLevel.HEADING_1,
+            text: "Исходные данные:"
         }),
 
         // ТАБЛИЦА 1: Геометрия и нагрузки

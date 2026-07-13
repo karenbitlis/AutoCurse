@@ -618,6 +618,7 @@ function createVargen() {
 	vargenChildren.push(
 		new Paragraph({
 			alignment: AlignmentType.CENTER,
+			heading: HeadingLevel.HEADING_1,
 			spacing: {
 				line: 360, // Полуторный интервал для ВСЕГО документа
 				before: 0,
@@ -625,7 +626,7 @@ function createVargen() {
 			},
 			children: [
 				new TextRun({
-					text: "1. Выбор варианта ячеек балочной клетки", bold: true, font: "Times New Roman", size: 28 
+					text: "1. Выбор варианта ячеек балочной клетки", bold: true, font: "Times New Roman", size: 28
 				}),
 			]
 		}),
@@ -740,3 +741,7 @@ load.addEventListener("click", () => {
 	exportCanvasToDocx()
 })
 // delVar()
+
+init.shadowRoot.addEventListener('input', (event) => {
+	printVar();
+});

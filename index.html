@@ -13,52 +13,61 @@
     </head>
     <body>
         <script src="scripts/pages.js"></script>
+        <div id="page-loader"></div>
         <div class="progress-container">
             <div class="progress-bar" id="progressBar"></div>
         </div>
         <div class="slider-container">
-            <div class="page" id="page1">
-                <title-page id="tit"></title-page>
-            </div>
-            <div class="page" id="page2">
-                <intro-moment id="intro"></intro-moment>
-            </div>
-            <div class="page" id="page3">
-                <init-data id="init"></init-data>
-            </div>
-            <div class="page" id="page4">
-                <var-gen id="vargen"></var-gen>
-            </div>
-            <div class="page" id="page5">
-                <floor-type id="floor"></floor-type>
-            </div>
-            <div class="page" id="page6">
-                <deck-roof id="deck-roof1"></deck-roof>
-            </div>
-            <div class="page" id="page7">
-                <roof-beam id="roof-beam1"></roof-beam>
-            </div>
-            <div class="page" id="page8">
-                <roof-epure id="roof-epure1"></roof-epure>
-            </div>
-            <div class="page" id="page9">
-                <sec-beam id="sec-beam1"></sec-beam>
-            </div>
-            <div class="page" id="page10">
-                <sec-epure id="sec-epure1"></sec-epure>
-            </div>
-            <div class="page" id="page11">
-                <var-fin id="varfin"></var-fin>
-            </div>
-            <div class="page" id="page12">
-                <literature-list id="litera"></literature-list>
+            <div class="container-big">
+                <div class="page" id="page1">
+                    <title-page id="tit"></title-page>
+                </div>
+                <div class="page" id="page2">
+                    <intro-moment id="intro"></intro-moment>
+                </div>
+                <div class="page" id="page3">
+                    <init-data id="init"></init-data>
+                </div>
+                <div class="page" id="page4">
+                    <var-gen id="vargen"></var-gen>
+                </div>
+                <div class="page" id="page5">
+                    <floor-type id="floor"></floor-type>
+                </div>
+                <div class="page" id="page6">
+                    <deck-roof id="deck-roof1"></deck-roof>
+                </div>
+                <div class="page" id="page7">
+                    <roof-beam id="roof-beam1"></roof-beam>
+                </div>
+                <div class="page" id="page8">
+                    <roof-epure id="roof-epure1"></roof-epure>
+                </div>
+                <div class="page" id="page9">
+                    <sec-beam id="sec-beam1"></sec-beam>
+                </div>
+                <div class="page" id="page10">
+                    <sec-epure id="sec-epure1"></sec-epure>
+                </div>
+                <div class="page" id="page11">
+                    <var-fin id="varfin"></var-fin>
+                </div>
+                <div class="page" id="page12">
+                    <literature-list id="litera"></literature-list>
+                </div>
+                <div class="controls-wrapper">
+                    <button class="control-btn arrow-btn" id="prevBtn" title="Назад">◀</button> 
+                    <button class="control-btn generate-btn" id="collectDataBtn">Скачать курсовую работу</button>
+                    <button class="control-btn arrow-btn" id="nextBtn" title="Вперед">▶</button>
+                </div>
             </div>
         </div>
         <br>
-        <div class="controls-wrapper">
-            <button class="control-btn arrow-btn" id="prevBtn" title="Назад">🠘</button> 
-            <button class="control-btn generate-btn" id="collectDataBtn" onclick="generateDocx()">Скачать курсовую работу</button>
-            <button class="control-btn arrow-btn" id="nextBtn" title="Вперед">🠚</button>
+        
+
+        <!-- Полноэкранный лоадер -->
+        <div id="fullscreen-loader" class="fullscreen-loader">
+          <h1>Формируем документ...</h1>
         </div>
         <script src="scripts/title_page.js"></script>
         <script src="scripts/init_data.js"></script>    
@@ -73,5 +82,14 @@
         <script src="scripts/secondary_epure.js"></script>
         <script src="scripts/varfin.js"></script>
         <script src="scripts/main.js"></script>
+        <script>
+            const shadow = tit.shadowRoot;
+            if (shadow) {
+            // Shadow DOM уже существует
+                setTimeout(() => {
+                    document.body.classList.add("loaded");
+                }, 25);
+            }
+        </script>
     </body>
 </html>
