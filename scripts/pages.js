@@ -1,3 +1,139 @@
+class Info extends HTMLElement {
+    connectedCallback() {
+        // Сюда пишем весь HTML, который должен появиться на месте тега
+        const shadow = this.attachShadow({ mode: 'open' });
+        shadow.innerHTML = `
+            <style>
+                body {
+                    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                    background-color: #f0f2f5;
+                    margin: 0;
+                    padding: 20px;
+                    display: flex;
+                    align-items: flex-start;
+                    padding: 10px 10px;
+                    justify-content: center;
+                    min-height: 100vh;
+                    box-sizing: border-box;
+                }
+                .container {
+                    background: white;
+                    padding: 30px;
+                    border-radius: 10px;
+                    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+                    width: 100%;
+                    max-width: 550px;
+                }
+                h2 {
+                    color: #2c3e50;
+                    margin: 0 0 20px 0;
+                    text-align: center;
+                    font-size: 18px;
+                    border-bottom: 2px solid #3498db;
+                    padding-bottom: 8px;
+                }
+                h3 {
+                    color: #34495e;
+                    font-size: 13px;
+                    margin: 15px 0 8px 0;
+                    text-transform: uppercase;
+                    letter-spacing: 0.5px;
+                    border-left: 3px solid #3498db;
+                    padding-left: 8px;
+                }
+                .form-container {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 12px;
+                    margin-bottom: 25px;
+                }
+                .form-group {
+                    display: flex;
+                    flex-direction: column;
+                }
+                .form-r {
+                    display: grid;
+                    grid-template-columns: 1fr;
+                    gap: 12px;
+                }
+                .form-row {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 12px;
+                }
+                .form-row-triple {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr 1fr;
+                    gap: 10px;
+                }
+                label {
+                    margin-bottom: 4px;
+                    font-weight: 600;
+                    color: #4a5568;
+                    font-size: 11px;
+                }
+                input, textarea {
+                    width: 100%;
+                    padding: 8px 12px;
+                    border: 1px solid #cbd5e1;
+                    border-radius: 4px;
+                    box-sizing: border-box;
+                    font-size: 13px;
+                    color: #334155;
+                    transition: border-color 0.2s, box-shadow 0.2s;
+                }
+                input:focus, textarea:focus {
+                    outline: none;
+                    border-color: #3498db;
+                    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.15);
+                }
+                button {
+                    width: 100%;
+                    padding: 10px;
+                    background-color: #3498db;
+                    color: white;
+                    border: none;
+                    border-radius: 4px;
+                    font-size: 14px;
+                    cursor: pointer;
+                    font-weight: bold;
+                    transition: background 0.2s;
+                }
+                button:hover {
+                    background-color: #2980b9;
+                }
+                .lando {
+                    color: blue;
+                }
+                .lando:hover {
+                    color: red;
+                }
+            </style>
+            <div class="container">
+                <h2>AutoCurse</h2>
+                <h1>О текущей версии</h1>
+
+                <h3>Бонусы обновления</h3>
+                <p>- Рисование эпюр балок настила и второстепенных балок</p>
+                <p>- Рисование схем балочной клетки и грузовых площадей</p>
+                <p>- Предварительный просмотр промежуточных значений</p>
+                <p>- Возможность скачивания отдельных расчетов и рисунков</p>
+                <p>- Программное создание вариантов балочной клетки</p>
+                <p>- Автовыбор лучшего варианта по расходу стали</p>
+                <p>- Базы данных нормативов для прокатных двутавров</p>
+
+                <h3>Временные ограничения</h3>
+                <p>- Максимальные допустимые размеры клетки 12х7 м</p>
+                <p>- Программное создание вариантов не учитывает наличие стыков</p>
+                <p>- Повторные итерации проверок не реализованы</p>
+                <p>- Интерфейс не адаптирован под мобильную версию</p>
+
+                <h3>Информационный лендинг</h3>
+                <a href="info.html" class="lando" style="text-decoration: none"><b>autocurse.ru/info.html<b></a>
+            </div>
+        `;}}
+customElements.define('info-page', Info);
+
 class TitlePage extends HTMLElement {
     connectedCallback() {
         // Сюда пишем весь HTML, который должен появиться на месте тега

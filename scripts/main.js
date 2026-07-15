@@ -27,7 +27,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Доступность стрелок
         prevBtn.disabled = currentIndex === 0;
-        // nextBtn.disabled = currentIndex === pages.length - 1;
 
         // ИСПРАВЛЕНО: Показываем кнопку создания файла только на последнем слайде
         if (currentIndex === pages.length - 1) {
